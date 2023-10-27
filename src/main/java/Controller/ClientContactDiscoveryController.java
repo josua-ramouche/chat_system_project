@@ -11,13 +11,18 @@ public class ClientContactDiscoveryController {
         private static DatagramSocket socket = null;
 
         public static void main(String[] args) throws IOException {
-        try {
-            broadcast("Hello", InetAddress.getByName("255.255.255.255"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException(e);
+
+            List<InetAddress> broadcastList = listAllBroadcastAddresses();
+
+            for (int i=0; i < broadcastList.size() ; i++) {
+                try {
+                    broadcast("Hello", InetAddress.getByName((broadcastList.get(i).toString())));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    throw new RuntimeException(e);
+                }
+            }
         }
-    }
 
         public static void broadcast(
                 String broadcastMessage, InetAddress address) throws IOException {
@@ -32,7 +37,7 @@ public class ClientContactDiscoveryController {
             socket.close();
         }
 
-        List<InetAddress> listAllBroadcastAddresses() throws SocketException {
+        static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
             List<InetAddress> broadcastList = new ArrayList<>();
             Enumeration<NetworkInterface> interfaces
                     = NetworkInterface.getNetworkInterfaces();
