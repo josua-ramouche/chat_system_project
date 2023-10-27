@@ -1,2 +1,4 @@
-package View;public class RegisterApp {
+package View;
+
+public class RegisterApp {
 }
