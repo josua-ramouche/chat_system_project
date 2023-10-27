@@ -2,64 +2,30 @@ package Controller;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Enumeration;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class ServerContactDiscoveryController {
-    public long sendingTime;
-    public String clientIP;
+    List<InetAddress> listAllBroadcastAddresses() throws SocketException {
+        List<InetAddress> broadcastList = new ArrayList<>();
+        Enumeration<NetworkInterface> interfaces
+                = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = interfaces.nextElement();
 
-    public final String clientUsername;
-
-
-    public ServerContactDiscoveryController(long sendingTime, String clientIP, String clientUsername) {
-        this.sendingTime = sendingTime;
-        this.clientIP = clientIP;
-        this.clientUsername = clientUsername;
-    }
-
-    public class DiscoveryThread implements Runnable {
-
-        DatagramSocket socket;
-
-        @Override
-        public void run() {
-            try {
-                //Keep a socket open to listen to all the UDP trafic that is destined for this port
-                socket = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
-                socket.setBroadcast(true);
-
-                while (true) {
-                    System.out.println(getClass().getName() + ">>>Ready to receive broadcast packets!");
-
-                    //Receive a packet
-                    byte[] recvBuf = new byte[15000];
-                    DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
-                    socket.receive(packet);
-
-                    //Packet received
-                    System.out.println(getClass().getName() + ">>>Discovery packet received from: " + packet.getAddress().getHostAddress());
-                    System.out.println(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData()));
-
-                    //See if the packet holds the right command (message)
-                    String message = new String(packet.getData()).trim();
-                    if (message.equals("DISCOVER_FUIFSERVER_REQUEST")) {
-                        byte[] sendData = "DISCOVER_FUIFSERVER_RESPONSE".getBytes();
-
-                        //Send a response
-                        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
-                        socket.send(sendPacket);
-
-                        System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
-                    }
-                }
-            } catch (IOException ex) {
-                Logger.getLogger(DiscoveryThread.class.getName()).log(Level.SEVERE, null, ex);
+            if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                continue;
             }
+
+            networkInterface.getInterfaceAddresses().stream()
+                    .map(a -> a.getBroadcast())
+                    .filter(Objects::nonNull)
+                    .forEach(broadcastList::add);
         }
+        return broadcastList;
     }
-
-
 
 
 
