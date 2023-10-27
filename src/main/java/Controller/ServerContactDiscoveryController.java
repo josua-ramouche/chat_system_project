@@ -1,11 +1,10 @@
 package Controller;
-
-import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.Objects;
+
 
 public class ServerContactDiscoveryController {
     List<InetAddress> listAllBroadcastAddresses() throws SocketException {
@@ -20,7 +19,7 @@ public class ServerContactDiscoveryController {
             }
 
             networkInterface.getInterfaceAddresses().stream()
-                    .map(a -> a.getBroadcast())
+                    .map(InterfaceAddress::getBroadcast)
                     .filter(Objects::nonNull)
                     .forEach(broadcastList::add);
         }
