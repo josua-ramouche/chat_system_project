@@ -10,9 +10,14 @@ import java.util.Objects;
 public class ClientContactDiscoveryController {
         private static DatagramSocket socket = null;
 
-        public static void main((String[] args)) throws void IOException {
+        public static void main(String[] args) throws IOException {
+        try {
             broadcast("Hello", InetAddress.getByName("255.255.255.255"));
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
+    }
 
         public static void broadcast(
                 String broadcastMessage, InetAddress address) throws IOException {
