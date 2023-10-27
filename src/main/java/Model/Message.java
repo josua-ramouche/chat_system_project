@@ -1,2 +1,4 @@
-package Model;public class Message {
+package Model;
+
+public class Message {
 }
