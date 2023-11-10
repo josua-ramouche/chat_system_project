@@ -1,7 +1,7 @@
 package Controller;
 import java.io.IOException;
 import java.net.*;
-
+import java.util.List;
 
 
 public class ServerContactDiscoveryController {
@@ -45,6 +45,11 @@ public class ServerContactDiscoveryController {
             }
             socket.close();
         }
+    }
+
+    public static void main(String[] args) throws IOException {
+        Thread Server = new EchoServer();
+        Server.start();
     }
 
 
