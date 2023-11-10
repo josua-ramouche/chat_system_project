@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientContactDiscoveryController {
-
+        private static DatagramSocket socket;
 
         public static void broadcast(
                 String broadcastMessage, InetAddress address) throws IOException {
-            DatagramSocket socket = new DatagramSocket();
+            socket = new DatagramSocket();
             socket.setBroadcast(true);
 
             byte[] buffer = broadcastMessage.getBytes();
@@ -20,7 +20,7 @@ public class ClientContactDiscoveryController {
             DatagramPacket packet
                     = new DatagramPacket(buffer, broadcastMessage.length(), address, 4445);
             socket.send(packet);
-            socket.close();
+            //socket.close();
         }
 
         static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
@@ -46,7 +46,7 @@ public class ClientContactDiscoveryController {
     public static void sendEndConnection(InetAddress ip_address, int nport) {
 
         try{
-            DatagramSocket socket = new DatagramSocket(1789);
+            //DatagramSocket socket = new DatagramSocket(1789);
             byte[] buf;  // max size of the buffer : message length < buffer
 
             buf = "end".getBytes();
@@ -61,11 +61,11 @@ public class ClientContactDiscoveryController {
 
     public static class EchoClient extends Thread {
 
-        private final DatagramSocket socket;
+        //private final DatagramSocket socket;
         private final byte[] buf = new byte[256];
 
         public EchoClient() throws SocketException {
-            socket = new DatagramSocket(4445);
+            //socket = new DatagramSocket(4445);
         }
 
         public void run() {
