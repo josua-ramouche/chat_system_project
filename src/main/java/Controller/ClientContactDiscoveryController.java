@@ -20,7 +20,6 @@ public class ClientContactDiscoveryController {
             DatagramPacket packet
                     = new DatagramPacket(buffer, broadcastMessage.length(), address, 4445);
             socket.send(packet);
-            //socket.close();
         }
 
         static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
@@ -46,7 +45,6 @@ public class ClientContactDiscoveryController {
     public static void sendEndConnection(InetAddress ip_address, int nport) {
 
         try{
-            //DatagramSocket socket = new DatagramSocket(1789);
             byte[] buf;  // max size of the buffer : message length < buffer
 
             buf = "end".getBytes();
@@ -61,12 +59,7 @@ public class ClientContactDiscoveryController {
 
     public static class EchoClient extends Thread {
 
-        //private final DatagramSocket socket;
         private final byte[] buf = new byte[256];
-
-        public EchoClient() throws SocketException {
-            //socket = new DatagramSocket(4445);
-        }
 
         public void run() {
             boolean running = true;
@@ -79,22 +72,15 @@ public class ClientContactDiscoveryController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println("Received");
 
                 InetAddress address = packet.getAddress();
                 int port = packet.getPort();
                 String received
                         = new String(packet.getData(), 0, packet.getLength());
 
-                System.out.println("address :" + address);
-
-                System.out.println("port : " + port);
-
-                System.out.println("Received : " + received);
-
 
                 if (received.equals("response_ip")) {
-                    System.out.println("check2 : " + address);
+                    System.out.println("Received address : " + address);
                 }
 
                 //   /!\
