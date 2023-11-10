@@ -8,25 +8,24 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientContactDiscoveryController {
-        private static DatagramSocket socket = null;
-
-        public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException {
 
             List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
-            for (int i=0; i < broadcastList.size() ; i++) {
-                try {
-                    broadcast("Hello", InetAddress.getByName((broadcastList.get(i).toString())));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    throw new RuntimeException(e);
-                }
+        for (InetAddress inetAddress : broadcastList) {
+            try {
+                System.out.println(inetAddress);
+                broadcast("Hello", inetAddress);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
             }
+        }
         }
 
         public static void broadcast(
                 String broadcastMessage, InetAddress address) throws IOException {
-            socket = new DatagramSocket();
+            DatagramSocket socket = new DatagramSocket();
             socket.setBroadcast(true);
 
             byte[] buffer = broadcastMessage.getBytes();
