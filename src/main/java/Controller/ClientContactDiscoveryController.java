@@ -8,7 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientContactDiscoveryController {
-        private static DatagramSocket socket;
+    private static String Username = "Lucile";
+
+    private static DatagramSocket socket;
 
         public static void broadcast(
                 String broadcastMessage, InetAddress address) throws IOException {
@@ -79,8 +81,9 @@ public class ClientContactDiscoveryController {
                         = new String(packet.getData(), 0, packet.getLength());
 
 
-                if (received.equals("response_ip")) {
+                if (!received.equals("") || !received.equals("end")) {
                     System.out.println("Received address : " + address);
+                    System.out.println(received);
                 }
 
                 //   /!\
@@ -100,7 +103,8 @@ public class ClientContactDiscoveryController {
         for (InetAddress inetAddress : broadcastList) {
             try {
                 System.out.println(inetAddress);
-                broadcast("IP_address", inetAddress);
+                //username client
+                broadcast(Username, inetAddress);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);

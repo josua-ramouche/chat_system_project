@@ -9,6 +9,9 @@ import java.net.SocketException;
 
 public class ServerContactDiscoveryController {
 
+    //use controller instead
+    private static String Username = "Josua";
+    //   /!\
     public static class EchoServer extends Thread {
 
         private final DatagramSocket socket;
@@ -59,9 +62,11 @@ public class ServerContactDiscoveryController {
                 System.out.println("Received : " + received);
 
 
-                if (received.equals("IP_address")) {
+                if (!received.equals("") || !received.equals("end")) {
                     System.out.println("check");
-                    sendIP("response_ip", address, port);
+                    //your username
+                    sendIP(Username, address, port);
+                    System.out.println(received);
                 }
                 try {
                     socket.send(packet);
