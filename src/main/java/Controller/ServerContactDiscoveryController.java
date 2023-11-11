@@ -1,13 +1,26 @@
 package Controller;
 
+import Model.User;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 public class ServerContactDiscoveryController {
 
-    private static final String Username = "Josua";
+    private static final User server = new User();
+
+
+    public ServerContactDiscoveryController() throws UnknownHostException { // ...(User u)
+        //this.user = user;
+        //FOR TESTING PURPOSES
+        server.setUsername("Josua");
+        server.setIPaddress(InetAddress.getLocalHost());
+        server.setState(true);
+
+    }
 
     public static class EchoServer extends Thread {
 
@@ -43,13 +56,23 @@ public class ServerContactDiscoveryController {
                 int port = packet.getPort();
                 String received = new String(packet.getData(), 0, packet.getLength());
 
-                System.out.println("address :" + address);
-                System.out.println("port : " + port);
-                System.out.println("Received : " + received);
 
                 if (!received.equals("") && !received.equals("end")) {
-                    System.out.println("check");
-                    sendIP(Username, address, port, socket);
+                    //New contact creation
+                    User contact = new User();
+                    contact.setUsername(received);
+                    contact.setIPaddress(address);
+                    contact.setState(true);
+
+                    if(!server.containsContact(contact)) {
+                        //Addition to contact list
+                        server.addContact(contact);
+                        System.out.println("New contact added");
+                    }
+                    server.getContactList().forEach(u -> System.out.println(u.getUsername()));
+                    server.getContactList().forEach(u -> System.out.println(u.getIPaddress()));
+                    server.getContactList().forEach(u -> System.out.println(u.getState()));
+                    sendIP(server.getUsername(), address, port, socket);
                     System.out.println(received);
                 }
 
@@ -63,6 +86,7 @@ public class ServerContactDiscoveryController {
     }
 
     public static void main(String[] args) throws IOException {
+        ServerContactDiscoveryController serverConstruct = new ServerContactDiscoveryController();
         DatagramSocket serverSocket = new DatagramSocket(4445);
         Thread Server = new EchoServer(serverSocket);
         Server.start();

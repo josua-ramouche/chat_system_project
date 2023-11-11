@@ -1,5 +1,7 @@
 package Controller;
 
+import Model.User;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -7,9 +9,19 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
-public class ClientContactDiscoveryController {
 
-    private static final String Username = "Lucile";
+public class ClientContactDiscoveryController {
+    private static final User client = new User();
+
+
+    public ClientContactDiscoveryController() throws UnknownHostException { // ...(User u)
+        //this.user = user;
+        //FOR TESTING PURPOSES
+        client.setUsername("Lucile");
+        client.setIPaddress(InetAddress.getLocalHost());
+        client.setState(true);
+
+    }
 
     public static void broadcast(String broadcastMessage, InetAddress address, DatagramSocket socket) throws IOException {
         byte[] buffer = broadcastMessage.getBytes();
@@ -68,14 +80,27 @@ public class ClientContactDiscoveryController {
                 String received = new String(packet.getData(), 0, packet.getLength());
 
                 if (!received.equals("") && !received.equals("end")) {
-                    System.out.println("Received address : " + address);
-                    System.out.println(received);
+                    //New contact creation
+                    User contact = new User();
+                    contact.setUsername(received);
+                    contact.setIPaddress(address);
+                    contact.setState(true);
+                    if(!client.containsContact(contact)) {
+                        //Addition to contact list
+                        client.addContact(contact);
+                        System.out.println("New contact added");
+                    }
+                    client.getContactList().forEach(u -> System.out.println(u.getUsername()));
+                    client.getContactList().forEach(u -> System.out.println(u.getIPaddress()));
+                    client.getContactList().forEach(u -> System.out.println(u.getState()));
                 }
             }
         }
     }
 
     public static void main(String[] args) throws IOException {
+
+        ClientContactDiscoveryController clientConstruct = new ClientContactDiscoveryController();
 
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
@@ -84,8 +109,8 @@ public class ClientContactDiscoveryController {
 
         for (InetAddress inetAddress : broadcastList) {
             try {
-                System.out.println(inetAddress);
-                broadcast(Username, inetAddress, socket);
+                System.out.println("Broadcast address : " + inetAddress);
+                broadcast(client.getUsername(), inetAddress, socket);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
