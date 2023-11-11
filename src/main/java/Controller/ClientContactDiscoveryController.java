@@ -9,6 +9,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
+import java.util.concurrent.TimeUnit;
 
 public class ClientContactDiscoveryController {
     private static final User client = new User();
@@ -47,14 +48,11 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
-    public static void sendEndConnection(InetAddress ip_address, int nport, DatagramSocket socket) {
-        try {
-            byte[] buf = "end".getBytes();
-            DatagramPacket outPacket = new DatagramPacket(buf, buf.length, ip_address, nport);
-            socket.send(outPacket);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    public static void sendEndConnection(InetAddress address, DatagramSocket socket)  throws InterruptedException, IOException {
+        broadcast("end",address,socket);
+        client.setState(false);
+        TimeUnit.SECONDS.sleep(5);
+        socket.close();
     }
 
     public static class EchoClient extends Thread {
@@ -66,9 +64,8 @@ public class ClientContactDiscoveryController {
         }
 
         public void run() {
-            boolean running = true;
 
-            while (running) {
+            while (client.getState()) {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
                     socket.receive(packet);
@@ -85,7 +82,7 @@ public class ClientContactDiscoveryController {
                     contact.setUsername(received);
                     contact.setIPaddress(address);
                     contact.setState(true);
-                    if(!client.containsContact(contact)) {
+                    if(!client.containsContact(client.getContactList(),contact)) {
                         //Addition to contact list
                         client.addContact(contact);
                         System.out.println("New contact added");
@@ -120,8 +117,16 @@ public class ClientContactDiscoveryController {
         Thread Client = new EchoClient(socket);
         Client.start();
 
+        //HOW TO WAIT BEFORE DISCONNECTION
+
         // To demonstrate sending the "end" message
-        // Uncomment the line below after testing the initial functionality
-        // sendEndConnection(broadcastList.get(0), 4445, socket);
+        client.getContactList().forEach(u -> { try {
+            System.out.println("Disconnection...");
+            sendEndConnection(u.getIPaddress(), socket);
+        } catch (IOException | InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        });
+
     }
 }

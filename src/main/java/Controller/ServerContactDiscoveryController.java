@@ -41,9 +41,7 @@ public class ServerContactDiscoveryController {
         }
 
         public void run() {
-            boolean running = true;
-
-            while (running) {
+            while (server.getState()) {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
                     socket.receive(packet);
@@ -57,14 +55,14 @@ public class ServerContactDiscoveryController {
                 String received = new String(packet.getData(), 0, packet.getLength());
 
 
-                if (!received.equals("") && !received.equals("end")) {
-                    //New contact creation
-                    User contact = new User();
-                    contact.setUsername(received);
-                    contact.setIPaddress(address);
-                    contact.setState(true);
+                //New contact creation
+                User contact = new User();
+                contact.setUsername(received);
+                contact.setIPaddress(address);
+                contact.setState(true);
 
-                    if(!server.containsContact(contact)) {
+                if (!received.equals("") && !received.equals("end")) {
+                    if(!server.containsContact(server.getContactList(),contact)){
                         //Addition to contact list
                         server.addContact(contact);
                         System.out.println("New contact added");
@@ -75,10 +73,21 @@ public class ServerContactDiscoveryController {
                     sendIP(server.getUsername(), address, port, socket);
                     System.out.println(received);
                 }
-
-                //retirer la personne des gens connectés
+                //Retirer la personne des gens connectés
                 if (received.equals("end")) {
-                    running = false;
+                    String disconnectedUser = null;
+
+                    for (User u : server.getContactList()) {
+                        if (u.getIPaddress().equals(address)) {
+                            u.setState(false);
+                            disconnectedUser = u.getUsername();
+                            break;
+                        }
+                    }
+
+                    if (disconnectedUser != null) {
+                        System.out.println("User " + disconnectedUser + " disconnected");
+                    }
                 }
             }
             socket.close();

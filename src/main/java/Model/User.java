@@ -2,6 +2,7 @@ package Model;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+
 public class User {
 
     private String username;
@@ -45,8 +46,16 @@ public class User {
         contactList.remove(u);
     }
 
-    public Boolean containsContact(User u){
-        return contactList.contains(u);
+    public Boolean containsContact(List<User> contactList, User u) {
+        Boolean contained = false;
+
+        for (User v : contactList) {
+            if (u.username.equals(v.username) && u.ipaddress.equals(v.ipaddress) && u.state.equals(v.state)) {
+                contained = true;
+                break;
+            }
+        }
+        return contained;
     }
 
     public Boolean getState(){
