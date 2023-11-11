@@ -95,7 +95,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         ClientContactDiscoveryController clientConstruct = new ClientContactDiscoveryController();
 
@@ -117,8 +117,7 @@ public class ClientContactDiscoveryController {
         Thread Client = new EchoClient(socket);
         Client.start();
 
-        //HOW TO WAIT BEFORE DISCONNECTION
-
+        //HOW TO DELAY BEFORE DISCONNECTION
         // To demonstrate sending the "end" message
         client.getContactList().forEach(u -> { try {
             System.out.println("Disconnection...");

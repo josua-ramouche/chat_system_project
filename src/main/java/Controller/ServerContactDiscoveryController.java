@@ -73,6 +73,7 @@ public class ServerContactDiscoveryController {
                     sendIP(server.getUsername(), address, port, socket);
                     System.out.println(received);
                 }
+
                 //Retirer la personne des gens connectés
                 if (received.equals("end")) {
                     String disconnectedUser = null;
