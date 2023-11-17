@@ -12,22 +12,23 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ClientContactDiscoveryController {
-    private static final User client = new User();
+    private static User client = new User();
 
-
-    public ClientContactDiscoveryController() throws UnknownHostException { // ...(User u)
-        //this.user = user;
-        //FOR TESTING PURPOSES
-        client.setUsername("Lucile");
-        client.setIPaddress(InetAddress.getLocalHost());
-        client.setState(true);
-
+    public ClientContactDiscoveryController (User client)
+    {
+        this.client=client;
     }
 
+
     public static void broadcast(String broadcastMessage, InetAddress address, DatagramSocket socket) throws IOException {
-        byte[] buffer = broadcastMessage.getBytes();
-        DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 4445);
-        socket.send(packet);
+        try {
+            byte[] buffer = broadcastMessage.getBytes();
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 4445);
+            socket.send(packet);
+        }
+        catch (Exception e)
+        {
+        }
     }
 
     static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
@@ -108,6 +109,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
+    /*
     public static void main(String[] args) throws IOException, InterruptedException {
 
         new ClientContactDiscoveryController();
@@ -134,4 +136,6 @@ public class ClientContactDiscoveryController {
         TimeUnit.SECONDS.sleep(3);
         sendEndConnection(socket,Client);
     }
+
+     */
 }

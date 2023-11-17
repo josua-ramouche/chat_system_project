@@ -10,24 +10,15 @@ import java.net.UnknownHostException;
 
 public class ServerContactDiscoveryController {
 
-    private static final User server = new User();
-
-
-    public ServerContactDiscoveryController() throws UnknownHostException { // ...(User u)
-        //this.user = user;
-        //FOR TESTING PURPOSES
-        server.setUsername("Josua");
-        server.setIPaddress(InetAddress.getLocalHost());
-        server.setState(true);
-
-    }
-
     public static class EchoServer extends Thread {
+        private User server = new User();
+
 
         private final DatagramSocket socket;
 
-        public EchoServer(DatagramSocket socket) {
+        public EchoServer(DatagramSocket socket, User server) {
             this.socket = socket;
+            this.server = server;
         }
 
         public static void sendIP(String message, InetAddress ip_address, int nport, DatagramSocket socket) {
@@ -94,11 +85,13 @@ public class ServerContactDiscoveryController {
             socket.close();
         }
     }
-
+/*
     public static void main(String[] args) throws IOException {
         ServerContactDiscoveryController serverConstruct = new ServerContactDiscoveryController();
         DatagramSocket serverSocket = new DatagramSocket(4445);
         Thread Server = new EchoServer(serverSocket);
         Server.start();
     }
+    */
+
 }
