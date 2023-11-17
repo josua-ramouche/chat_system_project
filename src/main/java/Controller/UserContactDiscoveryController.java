@@ -10,14 +10,14 @@ import java.util.concurrent.TimeUnit;
 import static Controller.ClientContactDiscoveryController.*;
 public class UserContactDiscoveryController {
 
-    public static void main(String[] args) throws IOException{
+    public static void main(String[] args) throws IOException, InterruptedException {
 
         User user = new User();
-        user.setUsername("Josua");
+        user.setUsername("test");
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
-        Thread Server = new ServerContactDiscoveryController.EchoServer(1555,user);
+        Thread Server = new ServerContactDiscoveryController.EchoServer(user);
 
 
         //Client actions (send broadcast for contact discovery, change of username, end connection)
@@ -33,7 +33,7 @@ public class UserContactDiscoveryController {
 
 
         //Client disconnection
-        //TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(10);
         sendEndConnection(user);
     }
 }

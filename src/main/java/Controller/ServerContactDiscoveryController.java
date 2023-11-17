@@ -11,15 +11,15 @@ public class ServerContactDiscoveryController {
         private User server;
         private final DatagramSocket socket;
 
-        public EchoServer(int port, User server) throws SocketException {
-            this.socket = new DatagramSocket(port);
+        public EchoServer(User server) throws SocketException {
+            this.socket = new DatagramSocket(1556);
             this.server = server;
         }
 
-        public static void sendIP(String message, InetAddress ip_address, int nport, DatagramSocket socket) {
+        public static void sendIP(String message, InetAddress ip_address, DatagramSocket socket) {
             try {
                 byte[] buf = message.getBytes();
-                DatagramPacket outPacket = new DatagramPacket(buf, buf.length, ip_address, nport);
+                DatagramPacket outPacket = new DatagramPacket(buf, buf.length, ip_address, 1556);
                 socket.send(outPacket);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -38,7 +38,7 @@ public class ServerContactDiscoveryController {
                 System.out.println("Received");
 
                 InetAddress address = packet.getAddress();
-                int port = packet.getPort();
+
                 String received = new String(packet.getData(), 0, packet.getLength());
 
 
@@ -48,7 +48,7 @@ public class ServerContactDiscoveryController {
                 contact.setIPaddress(address);
                 contact.setState(true);
 
-                if (!received.equals("") && !received.equals("end")) {
+                if (!received.equals("") && !received.equals("end") && !address.equals(server.getIPaddress())) {
                     if(!server.containsContact(server.getContactList(),contact)){
                         //Addition to contact list
                         server.addContact(contact);
@@ -57,7 +57,7 @@ public class ServerContactDiscoveryController {
                     server.getContactList().forEach(u -> System.out.println(u.getUsername()));
                     server.getContactList().forEach(u -> System.out.println(u.getIPaddress()));
                     server.getContactList().forEach(u -> System.out.println(u.getState()));
-                    sendIP(server.getUsername(), address, port, socket);
+                    sendIP(server.getUsername(), address, socket);
                     System.out.println(received);
                 }
 
