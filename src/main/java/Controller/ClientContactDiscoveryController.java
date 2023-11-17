@@ -48,11 +48,23 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
-    public static void sendEndConnection(InetAddress address, DatagramSocket socket)  throws InterruptedException, IOException {
-        broadcast("end",address,socket);
+    public static void sendEndConnection(DatagramSocket socket,Thread cli){
+        System.out.println("Disconnection...");
+        // To demonstrate sending the "end" message
+        client.getContactList().forEach(u -> { try {
+            broadcast("end",u.getIPaddress(),socket);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        });
         client.setState(false);
-        TimeUnit.SECONDS.sleep(5);
-        socket.close();
+        cli.interrupt();
+        try {
+            socket.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     public static class EchoClient extends Thread {
@@ -69,8 +81,9 @@ public class ClientContactDiscoveryController {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
                     socket.receive(packet);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
+                } catch (Exception e) {
+                    this.interrupt();
+                    //throw new RuntimeException(e);
                 }
 
                 InetAddress address = packet.getAddress();
@@ -97,7 +110,7 @@ public class ClientContactDiscoveryController {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-        ClientContactDiscoveryController clientConstruct = new ClientContactDiscoveryController();
+        new ClientContactDiscoveryController();
 
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
@@ -118,14 +131,7 @@ public class ClientContactDiscoveryController {
         Client.start();
 
         //HOW TO DELAY BEFORE DISCONNECTION
-        // To demonstrate sending the "end" message
-        client.getContactList().forEach(u -> { try {
-            System.out.println("Disconnection...");
-            sendEndConnection(u.getIPaddress(), socket);
-        } catch (IOException | InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        });
-
+        TimeUnit.SECONDS.sleep(3);
+        sendEndConnection(socket,Client);
     }
 }
