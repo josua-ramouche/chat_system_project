@@ -48,6 +48,7 @@ public class ServerContactDiscoveryController {
                 contact.setIPaddress(address);
                 contact.setState(true);
 
+                //PRINT LES DIFFERRENTES ADDRESSES IP
                 if (!received.equals("") && !received.equals("end") && !address.equals(server.getIPaddress())) {
                     if(!server.containsContact(server.getContactList(),contact)){
                         //Addition to contact list
