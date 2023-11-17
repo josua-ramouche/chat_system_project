@@ -3,21 +3,16 @@ package Controller;
 import Model.User;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
+import java.net.*;
 
 public class ServerContactDiscoveryController {
 
     public static class EchoServer extends Thread {
         private User server = new User();
-
-
         private final DatagramSocket socket;
 
-        public EchoServer(DatagramSocket socket, User server) {
-            this.socket = socket;
+        public EchoServer(int port, User server) throws SocketException {
+            this.socket = new DatagramSocket(port);
             this.server = server;
         }
 
@@ -32,6 +27,7 @@ public class ServerContactDiscoveryController {
         }
 
         public void run() {
+            System.out.println("SERVER");
             while (server.getState()) {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {

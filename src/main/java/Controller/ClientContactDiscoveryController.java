@@ -13,9 +13,11 @@ import java.util.concurrent.TimeUnit;
 
 public class ClientContactDiscoveryController {
     private static User client = new User();
+    private static DatagramSocket socket;
 
-    public ClientContactDiscoveryController (User client)
-    {
+    public ClientContactDiscoveryController (int port, User client) throws SocketException {
+        this.socket = new DatagramSocket(port);
+        socket.setBroadcast(true);
         this.client=client;
     }
 
@@ -49,6 +51,17 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
+    public static void sendUsername(List<InetAddress> broadcastList){
+        for (InetAddress inetAddress : broadcastList) {
+            try {
+                System.out.println("Broadcast address : " + inetAddress);
+                broadcast(client.getUsername(), inetAddress,socket);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException(e);
+            }
+        }
+    }
     public static void sendEndConnection(DatagramSocket socket,Thread cli){
         System.out.println("Disconnection...");
         // To demonstrate sending the "end" message
@@ -68,13 +81,7 @@ public class ClientContactDiscoveryController {
 
     }
 
-    public static class EchoClient extends Thread {
-
-        private final DatagramSocket socket;
-
-        public EchoClient(DatagramSocket socket) {
-            this.socket = socket;
-        }
+    /*public static class EchoClient extends Thread {
 
         public void run() {
 
@@ -107,7 +114,7 @@ public class ClientContactDiscoveryController {
                 }
             }
         }
-    }
+    }*/
 
     /*
     public static void main(String[] args) throws IOException, InterruptedException {

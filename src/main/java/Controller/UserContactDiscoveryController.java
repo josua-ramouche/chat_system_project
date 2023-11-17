@@ -4,24 +4,21 @@ import Model.User;
 
 import java.io.IOException;
 import java.util.List;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
 import static Controller.ClientContactDiscoveryController.*;
 public class UserContactDiscoveryController {
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    public static void main(String[] args) throws IOException{
 
         User user = new User();
-        user.setUsername("Lucile");
+        user.setUsername("Josua");
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
-        new ClientContactDiscoveryController(user);
-        DatagramSocket socket = new DatagramSocket();
-        Thread Client = new EchoClient(socket);
-        Thread Server = new ServerContactDiscoveryController.EchoServer(socket, user);
+        new ClientContactDiscoveryController(1556,user);
+        Thread Server = new ServerContactDiscoveryController.EchoServer(1555,user);
 
 
         //Client actions (send broadcast for contact discovery, change of username, end connection)
@@ -29,21 +26,7 @@ public class UserContactDiscoveryController {
         System.out.println("Client broadcast");
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
-
-        socket.setBroadcast(true);
-
-        for (InetAddress inetAddress : broadcastList) {
-            try {
-                System.out.println("Broadcast address : " + inetAddress);
-                broadcast(user.getUsername(), inetAddress, socket);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        }
-
-        Client.start();
-
+        sendUsername(broadcastList);
 
         //Server actions (wait for message from a Client)
         //Add client users to contact list
@@ -51,8 +34,8 @@ public class UserContactDiscoveryController {
 
 
         //Client disconnection
-        TimeUnit.SECONDS.sleep(5);
-        sendEndConnection(socket,Client);
+        //TimeUnit.SECONDS.sleep(5);
+        //sendEndConnection(socket,Client);
     }
 }
 
