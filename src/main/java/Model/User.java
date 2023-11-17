@@ -14,7 +14,6 @@ public class User {
 
     public Boolean state;
 
-
     public User(){
         this.contactList = new ArrayList<>();
     }
