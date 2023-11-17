@@ -2,6 +2,7 @@ package Controller;
 
 import Model.User;
 
+import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -12,24 +13,17 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 public class ClientContactDiscoveryController {
-    private static User client = new User();
-    private static DatagramSocket socket;
 
-    public ClientContactDiscoveryController (int port, User client) throws SocketException {
-        this.socket = new DatagramSocket(port);
-        socket.setBroadcast(true);
-        this.client=client;
-    }
-
-
-    public static void broadcast(String broadcastMessage, InetAddress address, DatagramSocket socket) throws IOException {
-        try {
+    public static void broadcast(String broadcastMessage, InetAddress address) throws IOException{
+        try (DatagramSocket socket = new DatagramSocket()) {
+            socket.setBroadcast(true);
             byte[] buffer = broadcastMessage.getBytes();
-            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 4445);
+            DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
         }
         catch (Exception e)
         {
+            e.printStackTrace();
         }
     }
 
@@ -51,34 +45,27 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
-    public static void sendUsername(List<InetAddress> broadcastList){
+    public static void sendUsername(List<InetAddress> broadcastList, User client){
         for (InetAddress inetAddress : broadcastList) {
-            try {
+            try{
                 System.out.println("Broadcast address : " + inetAddress);
-                broadcast(client.getUsername(), inetAddress,socket);
+                broadcast(client.getUsername(), inetAddress);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
             }
         }
     }
-    public static void sendEndConnection(DatagramSocket socket,Thread cli){
+    public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
         // To demonstrate sending the "end" message
         client.getContactList().forEach(u -> { try {
-            broadcast("end",u.getIPaddress(),socket);
+            broadcast("end",u.getIPaddress());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
         });
         client.setState(false);
-        cli.interrupt();
-        try {
-            socket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
     }
 
     /*public static class EchoClient extends Thread {

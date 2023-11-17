@@ -17,7 +17,6 @@ public class UserContactDiscoveryController {
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
-        new ClientContactDiscoveryController(1556,user);
         Thread Server = new ServerContactDiscoveryController.EchoServer(1555,user);
 
 
@@ -26,7 +25,7 @@ public class UserContactDiscoveryController {
         System.out.println("Client broadcast");
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
-        sendUsername(broadcastList);
+        sendUsername(broadcastList,user);
 
         //Server actions (wait for message from a Client)
         //Add client users to contact list
@@ -35,7 +34,7 @@ public class UserContactDiscoveryController {
 
         //Client disconnection
         //TimeUnit.SECONDS.sleep(5);
-        //sendEndConnection(socket,Client);
+        sendEndConnection(user);
     }
 }
 

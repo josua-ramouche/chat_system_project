@@ -8,7 +8,7 @@ import java.net.*;
 public class ServerContactDiscoveryController {
 
     public static class EchoServer extends Thread {
-        private User server = new User();
+        private User server;
         private final DatagramSocket socket;
 
         public EchoServer(int port, User server) throws SocketException {
