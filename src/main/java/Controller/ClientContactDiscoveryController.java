@@ -2,7 +2,6 @@ package Controller;
 
 import Model.User;
 
-import javax.xml.crypto.Data;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -10,7 +9,6 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
-import java.util.concurrent.TimeUnit;
 
 public class ClientContactDiscoveryController {
 
@@ -65,7 +63,6 @@ public class ClientContactDiscoveryController {
             }
         } catch (SocketException e) {
             e.printStackTrace();
-            // Gérer l'exception ici selon les besoins de votre application
         }
     }
 
@@ -92,9 +89,9 @@ public class ClientContactDiscoveryController {
 
             // Update the client's username
             client.setUsername(newUsername);
+            System.out.println("Username changed to : " + newUsername + "\n");
         } catch (IOException e) {
             e.printStackTrace();
-            // Gérer l'exception ici selon les besoins de votre application
         }
     }
 
@@ -112,6 +109,7 @@ public class ClientContactDiscoveryController {
         }
         });
         client.setState(false);
+        System.out.println("You are now disconnected\n");
     }
 
 

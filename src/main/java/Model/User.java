@@ -10,12 +10,25 @@ public class User {
 
     private InetAddress ipaddress;
 
-    private final List<User> contactList;
+    private List<User> contactList;
 
     public Boolean state;
 
     public User(){
         this.contactList = new ArrayList<>();
+    }
+
+    public User(String username, InetAddress ipaddress){
+        this.contactList = new ArrayList<>();
+        this.username = username;
+        this.ipaddress = ipaddress;
+    }
+
+    public User(String username, InetAddress ipaddress, Boolean state){
+        this.contactList = new ArrayList<>();
+        this.username = username;
+        this.ipaddress = ipaddress;
+        this.state = state;
     }
     public String getUsername(){
         return this.username;
@@ -37,6 +50,8 @@ public class User {
     public List<User> getContactList(){
         return this.contactList;
     }
+
+    public void setContactList(List<User> contList){ this.contactList = contList;}
 
     public void addContact(User u){
         contactList.add(u);
