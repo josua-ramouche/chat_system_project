@@ -18,6 +18,11 @@ public class ServerContactDiscoveryController {
             this.server = server;
         }
 
+        public EchoServer(User server, DatagramSocket sock) {
+            this.socket = sock;
+            this.server = server;
+        }
+
         public static void sendIP(String message, InetAddress ip_address, DatagramSocket socket) {
             try {
                 byte[] buf = message.getBytes();
@@ -69,7 +74,7 @@ public class ServerContactDiscoveryController {
             socket.close();
         }
 
-        private void handleBroadcastMessage(String message, InetAddress address) {
+        public void handleBroadcastMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String username = parts[0];
 
@@ -104,7 +109,7 @@ public class ServerContactDiscoveryController {
 
         private InetAddress lastResponseSender = null;
 
-        private void handleResponseMessage(String message, InetAddress address) {
+        public void handleResponseMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String username = parts[0];
 
@@ -136,7 +141,7 @@ public class ServerContactDiscoveryController {
 
 
 
-        private void handleEndMessage(InetAddress address) {
+        public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
             for (User u : server.getContactList()) {
                 if (u.getIPaddress().equals(address)) {
@@ -153,7 +158,7 @@ public class ServerContactDiscoveryController {
         }
 
 
-        private void handleChangeUsernameMessage(String message, InetAddress address) {
+        public void handleChangeUsernameMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String oldUsername = parts[1];
             String newUsername = parts[2];
@@ -199,12 +204,12 @@ public class ServerContactDiscoveryController {
             }
         }
 
-        private boolean isUsernameUnique(String username, InetAddress requesterAddress) {
+        public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
             return server.getContactList().stream()
                     .filter(u -> u.getState() && !u.getIPaddress().equals(requesterAddress)) // Filtrer uniquement les utilisateurs connectés, excluant le demandeur
                     .noneMatch(u -> u.getUsername().equals(username));
         }
-        private boolean isUsernameUnique(String username) {
+        public boolean isUsernameUnique(String username) {
             return server.getContactList().stream()
                     .filter(u -> u.getState()) // Filtrer uniquement les utilisateurs connectés
                     .noneMatch(u -> u.getUsername().equals(username));
