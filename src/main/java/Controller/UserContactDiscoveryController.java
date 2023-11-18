@@ -13,7 +13,7 @@ public class UserContactDiscoveryController {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         User user = new User();
-        user.setUsername("test");
+        user.setUsername("Test");
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
@@ -22,7 +22,7 @@ public class UserContactDiscoveryController {
 
         //Client actions (send broadcast for contact discovery, change of username, end connection)
         //Add server users to contact list
-        System.out.println("Client broadcast");
+        System.out.println("Broadcast address(es):");
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
         sendUsername(broadcastList,user);

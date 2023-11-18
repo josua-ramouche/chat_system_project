@@ -49,7 +49,7 @@ public class ClientContactDiscoveryController {
         for (InetAddress inetAddress : broadcastList) {
             try{
                 System.out.println("Broadcast address : " + inetAddress);
-                broadcast(client.getUsername(), inetAddress);
+                broadcast("BROADCAST:" + client.getUsername(), inetAddress);
             } catch (IOException e) {
                 e.printStackTrace();
                 throw new RuntimeException(e);
@@ -67,69 +67,4 @@ public class ClientContactDiscoveryController {
         });
         client.setState(false);
     }
-
-    /*public static class EchoClient extends Thread {
-
-        public void run() {
-
-            while (client.getState()) {
-                DatagramPacket packet = new DatagramPacket(new byte[256], 256);
-                try {
-                    socket.receive(packet);
-                } catch (Exception e) {
-                    this.interrupt();
-                    //throw new RuntimeException(e);
-                }
-
-                InetAddress address = packet.getAddress();
-                String received = new String(packet.getData(), 0, packet.getLength());
-
-                if (!received.equals("") && !received.equals("end")) {
-                    //New contact creation
-                    User contact = new User();
-                    contact.setUsername(received);
-                    contact.setIPaddress(address);
-                    contact.setState(true);
-                    if(!client.containsContact(client.getContactList(),contact)) {
-                        //Addition to contact list
-                        client.addContact(contact);
-                        System.out.println("New contact added");
-                    }
-                    client.getContactList().forEach(u -> System.out.println(u.getUsername()));
-                    client.getContactList().forEach(u -> System.out.println(u.getIPaddress()));
-                    client.getContactList().forEach(u -> System.out.println(u.getState()));
-                }
-            }
-        }
-    }*/
-
-    /*
-    public static void main(String[] args) throws IOException, InterruptedException {
-
-        new ClientContactDiscoveryController();
-
-        List<InetAddress> broadcastList = listAllBroadcastAddresses();
-
-        DatagramSocket socket = new DatagramSocket();
-        socket.setBroadcast(true);
-
-        for (InetAddress inetAddress : broadcastList) {
-            try {
-                System.out.println("Broadcast address : " + inetAddress);
-                broadcast(client.getUsername(), inetAddress, socket);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
-            }
-        }
-
-        Thread Client = new EchoClient(socket);
-        Client.start();
-
-        //HOW TO DELAY BEFORE DISCONNECTION
-        TimeUnit.SECONDS.sleep(3);
-        sendEndConnection(socket,Client);
-    }
-
-     */
 }

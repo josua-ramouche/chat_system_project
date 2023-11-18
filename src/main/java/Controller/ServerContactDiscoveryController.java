@@ -27,7 +27,7 @@ public class ServerContactDiscoveryController {
         }
 
         public void run() {
-            System.out.println("SERVER");
+            System.out.println("-----------------------------");
             while (server.getState()) {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
@@ -35,60 +35,82 @@ public class ServerContactDiscoveryController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-                System.out.println("Received");
+
 
                 InetAddress address = packet.getAddress();
 
                 String received = new String(packet.getData(), 0, packet.getLength());
 
-
-                //New contact creation
-                User contact = new User();
-                contact.setUsername(received);
-                contact.setIPaddress(address);
-                contact.setState(true);
-
-                //PRINT LES DIFFERRENTES ADDRESSES IP
-                if (!received.equals("") && !received.equals("end") && !address.equals(server.getIPaddress())) {
-                    if(!server.containsContact(server.getContactList(),contact)){
-                        //Addition to contact list
-                        server.addContact(contact);
-                        System.out.println("New contact added");
-                    }
-                    server.getContactList().forEach(u -> System.out.println(u.getUsername()));
-                    server.getContactList().forEach(u -> System.out.println(u.getIPaddress()));
-                    server.getContactList().forEach(u -> System.out.println(u.getState()));
-                    sendIP(server.getUsername(), address, socket);
-                    System.out.println(received);
-                }
-
-                //Retirer la personne des gens connectés
-                if (received.equals("end")) {
-                    String disconnectedUser = null;
-
-                    for (User u : server.getContactList()) {
-                        if (u.getIPaddress().equals(address)) {
-                            u.setState(false);
-                            disconnectedUser = u.getUsername();
-                            break;
-                        }
-                    }
-
-                    if (disconnectedUser != null) {
-                        System.out.println("User " + disconnectedUser + " disconnected");
+                // Nouvelle condition pour distinguer entre la diffusion et la réponse
+                if (!received.equals("") && !address.equals(server.getIPaddress())) {
+                    if (received.startsWith("BROADCAST:")) {
+                        // broadcast (recoit uniquement le username en enlevant BROADCAST: de la reception
+                        System.out.println("Broadcast:");
+                        handleBroadcastMessage(received.substring("BROADCAST:".length()), address);
+                        System.out.println("-----------------------------");
+                    } else if (received.equals("end")) {
+                        // recoit message de deconnection d'un user
+                        System.out.println("End of connection received:");
+                        handleEndMessage(address);
+                        System.out.println("-----------------------------");
+                    } else {
+                        // recoit reponse au broadcast
+                        System.out.println("Broadcast response:");
+                        handleResponseMessage(received, address);
+                        System.out.println("-----------------------------");
                     }
                 }
             }
             socket.close();
         }
-    }
-/*
-    public static void main(String[] args) throws IOException {
-        ServerContactDiscoveryController serverConstruct = new ServerContactDiscoveryController();
-        DatagramSocket serverSocket = new DatagramSocket(4445);
-        Thread Server = new EchoServer(serverSocket);
-        Server.start();
-    }
-    */
 
+        private void handleBroadcastMessage(String username, InetAddress address) {
+            User contact = new User();
+            contact.setUsername(username);
+            contact.setIPaddress(address);
+            contact.setState(true);
+
+            if (!server.containsContact(server.getContactList(), contact)) {
+                // Addition to contact list
+                server.addContact(contact);
+                System.out.println("New contact added");
+            }
+            System.out.println("Contact List (connected):");
+            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+
+            sendIP(server.getUsername(), address, socket);
+        }
+
+        private void handleResponseMessage(String username, InetAddress address) {
+            User contact = new User();
+            contact.setUsername(username);
+            contact.setIPaddress(address);
+            contact.setState(true);
+
+            if (!server.containsContact(server.getContactList(), contact)) {
+                // Addition to contact list
+                server.addContact(contact);
+                System.out.println("New contact added");
+            }
+
+            System.out.println("Contact List (connected):");
+            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+        }
+
+        private void handleEndMessage(InetAddress address) {
+            String disconnectedUser = null;
+            for (User u : server.getContactList()) {
+                if (u.getIPaddress().equals(address)) {
+                    u.setState(false);
+                    disconnectedUser = u.getUsername();
+                    break;
+                }
+            }
+            if (disconnectedUser != null) {
+                System.out.println("User " + disconnectedUser + " disconnected");
+            }
+            System.out.println("Contact List (connected):");
+            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+        }
+    }
 }
