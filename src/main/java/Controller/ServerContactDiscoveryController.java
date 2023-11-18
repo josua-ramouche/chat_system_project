@@ -5,6 +5,8 @@ import Model.User;
 import java.io.IOException;
 import java.net.*;
 
+import static Controller.ClientContactDiscoveryController.broadcast;
+
 public class ServerContactDiscoveryController {
 
     public static class EchoServer extends Thread {
@@ -33,12 +35,10 @@ public class ServerContactDiscoveryController {
                 try {
                     socket.receive(packet);
                 } catch (IOException e) {
-                    throw new RuntimeException(e);
+                    e.printStackTrace();
                 }
 
-
                 InetAddress address = packet.getAddress();
-
                 String received = new String(packet.getData(), 0, packet.getLength());
 
                 // Nouvelle condition pour distinguer entre la diffusion et la réponse
@@ -53,6 +53,11 @@ public class ServerContactDiscoveryController {
                         System.out.println("End of connection received:");
                         handleEndMessage(address);
                         System.out.println("-----------------------------");
+                    } else if (received.startsWith("CHANGE_USERNAME:")) {
+                        System.out.println("Change of username request:");
+                        //recoit message changement username
+                        handleChangeUsernameMessage(received, address);
+                        System.out.println("-----------------------------");
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
@@ -64,7 +69,52 @@ public class ServerContactDiscoveryController {
             socket.close();
         }
 
-        private void handleBroadcastMessage(String username, InetAddress address) {
+        private void handleBroadcastMessage(String message, InetAddress address) {
+            String[] parts = message.split(":");
+            String username = parts[0];
+
+            if (isUsernameUnique(username)) {
+                User contact = new User();
+                contact.setUsername(username);
+                contact.setIPaddress(address);
+                contact.setState(true);
+
+                if (!server.containsContact(server.getContactList(), contact)) {
+                    // Addition to contact list
+                    server.addContact(contact);
+                    System.out.println("New contact added");
+                }
+
+                System.out.println("Contact List (connected):");
+                server.getContactList().forEach(u -> {
+                    if (u.getState()) {
+                        System.out.println(u.getUsername());
+                    }
+                });
+
+                sendIP(server.getUsername(), address, socket);
+            } else {
+                // Notify the client that the username is not unique
+                sendIP("USERNAME_NOT_UNIQUE", address, socket);
+                System.out.println("Username '" + username + "' is not unique. Notifying the client.");
+            }
+        }
+
+
+
+        private InetAddress lastResponseSender = null;
+
+        private void handleResponseMessage(String message, InetAddress address) {
+            String[] parts = message.split(":");
+            String username = parts[0];
+
+            // Ne pas répondre au même expéditeur
+            if (address.equals(lastResponseSender)) {
+                return;
+            }
+
+            lastResponseSender = address;
+
             User contact = new User();
             contact.setUsername(username);
             contact.setIPaddress(address);
@@ -75,27 +125,16 @@ public class ServerContactDiscoveryController {
                 server.addContact(contact);
                 System.out.println("New contact added");
             }
-            System.out.println("Contact List (connected):");
-            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
-
-            sendIP(server.getUsername(), address, socket);
-        }
-
-        private void handleResponseMessage(String username, InetAddress address) {
-            User contact = new User();
-            contact.setUsername(username);
-            contact.setIPaddress(address);
-            contact.setState(true);
-
-            if (!server.containsContact(server.getContactList(), contact)) {
-                // Addition to contact list
-                server.addContact(contact);
-                System.out.println("New contact added");
-            }
 
             System.out.println("Contact List (connected):");
-            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+            server.getContactList().forEach(u -> {
+                if (u.getState()) {
+                    System.out.println(u.getUsername());
+                }
+            });
         }
+
+
 
         private void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
@@ -112,5 +151,66 @@ public class ServerContactDiscoveryController {
             System.out.println("Contact List (connected):");
             server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
         }
+
+
+        private void handleChangeUsernameMessage(String message, InetAddress address) {
+            String[] parts = message.split(":");
+            String oldUsername = parts[1];
+            String newUsername = parts[2];
+
+            // Vérifier l'unicité du nouveau nom d'utilisateur uniquement parmi les utilisateurs connectés
+            if (isUsernameUnique(newUsername, address)) {
+                for (User u : server.getContactList()) {
+                    if (u.getUsername().equals(oldUsername)) {
+                        u.setUsername(newUsername);
+                        System.out.println("Username changed: " + oldUsername + " to " + newUsername);
+                        break;
+                    }
+                }
+
+                // Notify other users about the username change
+                server.getContactList().forEach(u -> {
+                    try {
+                        if (!u.getIPaddress().equals(address)) {
+                            broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPaddress());
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
+
+                // Update the client's username
+                server.getContactList().forEach(u -> {
+                    if (u.getIPaddress().equals(address)) {
+                        u.setUsername(newUsername);
+                    }
+                });
+
+                System.out.println("Contact List (connected):");
+                server.getContactList().forEach(u -> {
+                    if (u.getState()) {
+                        System.out.println(u.getUsername());
+                    }
+                });
+            } else {
+                // Notify the client that the new username is not unique
+                sendIP("USERNAME_NOT_UNIQUE", address, socket);
+                System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
+            }
+        }
+
+        private boolean isUsernameUnique(String username, InetAddress requesterAddress) {
+            return server.getContactList().stream()
+                    .filter(u -> u.getState() && !u.getIPaddress().equals(requesterAddress)) // Filtrer uniquement les utilisateurs connectés, excluant le demandeur
+                    .noneMatch(u -> u.getUsername().equals(username));
+        }
+        private boolean isUsernameUnique(String username) {
+            return server.getContactList().stream()
+                    .filter(u -> u.getState()) // Filtrer uniquement les utilisateurs connectés
+                    .noneMatch(u -> u.getUsername().equals(username));
+        }
+
+
+
     }
 }

@@ -45,17 +45,63 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
-    public static void sendUsername(List<InetAddress> broadcastList, User client){
-        for (InetAddress inetAddress : broadcastList) {
-            try{
-                System.out.println("Broadcast address : " + inetAddress);
-                broadcast("BROADCAST:" + client.getUsername(), inetAddress);
-            } catch (IOException e) {
-                e.printStackTrace();
-                throw new RuntimeException(e);
+    public static void sendUsername(List<InetAddress> broadcastList, User client) {
+        try (DatagramSocket socket = new DatagramSocket()) {
+            String username = client.getUsername();
+
+            // Vérifier l'unicité du nom d'utilisateur avant d'envoyer le premier broadcast
+            if (isUsernameUnique(username, client.getContactList())) {
+                for (InetAddress inetAddress : broadcastList) {
+                    try {
+                        System.out.println("Broadcast address : " + inetAddress);
+                        broadcast("BROADCAST:" + username, inetAddress);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        throw new RuntimeException(e);
+                    }
+                }
+            } else {
+                System.out.println("Username '" + username + "' is not unique. Please choose a different username.");
             }
+        } catch (SocketException e) {
+            e.printStackTrace();
+            // Gérer l'exception ici selon les besoins de votre application
         }
     }
+
+    private static boolean isUsernameUnique(String username, List<User> contactList) {
+        return contactList.stream()
+                .noneMatch(u -> u.getUsername().equals(username));
+    }
+
+
+
+    public static void sendChangeUsername(User client, String newUsername) {
+        // Utilisation d'un try-with-resources pour fermer automatiquement le socket
+        try (DatagramSocket socket = new DatagramSocket()) {
+            // Notify other users about the new username
+            client.getContactList().forEach(u -> {
+                try {
+                    if (!u.getIPaddress().equals(client.getIPaddress())) {
+                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPaddress());
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+
+            // Update the client's username
+            client.setUsername(newUsername);
+        } catch (IOException e) {
+            e.printStackTrace();
+            // Gérer l'exception ici selon les besoins de votre application
+        }
+    }
+
+
+
+
+
     public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
         // To demonstrate sending the "end" message
@@ -67,4 +113,6 @@ public class ClientContactDiscoveryController {
         });
         client.setState(false);
     }
+
+
 }

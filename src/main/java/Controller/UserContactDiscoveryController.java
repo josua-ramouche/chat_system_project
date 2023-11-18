@@ -17,6 +17,7 @@ public class UserContactDiscoveryController {
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
+
         Thread Server = new ServerContactDiscoveryController.EchoServer(user);
 
 
@@ -31,9 +32,11 @@ public class UserContactDiscoveryController {
         //Add client users to contact list
         Server.start();
 
+        TimeUnit.SECONDS.sleep(3);
+        sendChangeUsername(user, "Test2");
 
         //Client disconnection
-        TimeUnit.SECONDS.sleep(10);
+        TimeUnit.SECONDS.sleep(3);
         sendEndConnection(user);
     }
 }
