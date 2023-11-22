@@ -62,7 +62,7 @@ public class User {
     }
 
     public Boolean containsContact(List<User> contactList, User u) {
-        Boolean contained = false;
+        boolean contained = false;
 
         for (User v : contactList) {
             if (u.username.equals(v.username) && u.ipaddress.equals(v.ipaddress) && u.state.equals(v.state)) {

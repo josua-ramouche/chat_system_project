@@ -44,13 +44,13 @@ public class ClientContactDiscoveryController {
     }
 
     public static List<InetAddress> getInterfacesIP() throws SocketException {
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
         List<InetAddress> interfacesIP = new ArrayList<>();
         while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
+            NetworkInterface n = e.nextElement();
+            Enumeration<InetAddress> ee = n.getInetAddresses();
             while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
+                InetAddress i = ee.nextElement();
                 interfacesIP.add(i);
             }
         }
@@ -58,7 +58,7 @@ public class ClientContactDiscoveryController {
     }
 
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
-        try (DatagramSocket socket = new DatagramSocket()) {
+        try (DatagramSocket ignored = new DatagramSocket()) {
             String username = client.getUsername();
 
             // Vérifier l'unicité du nom d'utilisateur avant d'envoyer le premier broadcast
@@ -89,7 +89,7 @@ public class ClientContactDiscoveryController {
 
     public static void sendChangeUsername(User client, String newUsername) {
         // Utilisation d'un try-with-resources pour fermer automatiquement le socket
-        try (DatagramSocket socket = new DatagramSocket()) {
+        try (DatagramSocket ignored = new DatagramSocket()) {
             // Notify other users about the new username
             client.getContactList().forEach(u -> {
                 try {

@@ -12,7 +12,7 @@ public class ServerContactDiscoveryController {
 
 
     public static class EchoServer extends Thread {
-        private User server;
+        private final User server;
         private final DatagramSocket socket;
 
         private List<InetAddress> interfacesIP;
@@ -247,7 +247,7 @@ public class ServerContactDiscoveryController {
         public boolean isUsernameUnique(String username) {
             if (!username.equals(server.getUsername())) {
                 return server.getContactList().stream()
-                        .filter(u -> u.getState()) // Filtrer uniquement les utilisateurs connectés
+                        .filter(User::getState) // Filtrer uniquement les utilisateurs connectés
                         .noneMatch(u -> u.getUsername().equals(username));
             }
             else return false;

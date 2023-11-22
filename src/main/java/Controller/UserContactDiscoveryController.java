@@ -3,12 +3,8 @@ package Controller;
 import Model.User;
 
 import java.io.IOException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static Controller.ClientContactDiscoveryController.*;
@@ -23,7 +19,7 @@ public class UserContactDiscoveryController {
         user.setState(true);
 
 
-        List<InetAddress> interfacesIP = new ArrayList<>();
+        List<InetAddress> interfacesIP;
         interfacesIP = getInterfacesIP();
 
         Thread Server = new ServerContactDiscoveryController.EchoServer(user, interfacesIP);
@@ -41,12 +37,12 @@ public class UserContactDiscoveryController {
         Server.setDaemon(true);
         Server.start();
 
-        //TimeUnit.SECONDS.sleep(3);
-        //sendChangeUsername(user, "Test4");
+        TimeUnit.SECONDS.sleep(3);
+        sendChangeUsername(user, "Test4");
 
         //Client disconnection
-        //TimeUnit.SECONDS.sleep(3);
-        //sendEndConnection(user);
+        TimeUnit.SECONDS.sleep(3);
+        sendEndConnection(user);
     }
 
 
