@@ -4,18 +4,23 @@ import Model.User;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.List;
 
 import static Controller.ClientContactDiscoveryController.broadcast;
 
 public class ServerContactDiscoveryController {
 
+
     public static class EchoServer extends Thread {
         private User server;
         private final DatagramSocket socket;
 
-        public EchoServer(User server) throws SocketException {
+        private List<InetAddress> interfacesIP;
+
+        public EchoServer(User server, List<InetAddress> interfacesIP) throws SocketException {
             this.socket = new DatagramSocket(1556);
             this.server = server;
+            this.interfacesIP = interfacesIP;
         }
 
         public EchoServer(User server, DatagramSocket sock) {
@@ -52,7 +57,7 @@ public class ServerContactDiscoveryController {
                 String received = new String(packet.getData(), 0, packet.getLength());
 
                 // Nouvelle condition pour distinguer entre la diffusion et la réponse
-                if (!received.equals("") && !address.equals(server.getIPaddress())) {
+                if (!received.equals("") && !address.equals(server.getIPaddress()) && !interfacesIP.contains(address)) {
                     if (received.startsWith("BROADCAST:")) {
                         // broadcast (recoit uniquement le username en enlevant BROADCAST: de la reception
                         System.out.println("Broadcast:");
