@@ -89,7 +89,6 @@ public class ClientContactDiscoveryController {
 
             // Update the client's username
             client.setUsername(newUsername);
-            System.out.println("Username changed to : " + newUsername + "\n");
         } catch (IOException e) {
             e.printStackTrace();
         }

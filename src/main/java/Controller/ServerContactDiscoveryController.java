@@ -69,6 +69,8 @@ public class ServerContactDiscoveryController {
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("USERNAME_NOT_UNIQUE")) {
                         handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()-1), address);
+                    } else if (received.startsWith("USERNAME_UPDATED")) {
+                        handleChangeOfUsername(received.substring("USERNAME_UPDATED:".length()-1), address);
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
@@ -79,6 +81,12 @@ public class ServerContactDiscoveryController {
             }
             socket.close();
         }
+        private InetAddress lastResponseSender = null;
+        public void handleChangeOfUsername(String message, InetAddress address) {
+            System.out.println("You have changed your username");
+            System.out.println("Your username is now: " + message);
+        }
+
 
         public void handleNotUnique(String message, InetAddress address) {
             System.out.println("Your new username is already used by someone, you cannot change your username.");
@@ -118,7 +126,6 @@ public class ServerContactDiscoveryController {
 
 
 
-        private InetAddress lastResponseSender = null;
 
         public void handleResponseMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
@@ -168,6 +175,7 @@ public class ServerContactDiscoveryController {
             server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
         }
 
+
         public void handleChangeUsernameMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String oldUsername = parts[1];
@@ -207,6 +215,8 @@ public class ServerContactDiscoveryController {
                         System.out.println(u.getUsername());
                     }
                 });
+
+                sendIP("USERNAME_UPDATED"+newUsername, address, socket);
             } else {
                 // Notify the client that the new username is not unique
                 sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
