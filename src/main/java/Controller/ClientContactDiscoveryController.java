@@ -25,7 +25,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
+    public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
         while (interfaces.hasMoreElements()) {
@@ -48,7 +48,7 @@ public class ClientContactDiscoveryController {
             String username = client.getUsername();
 
             // Vérifier l'unicité du nom d'utilisateur avant d'envoyer le premier broadcast
-            if (isUsernameUnique(username, client.getContactList())) {
+            if (isUsernameUnique(username, client.getContactList(), client)) {
                 for (InetAddress inetAddress : broadcastList) {
                     try {
                         System.out.println("Broadcast address : " + inetAddress);
@@ -66,9 +66,12 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    private static boolean isUsernameUnique(String username, List<User> contactList) {
-        return contactList.stream()
-                .noneMatch(u -> u.getUsername().equals(username));
+    private static boolean isUsernameUnique(String username, List<User> contactList, User client) {
+        if (!username.equals(client.getUsername())) {
+            return contactList.stream()
+                    .noneMatch(u -> u.getUsername().equals(username));
+        }
+        else return false;
     }
 
 

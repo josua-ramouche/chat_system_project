@@ -205,14 +205,20 @@ public class ServerContactDiscoveryController {
         }
 
         public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
-            return server.getContactList().stream()
-                    .filter(u -> u.getState() && !u.getIPaddress().equals(requesterAddress)) // Filtrer uniquement les utilisateurs connectés, excluant le demandeur
-                    .noneMatch(u -> u.getUsername().equals(username));
+            if (!username.equals(server.getUsername())) {
+                return server.getContactList().stream()
+                        .filter(u -> u.getState() && !u.getIPaddress().equals(requesterAddress)) // Filtrer uniquement les utilisateurs connectés, excluant le demandeur
+                        .noneMatch(u -> u.getUsername().equals(username));
+            }
+            else return false;
         }
         public boolean isUsernameUnique(String username) {
-            return server.getContactList().stream()
-                    .filter(u -> u.getState()) // Filtrer uniquement les utilisateurs connectés
-                    .noneMatch(u -> u.getUsername().equals(username));
+            if (!username.equals(server.getUsername())) {
+                return server.getContactList().stream()
+                        .filter(u -> u.getState()) // Filtrer uniquement les utilisateurs connectés
+                        .noneMatch(u -> u.getUsername().equals(username));
+            }
+            else return false;
         }
 
 

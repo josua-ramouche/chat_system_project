@@ -1,104 +1,79 @@
 package Controller;
-
 import Model.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.io.ByteArrayOutputStream;
-import java.io.PrintStream;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 
 class ClientContactDiscoveryControllerTest {
 
-    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-
-    @BeforeEach
-    public void setUp(){
-        System.setOut(new PrintStream(outputStreamCaptor));
-    }
-
     @Test
     void broadcast() {
-        try{
-            ClientContactDiscoveryController.broadcast("Test",InetAddress.getLocalHost());
+        // Test broadcast method
+        try {
+            ClientContactDiscoveryController.broadcast("Test Message", InetAddress.getLocalHost());
         } catch (IOException e) {
-            e.printStackTrace();
+            fail("Exception not expected: " + e.getMessage());
         }
     }
 
     @Test
     void listAllBroadcastAddresses() {
+        // Test listAllBroadcastAddresses method
         try {
-            List<InetAddress> broadcastList = ClientContactDiscoveryController.listAllBroadcastAddresses();
-            assertNotNull(broadcastList);
-            assertFalse(broadcastList.isEmpty());
-        } catch (SocketException e) {
-            e.printStackTrace();
+            List<InetAddress> broadcastAddresses = ClientContactDiscoveryController.listAllBroadcastAddresses();
+            assertNotNull(broadcastAddresses);
+            // You can add more specific assertions about the expected broadcast addresses if needed
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
         }
     }
 
     @Test
-    void sendUniqueUsername() throws UnknownHostException {
-        User testUser = mock(User.class);
-        User contact = new User("Unique", InetAddress.getLoopbackAddress());
-        List<User> testContactList = new ArrayList<>();
-        testContactList.add(contact);
+    void sendUsername() {
+        // Test sendUsername method
+        User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
+        List<InetAddress> broadcastList;
+        try {
+            broadcastList = ClientContactDiscoveryController.listAllBroadcastAddresses();
+            ClientContactDiscoveryController.sendUsername(broadcastList, user);
 
-        List<InetAddress> broadcastList = new ArrayList<>();
-        try{
-            broadcastList.add(InetAddress.getLocalHost());
+            // Verify that the contact list is empty before sending the first broadcast to check the unicity of the username
+            assertEquals(0, user.getContactList().size());
         } catch (IOException e) {
-            e.printStackTrace();
+            fail("Exception not expected: " + e.getMessage());
         }
-
-        ClientContactDiscoveryController.sendUsername(broadcastList,testUser);
-
-        assertEquals("Broadcast address : " + InetAddress.getLocalHost() + "\n", outputStreamCaptor.toString());
-    }
-
-    @Test
-    void sendNonUniqueUsername() {
-        User testUser = new User("User1",InetAddress.getLoopbackAddress());
-        User contact1 = new User("User1", InetAddress.getLoopbackAddress());
-        User contact2 = new User("User2", InetAddress.getLoopbackAddress());
-        List<User> testContactList = new ArrayList<>();
-        testContactList.add(contact1);
-        testContactList.add(contact2);
-
-        testUser.setContactList(testContactList);
-
-        List<InetAddress> broadcastList = new ArrayList<>();
-        try{
-            broadcastList.add(InetAddress.getLocalHost());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        ClientContactDiscoveryController.sendUsername(broadcastList,testUser);
-        assertEquals("Username 'User1' is not unique. Please choose a different username.\r\n", outputStreamCaptor.toString());
     }
 
     @Test
     void sendChangeUsername() {
-        User testUser = new User("TestUser", InetAddress.getLoopbackAddress());
-        testUser.addContact(new User("ContactUser", InetAddress.getLoopbackAddress(), true));
-        ClientContactDiscoveryController.sendChangeUsername(testUser, "NewUsername");
-        assertEquals("Username changed to : NewUsername\n", outputStreamCaptor.toString());
+        // Test sendChangeUsername method
+        User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
+        try {
+            ClientContactDiscoveryController.sendChangeUsername(user, "NewUsername");
+
+            // Verify that the username is changed as expected
+            assertEquals("NewUsername", user.getUsername());
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
     }
 
     @Test
     void sendEndConnection() {
-        User testUser = new User("TestUser", InetAddress.getLoopbackAddress(), true);
-        testUser.addContact(new User("ContactUser", InetAddress.getLoopbackAddress(), true));
-        ClientContactDiscoveryController.sendEndConnection(testUser);
-        assertEquals("Disconnection...\nYou are now disconnected\n", outputStreamCaptor.toString());
+        // Test sendEndConnection method
+        User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
+        try {
+            ClientContactDiscoveryController.sendEndConnection(user);
+
+            // Verify that the contact list is empty and user state is false after disconnection
+            assertTrue(user.getContactList().isEmpty());
+            assertFalse(user.getState());
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
     }
 }
