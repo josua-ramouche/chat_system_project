@@ -83,7 +83,7 @@ class ClientContactDiscoveryControllerTest {
         }
 
         ClientContactDiscoveryController.sendUsername(broadcastList,testUser);
-        assertEquals("Username 'User1' is not unique. Please choose a different username.\n", outputStreamCaptor.toString());
+        assertEquals("Username 'User1' is not unique. Please choose a different username.\r\n", outputStreamCaptor.toString());
     }
 
     @Test
