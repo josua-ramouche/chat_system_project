@@ -43,6 +43,20 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
+    public static List<InetAddress> getInterfacesIP() throws SocketException {
+        Enumeration e = NetworkInterface.getNetworkInterfaces();
+        List<InetAddress> interfacesIP = new ArrayList<>();
+        while (e.hasMoreElements()) {
+            NetworkInterface n = (NetworkInterface) e.nextElement();
+            Enumeration ee = n.getInetAddresses();
+            while (ee.hasMoreElements()) {
+                InetAddress i = (InetAddress) ee.nextElement();
+                interfacesIP.add(i);
+            }
+        }
+        return interfacesIP;
+    }
+
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
         try (DatagramSocket socket = new DatagramSocket()) {
             String username = client.getUsername();

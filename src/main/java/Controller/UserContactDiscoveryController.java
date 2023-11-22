@@ -14,24 +14,11 @@ import java.util.concurrent.TimeUnit;
 import static Controller.ClientContactDiscoveryController.*;
 public class UserContactDiscoveryController {
 
-    public static List<InetAddress> getInterfacesIP() throws SocketException {
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
-        List<InetAddress> interfacesIP = new ArrayList<>();
-        while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
-                interfacesIP.add(i);
-            }
-        }
-        return interfacesIP;
-    }
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
         User user = new User();
-        user.setUsername("Test");
+        user.setUsername("Test2");
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
@@ -51,6 +38,7 @@ public class UserContactDiscoveryController {
 
         //Server actions (wait for message from a Client)
         //Add client users to contact list
+        Server.setDaemon(true);
         Server.start();
 
         //TimeUnit.SECONDS.sleep(3);
@@ -59,7 +47,6 @@ public class UserContactDiscoveryController {
         //Client disconnection
         //TimeUnit.SECONDS.sleep(3);
         //sendEndConnection(user);
-        //Server.interrupt();
     }
 
 

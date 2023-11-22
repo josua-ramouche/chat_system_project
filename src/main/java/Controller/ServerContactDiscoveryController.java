@@ -53,7 +53,6 @@ public class ServerContactDiscoveryController {
                 }
 
                 InetAddress address = packet.getAddress();
-                System.out.println("address received" + address);
                 String received = new String(packet.getData(), 0, packet.getLength());
 
                 // Nouvelle condition pour distinguer entre la diffusion et la réponse
