@@ -68,9 +68,9 @@ public class ServerContactDiscoveryController {
                         handleChangeUsernameMessage(received, address);
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("USERNAME_NOT_UNIQUE")) {
-                        handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()-1), address);
+                        handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()));
                     } else if (received.startsWith("USERNAME_UPDATED")) {
-                        handleChangeOfUsername(received.substring("USERNAME_UPDATED:".length()-1), address);
+                        handleChangeOfUsername(received.substring("USERNAME_UPDATED:".length()));
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
@@ -82,15 +82,22 @@ public class ServerContactDiscoveryController {
             socket.close();
         }
         private InetAddress lastResponseSender = null;
-        public void handleChangeOfUsername(String message, InetAddress address) {
+        public void handleChangeOfUsername(String message) {
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
         }
 
 
-        public void handleNotUnique(String message, InetAddress address) {
-            System.out.println("Your new username is already used by someone, you cannot change your username.");
-            System.out.println("Your username is: " + message);
+        public void handleNotUnique(String message) {
+            String[] parts = message.split(":");
+            String username = parts[0];
+            if (!message.equals("")) {
+                System.out.println("Your new username is already used by someone, you cannot change your username.");
+                System.out.println("Your username is: " + username);
+            }
+            else {
+                System.out.println("Your new username is already used by someone, try to enter a new username.");
+            }
         }
 
         public void handleBroadcastMessage(String message, InetAddress address) {

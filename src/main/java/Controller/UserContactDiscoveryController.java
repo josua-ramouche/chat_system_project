@@ -13,7 +13,7 @@ public class UserContactDiscoveryController {
     public static void main(String[] args) throws IOException, InterruptedException {
 
         User user = new User();
-        user.setUsername("Test1");
+        user.setUsername("Test2");
         user.setIPaddress(InetAddress.getLocalHost());
         user.setState(true);
 
@@ -32,12 +32,13 @@ public class UserContactDiscoveryController {
         //Add client users to contact list
         Server.start();
 
-        //TimeUnit.SECONDS.sleep(3);
-        //sendChangeUsername(user, "Test");
+        TimeUnit.SECONDS.sleep(3);
+        sendChangeUsername(user, "Test4");
 
         //Client disconnection
         //TimeUnit.SECONDS.sleep(3);
         //sendEndConnection(user);
+        Server.interrupt();
     }
 }
 
