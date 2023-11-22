@@ -68,7 +68,7 @@ public class ServerContactDiscoveryController {
                         handleChangeUsernameMessage(received, address);
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("USERNAME_NOT_UNIQUE")) {
-                        handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()), address);
+                        handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()-1), address);
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
