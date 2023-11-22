@@ -48,7 +48,7 @@ public class ClientContactDiscoveryController {
             String username = client.getUsername();
 
             // Vérifier l'unicité du nom d'utilisateur avant d'envoyer le premier broadcast
-            if (isUsernameUnique(username, client.getContactList(), client)) {
+            if (isUsernameUnique(username, client.getContactList())) {
                 for (InetAddress inetAddress : broadcastList) {
                     try {
                         System.out.println("Broadcast address : " + inetAddress);
@@ -66,12 +66,9 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    private static boolean isUsernameUnique(String username, List<User> contactList, User client) {
-        if (!username.equals(client.getUsername())) {
+    private static boolean isUsernameUnique(String username, List<User> contactList) {
             return contactList.stream()
                     .noneMatch(u -> u.getUsername().equals(username));
-        }
-        else return false;
     }
 
 

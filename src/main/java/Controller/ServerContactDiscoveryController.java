@@ -67,6 +67,8 @@ public class ServerContactDiscoveryController {
                         //recoit message changement username
                         handleChangeUsernameMessage(received, address);
                         System.out.println("-----------------------------");
+                    } else if (received.startsWith("USERNAME_NOT_UNIQUE")) {
+                        System.out.println("Your new username is already used by someone, please change it.");
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
@@ -160,7 +162,6 @@ public class ServerContactDiscoveryController {
             System.out.println("Contact List (connected):");
             server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
         }
-
 
         public void handleChangeUsernameMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
