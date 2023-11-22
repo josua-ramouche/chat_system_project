@@ -68,7 +68,7 @@ public class ServerContactDiscoveryController {
                         handleChangeUsernameMessage(received, address);
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("USERNAME_NOT_UNIQUE")) {
-                        System.out.println("Your new username is already used by someone, please change it.");
+                        handleNotUnique(received.substring("USERNAME_NOT_UNIQUE:".length()), address);
                     } else {
                         // recoit reponse au broadcast
                         System.out.println("Broadcast response:");
@@ -78,6 +78,11 @@ public class ServerContactDiscoveryController {
                 }
             }
             socket.close();
+        }
+
+        public void handleNotUnique(String message, InetAddress address) {
+            System.out.println("Your new username is already used by someone, you cannot change your username.");
+            System.out.println("Your username is: " + message);
         }
 
         public void handleBroadcastMessage(String message, InetAddress address) {
@@ -106,7 +111,7 @@ public class ServerContactDiscoveryController {
                 sendIP(server.getUsername(), address, socket);
             } else {
                 // Notify the client that the username is not unique
-                sendIP("USERNAME_NOT_UNIQUE", address, socket);
+                sendIP("USERNAME_NOT_UNIQUE:", address, socket);
                 System.out.println("Username '" + username + "' is not unique. Notifying the client.");
             }
         }
@@ -204,7 +209,7 @@ public class ServerContactDiscoveryController {
                 });
             } else {
                 // Notify the client that the new username is not unique
-                sendIP("USERNAME_NOT_UNIQUE", address, socket);
+                sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
                 System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
             }
         }

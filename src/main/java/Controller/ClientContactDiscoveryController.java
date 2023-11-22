@@ -80,7 +80,7 @@ public class ClientContactDiscoveryController {
             client.getContactList().forEach(u -> {
                 try {
                     if (!u.getIPaddress().equals(client.getIPaddress())) {
-                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPaddress());
+                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPaddress() );
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
