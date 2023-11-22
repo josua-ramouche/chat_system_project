@@ -7,17 +7,15 @@ import java.util.List;
 public class User {
 
     private String username;
-
     private InetAddress ipaddress;
-
     private List<User> contactList;
-
     public Boolean state;
 
     public User(){
         this.contactList = new ArrayList<>();
     }
 
+    //Constructors
     public User(String username, InetAddress ipaddress){
         this.contactList = new ArrayList<>();
         this.username = username;
@@ -30,37 +28,39 @@ public class User {
         this.ipaddress = ipaddress;
         this.state = state;
     }
+    //Getters and Setters for username, IPaddress, contact list and stutus
     public String getUsername(){
         return this.username;
     }
-
     public void setUsername(String username){
         this.username = username;
     }
-
     public InetAddress getIPaddress(){
         return this.ipaddress;
     }
-
     public void setIPaddress(InetAddress ipaddress){
         this.ipaddress = ipaddress;
     }
-
-
     public List<User> getContactList(){
         return this.contactList;
     }
-
     public void setContactList(List<User> contList){ this.contactList = contList;}
+    public Boolean getState(){
+        return this.state;
+    }
+    public void setState(Boolean state){
+        this.state = state;
+    }
 
+    //add a user to the contact list
     public void addContact(User u){
         contactList.add(u);
     }
-
+    //remove a user from the contact list
     public void deleteContact(User u){
         contactList.remove(u);
     }
-
+    //checks if a user is in the contact list
     public Boolean containsContact(List<User> contactList, User u) {
         boolean contained = false;
 
@@ -72,14 +72,4 @@ public class User {
         }
         return contained;
     }
-
-    public Boolean getState(){
-        return this.state;
-    }
-
-    public void setState(Boolean state){
-        this.state = state;
-    }
-
-
 }
