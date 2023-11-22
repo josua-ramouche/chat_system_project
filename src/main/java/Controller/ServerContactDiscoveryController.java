@@ -23,6 +23,10 @@ public class ServerContactDiscoveryController {
             this.server = server;
         }
 
+        public User getServer() {
+            return this.server;
+        }
+
         public static void sendIP(String message, InetAddress ip_address, DatagramSocket socket) {
             try {
                 byte[] buf = message.getBytes();

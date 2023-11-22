@@ -1,26 +1,20 @@
 package Controller;
 
 import Model.User;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Mockito.mock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerContactDiscoveryControllerTest {
 
-    private final ByteArrayOutputStream outputStreamCaptor = new ByteArrayOutputStream();
-
-    @BeforeEach
-    public void setUp(){
-        System.setOut(new PrintStream(outputStreamCaptor));
-    }
     @Test
     void testEchoServer_HandleBroadcastMessage() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
@@ -46,10 +40,23 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage3.substring("BROADCAST:".length()), senderAddress3);
         echoServer.handleBroadcastMessage(broadcastMessage4.substring("BROADCAST:".length()), senderAddress4);
 
-        assertEquals("New contact added\nContact List (connected):\nTestUser1\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\nTestUser3\n" +
-                "Username 'TestUser1' is not unique. Notifying the client.\n", outputStreamCaptor.toString());
+        // Actual list obtained from tested method
+        List<User> contactList = echoServer.getServer().getContactList();
+
+        // Expected list of user
+        List<User> expectedList = new ArrayList<>();
+
+        expectedList.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        expectedList.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+        expectedList.add(new User("TestUser3",InetAddress.getByName("192.168.0.3"),true));
+        expectedList.add(new User("TestUser4",InetAddress.getByName("192.168.0.4"),true));
+
+        // Comparison of expected list and actual list
+        for(int i=0;i<expectedList.size()-1;i++) {
+            assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
+        }
     }
 
     @Test
@@ -69,14 +76,26 @@ class ServerContactDiscoveryControllerTest {
         String responseMessage3 = "TestUser3";
         InetAddress senderAddress3 = InetAddress.getByName("192.168.0.3");
 
-
         echoServer.handleBroadcastMessage(responseMessage1, senderAddress1);
         echoServer.handleBroadcastMessage(responseMessage2, senderAddress2);
         echoServer.handleBroadcastMessage(responseMessage3, senderAddress3);
 
-        assertEquals("New contact added\nContact List (connected):\nTestUser1\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\nTestUser3\n", outputStreamCaptor.toString());
+        // Actual list obtained from response messages from server
+        List<User> contactList = echoServer.getServer().getContactList();
+
+        // Expected list after response messages sent by server
+        List<User> expectedList = new ArrayList<>();
+
+        expectedList.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        expectedList.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+        expectedList.add(new User("TestUser3",InetAddress.getByName("192.168.0.3"),true));
+
+        // Comparison of expected list and actual list
+        for(int i=0;i<expectedList.size()-1;i++) {
+            assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
+        }
 
     }
 
@@ -97,12 +116,39 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage1.substring("BROADCAST:".length()), senderAddress1);
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
+        // Actual list obtained after first broadcast messages
+        List<User> contactList = echoServer.getServer().getContactList();
+
+        // Expected list after first broadcast messages
+        List<User> expectedList1 = new ArrayList<>();
+
+        expectedList1.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+
+        // Comparison of expected list and actual list after first broadcast messages
+        for(int i=0;i<expectedList1.size()-1;i++) {
+            assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList1.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
+        }
+
         // Simulate an end message
         echoServer.handleEndMessage(senderAddress1);
 
-        assertEquals("New contact added\nContact List (connected):\nTestUser1\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\n" +
-                "User TestUser1 disconnected\nContact List (connected):\nTestUser2\n", outputStreamCaptor.toString());
+        // Actual list obtained after disconnection of a user
+        contactList = echoServer.getServer().getContactList();
+
+        // Expected list after disconnection of a user (State of connection = false)
+        List<User> expectedList2 = new ArrayList<>();
+        expectedList2.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),false));
+        expectedList2.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+
+        // Comparison of expected list and actual list after a user disconnects
+        for(int i=0;i<expectedList1.size()-1;i++) {
+            assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList2.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
+        }
 
     }
 
@@ -123,16 +169,42 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage1.substring("BROADCAST:".length()), senderAddress1);
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
+        // Actual list obtained after first broadcast messages
+        List<User> contactList = echoServer.getServer().getContactList();
+
+        // Expected list after first broadcast messages
+        List<User> expectedList1 = new ArrayList<>();
+
+        expectedList1.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+
+        // Comparison of expected list and actual list after first broadcast messages
+        for(int i=0;i<expectedList1.size()-1;i++) {
+            assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList1.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
+        }
+
+
         // Simulate a change username message
         String changeUsernameMessage = "CHANGE_USERNAME:TestUser1:NewUsername";
 
         echoServer.handleChangeUsernameMessage(changeUsernameMessage, senderAddress1);
         echoServer.handleChangeUsernameMessage(changeUsernameMessage, senderAddress2);
 
-        assertEquals("New contact added\nContact List (connected):\nTestUser1\n" +
-                "New contact added\nContact List (connected):\nTestUser1\nTestUser2\n" +
-                "Username changed: TestUser1 to NewUsername\nContact List (connected):\nNewUsername\nTestUser2\n" +
-                "Username 'NewUsername' is not unique. Notifying the client.\n", outputStreamCaptor.toString());
+        // Expected list after TestUser1 changes name to NewUsername
+        List<User> expectedList2 = new ArrayList<>();
+
+        expectedList2.add(new User("NewUsername",InetAddress.getByName("192.168.0.1"),true));
+        expectedList2.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+
+        // Comparison of expected list with actual list after change of name
+        for(int i=0;i<expectedList1.size()-1;i++) {
+            assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
+            assertEquals(expectedList2.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
+        }
+
     }
 
 
