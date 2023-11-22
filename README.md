@@ -1,26 +1,10 @@
-# ~~Burn~~ Replace with your own after reading
+# Chat System project 
 
-This private repository is created for you so that your teachers have access to it.
+The objective of this project is to create a chatsystem application for users connected on the same network. Each user has a username, associated to an IP address. A user should be able to send messages to connected contacts, change his username and notify it to all connected contacts, and disconnect and notify it to all connected contacts.
 
-## Identify yourself
 
-Before anything, **complete the `metadata.yml` with your own information.** 
+## First milestone : Contact discovery 
 
-This is the file that we will use to identify the teacher responsible for the repository and assign the grades to the participating students.
+Our first step on this project is to do a contact discovery : When a user connects, its username is sent to connected users to verify its unicity. If the first sent username is not unique, the user must change it. When the username is valid, every connected user adds our freshly connected user to their contact list. So does the new user with every other connected user. 
 
-## Take ownership
-
-As long as you make sure to keep the `metadata.yml` file at the root of this repository, you are free to do anything. Our suggestion would be to have it organized into something like the following:
-
-    .gitignore
-    metadata.yml
-    pom.xml
-    README.md
-    src/
-      main/
-      test/
-    doc/
-      uml/
-      report.pdf
-
-In particular, you will soon have to replace this README with something that describes your own project.
+To test this functionnality : 
