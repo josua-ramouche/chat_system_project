@@ -92,8 +92,8 @@ public class ClientContactDiscoveryController {
             // Notify other users about the new username
             client.getContactList().forEach(u -> {
                 try {
-                    if (!u.getIPaddress().equals(client.getIPaddress())) {
-                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPaddress() );
+                    if (!u.getIPAddress().equals(client.getIPAddress())) {
+                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
                     }
                 } catch (IOException e) {
                     throw new RuntimeException(e);
@@ -110,7 +110,7 @@ public class ClientContactDiscoveryController {
     public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
         client.getContactList().forEach(u -> { try {
-            broadcast("end",u.getIPaddress());
+            broadcast("end",u.getIPAddress());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

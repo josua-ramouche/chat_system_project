@@ -3,19 +3,17 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class User {
-
     private String username;
     private InetAddress ipaddress;
     private List<User> contactList;
     public Boolean state;
 
+    //constructors
     public User(){
         this.contactList = new ArrayList<>();
     }
 
-    //Constructors
     public User(String username, InetAddress ipaddress){
         this.contactList = new ArrayList<>();
         this.username = username;
@@ -28,17 +26,17 @@ public class User {
         this.ipaddress = ipaddress;
         this.state = state;
     }
-    //Getters and Setters for username, IPaddress, contact list and stutus
+    //Getters and Setters for username, IPAddress, contact list and status
     public String getUsername(){
         return this.username;
     }
     public void setUsername(String username){
         this.username = username;
     }
-    public InetAddress getIPaddress(){
+    public InetAddress getIPAddress(){
         return this.ipaddress;
     }
-    public void setIPaddress(InetAddress ipaddress){
+    public void setIPAddress(InetAddress ipaddress){
         this.ipaddress = ipaddress;
     }
     public List<User> getContactList(){

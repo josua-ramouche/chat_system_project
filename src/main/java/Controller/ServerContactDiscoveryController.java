@@ -55,7 +55,7 @@ public class ServerContactDiscoveryController {
                 String received = new String(packet.getData(), 0, packet.getLength());
 
                 //Allows to handle all the different received messages
-                if (!received.equals("") && !address.equals(server.getIPaddress()) && !interfacesIP.contains(address)) {
+                if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
                     if (received.startsWith("BROADCAST:")) {
                         // if a broadcast message is received
                         System.out.println("Broadcast:");
@@ -119,7 +119,7 @@ public class ServerContactDiscoveryController {
             if (isUsernameUnique(username)) {
                 User contact = new User();
                 contact.setUsername(username);
-                contact.setIPaddress(address);
+                contact.setIPAddress(address);
                 contact.setState(true);
 
                 //if the sender is not already in the contact list, he is added to the contact list
@@ -156,7 +156,7 @@ public class ServerContactDiscoveryController {
 
             User contact = new User();
             contact.setUsername(username);
-            contact.setIPaddress(address);
+            contact.setIPAddress(address);
             contact.setState(true);
 
             //if the receiver is not already in the contact list, he is added to the contact list
@@ -177,7 +177,7 @@ public class ServerContactDiscoveryController {
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
             for (User u : server.getContactList()) {
-                if (u.getIPaddress().equals(address)) {
+                if (u.getIPAddress().equals(address)) {
                     //set the sender state to disconnected (false)
                     u.setState(false);
                     disconnectedUser = u.getUsername();
@@ -210,8 +210,8 @@ public class ServerContactDiscoveryController {
                 // Notify other users about the username change
                 server.getContactList().forEach(u -> {
                     try {
-                        if (!u.getIPaddress().equals(address)) {
-                            broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPaddress());
+                        if (!u.getIPAddress().equals(address)) {
+                            broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPAddress());
                         }
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -220,7 +220,7 @@ public class ServerContactDiscoveryController {
 
                 // Update the client's username
                 server.getContactList().forEach(u -> {
-                    if (u.getIPaddress().equals(address)) {
+                    if (u.getIPAddress().equals(address)) {
                         u.setUsername(newUsername);
                     }
                 });
@@ -244,7 +244,7 @@ public class ServerContactDiscoveryController {
         public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
             if (!username.equals(server.getUsername())) {
                 return server.getContactList().stream()
-                        .filter(u -> u.getState() && !u.getIPaddress().equals(requesterAddress))
+                        .filter(u -> u.getState() && !u.getIPAddress().equals(requesterAddress))
                         .noneMatch(u -> u.getUsername().equals(username));
             }
             else return false;

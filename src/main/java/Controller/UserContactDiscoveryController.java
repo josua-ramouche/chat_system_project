@@ -11,7 +11,7 @@ public class UserContactDiscoveryController {
         //User data
         User user = new User();
         user.setUsername("Test1");
-        user.setIPaddress(InetAddress.getLocalHost());
+        user.setIPAddress(InetAddress.getLocalHost());
         user.setState(true);
 
         List<InetAddress> interfacesIP;
