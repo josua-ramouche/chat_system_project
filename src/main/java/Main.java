@@ -32,13 +32,13 @@ public class Main {
         Server.start();
 
         // User asks for a change of username Test1 -> Test2
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(5);
 
         //------------STRING TO MODIFY TO CHANGE USERNAME AFTER THREE SECONDS---------------
         sendChangeUsername(user, "Test2");
 
         // User disconnection
-        TimeUnit.SECONDS.sleep(3);
+        TimeUnit.SECONDS.sleep(5);
         sendEndConnection(user);
     }
 }
