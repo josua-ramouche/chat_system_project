@@ -10,6 +10,7 @@ public class UserContactDiscoveryController {
     public static void main(String[] args) throws IOException, InterruptedException {
         // User data
         User user = new User();
+        //------------STRING TO MODIFY TO CHANGE INITIAL USERNAME---------------
         user.setUsername("Test1");
         user.setIPAddress(InetAddress.getLocalHost());
         user.setState(true);
@@ -32,6 +33,8 @@ public class UserContactDiscoveryController {
 
         // User asks for a change of username Test1 -> Test2
         TimeUnit.SECONDS.sleep(3);
+
+        //------------STRING TO MODIFY TO CHANGE USERNAME AFTER THREE SECONDS---------------
         sendChangeUsername(user, "Test2");
 
         // User disconnection
