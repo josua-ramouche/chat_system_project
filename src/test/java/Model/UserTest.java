@@ -24,9 +24,9 @@ class UserTest {
     void testSetAndGetIPaddress() throws UnknownHostException {
         User user = new User();
         // Test setter
-        user.setIPaddress(InetAddress.getByName("192.168.0.1"));
+        user.setIPAddress(InetAddress.getByName("192.168.0.1"));
         // Test getter
-        assertEquals(InetAddress.getByName("192.168.0.1"), user.getIPaddress());
+        assertEquals(InetAddress.getByName("192.168.0.1"), user.getIPAddress());
     }
 
     @Test

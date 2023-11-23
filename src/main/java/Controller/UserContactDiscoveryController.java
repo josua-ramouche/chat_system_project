@@ -1,52 +1,30 @@
 package Controller;
-
 import Model.User;
-
 import java.io.IOException;
-import java.net.NetworkInterface;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
 import java.net.InetAddress;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import static Controller.ClientContactDiscoveryController.*;
+
 public class UserContactDiscoveryController {
-
-    public static List<InetAddress> getInterfacesIP() throws SocketException {
-        Enumeration e = NetworkInterface.getNetworkInterfaces();
-        List<InetAddress> interfacesIP = new ArrayList<>();
-        while (e.hasMoreElements()) {
-            NetworkInterface n = (NetworkInterface) e.nextElement();
-            Enumeration ee = n.getInetAddresses();
-            while (ee.hasMoreElements()) {
-                InetAddress i = (InetAddress) ee.nextElement();
-                interfacesIP.add(i);
-            }
-        }
-        return interfacesIP;
-    }
-
     public static void main(String[] args) throws IOException, InterruptedException {
-
+        //User data
         User user = new User();
-        user.setUsername("Josua");
-        user.setIPaddress(InetAddress.getLocalHost());
+        user.setUsername("Test1");
+        user.setIPAddress(InetAddress.getLocalHost());
         user.setState(true);
 
-
-        List<InetAddress> interfacesIP = new ArrayList<>();
+        List<InetAddress> interfacesIP;
         interfacesIP = getInterfacesIP();
 
         Thread Server = new ServerContactDiscoveryController.EchoServer(user, interfacesIP);
 
-
-        //Client actions (send broadcast for contact discovery, change of username, end connection)
-        //Add server users to contact list
+        //find the broadcasts addresses
         System.out.println("Broadcast address(es):");
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
+        //Client actions (send broadcast for contact discovery, change of username, end connection)
+        //Add server users to contact list
         sendUsername(broadcastList,user);
 
         //Server actions (wait for message from a Client)
@@ -54,15 +32,14 @@ public class UserContactDiscoveryController {
         Server.setDaemon(true);
         Server.start();
 
+        //the user ask for a change of username Test1 -> Test2
         TimeUnit.SECONDS.sleep(3);
-        sendChangeUsername(user, "Jawks");
+        sendChangeUsername(user, "Test2");
 
         //Client disconnection
         TimeUnit.SECONDS.sleep(3);
         sendEndConnection(user);
     }
-
-
 }
 
 

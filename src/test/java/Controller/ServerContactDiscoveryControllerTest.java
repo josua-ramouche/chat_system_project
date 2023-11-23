@@ -54,7 +54,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list and actual list
         for(int i=0;i<expectedList.size()-1;i++) {
             assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
     }
@@ -93,7 +93,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list and actual list
         for(int i=0;i<expectedList.size()-1;i++) {
             assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
 
@@ -128,7 +128,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list and actual list after first broadcast messages
         for(int i=0;i<expectedList1.size()-1;i++) {
             assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList1.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList1.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
         }
 
@@ -146,7 +146,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list and actual list after a user disconnects
         for(int i=0;i<expectedList1.size()-1;i++) {
             assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList2.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
 
@@ -181,7 +181,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list and actual list after first broadcast messages
         for(int i=0;i<expectedList1.size()-1;i++) {
             assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList1.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList1.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
         }
 
@@ -201,7 +201,7 @@ class ServerContactDiscoveryControllerTest {
         // Comparison of expected list with actual list after change of name
         for(int i=0;i<expectedList1.size()-1;i++) {
             assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
-            assertEquals(expectedList2.get(i).getIPaddress(), contactList.get(i).getIPaddress());
+            assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
 
