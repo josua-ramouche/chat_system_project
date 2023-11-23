@@ -80,10 +80,10 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(responseMessage2, senderAddress2);
         echoServer.handleBroadcastMessage(responseMessage3, senderAddress3);
 
-        // Actual list obtained from response messages from server
+        // Actual list obtained from response messages from server (connected user)
         List<User> contactList = echoServer.getServer().getContactList();
 
-        // Expected list after response messages sent by server
+        // Expected list after response messages sent by server (connected user)
         List<User> expectedList = new ArrayList<>();
 
         expectedList.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
@@ -184,7 +184,6 @@ class ServerContactDiscoveryControllerTest {
             assertEquals(expectedList1.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
         }
-
 
         // Simulate a change username message
         String changeUsernameMessage = "CHANGE_USERNAME:TestUser1:NewUsername";

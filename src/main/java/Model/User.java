@@ -9,7 +9,7 @@ public class User {
     private List<User> contactList;
     public Boolean state;
 
-    //constructors
+    // Constructors
     public User(){
         this.contactList = new ArrayList<>();
     }
@@ -26,7 +26,7 @@ public class User {
         this.ipaddress = ipaddress;
         this.state = state;
     }
-    //Getters and Setters for username, IPAddress, contact list and status
+    // Getters and Setters for username, IPAddress, contact list and status
     public String getUsername(){
         return this.username;
     }
@@ -50,15 +50,15 @@ public class User {
         this.state = state;
     }
 
-    //add a user to the contact list
+    // Add a user to the contact list
     public void addContact(User u){
         contactList.add(u);
     }
-    //remove a user from the contact list
+    // Remove a user from the contact list
     public void deleteContact(User u){
         contactList.remove(u);
     }
-    //checks if a user is in the contact list
+    // Checks if a user is in the contact list
     public Boolean containsContact(List<User> contactList, User u) {
         boolean contained = false;
 

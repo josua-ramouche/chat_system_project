@@ -11,14 +11,14 @@ public class ServerContactDiscoveryController {
         private final DatagramSocket socket;
         private List<InetAddress> interfacesIP;
 
-        //constructor
+        // Constructor
         public EchoServer(User server, List<InetAddress> interfacesIP) throws SocketException {
             this.socket = new DatagramSocket(1556);
             this.server = server;
             this.interfacesIP = interfacesIP;
         }
 
-        //for testing usage
+        // For testing usage
         public EchoServer(User server, DatagramSocket sock) {
             this.socket = sock;
             this.server = server;
@@ -28,7 +28,7 @@ public class ServerContactDiscoveryController {
             return this.server;
         }
 
-        //send a message to a specific IP address
+        // Send a message to a specific IP address
         public static void sendIP(String message, InetAddress ip_address, DatagramSocket socket) {
             try {
                 byte[] buf = message.getBytes();
@@ -39,10 +39,10 @@ public class ServerContactDiscoveryController {
             }
         }
 
-        //Thread run
+        // Thread run
         public void run() {
             System.out.println("-----------------------------");
-            //stops if the user is disconnected (if getState() is false)
+            // Stops if the user is disconnected (if getState() is false)
             while (server.getState()) {
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
@@ -54,7 +54,7 @@ public class ServerContactDiscoveryController {
                 InetAddress address = packet.getAddress();
                 String received = new String(packet.getData(), 0, packet.getLength());
 
-                //Allows to handle all the different received messages
+                // Allows to handle all the different received messages
                 if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
                     if (received.startsWith("BROADCAST:")) {
                         // if a broadcast message is received
@@ -67,7 +67,7 @@ public class ServerContactDiscoveryController {
                         handleEndMessage(address);
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("CHANGE_USERNAME:")) {
-                        // if a user ask for a change of username
+                        // if a user asks for a change of username
                         System.out.println("Change of username request:");
                         handleChangeUsernameMessage(received, address);
                         System.out.println("-----------------------------");
@@ -89,40 +89,40 @@ public class ServerContactDiscoveryController {
         }
         private InetAddress lastResponseSender = null;
 
-        // change of username accepted
+        // Change of username accepted
         public void handleChangeOfUsername(String message) {
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
         }
 
-        // change of username declined
+        // Change of username declined
         public void handleNotUnique(String message) {
             String[] parts = message.split(":");
             String username = parts[0];
             if (!message.equals("")) {
-                //the user do not change his username and will use the old one
+                // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);
             }
             else {
-                //the user can not connect to the application because his first username is not unique, he needs to change it first
+                // the user cannot connect to the application because his first username is not unique, he needs to change it first
                 System.out.println("Your new username is already used by someone, try to enter a new username.");
             }
         }
 
-        //reception of a broadcast message
+        // Reception of a broadcast message
         public void handleBroadcastMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String username = parts[0];
 
-            //checks if the user who sends the broadcast message has a unique username
+            // checks if the user who sends the broadcast message has a unique username
             if (isUsernameUnique(username)) {
                 User contact = new User();
                 contact.setUsername(username);
                 contact.setIPAddress(address);
                 contact.setState(true);
 
-                //if the sender is not already in the contact list, he is added to the contact list
+                // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(server.getContactList(), contact)) {
                     server.addContact(contact);
                     System.out.println("New contact added");
@@ -143,7 +143,7 @@ public class ServerContactDiscoveryController {
             }
         }
 
-        //reception of the response of the broadcast message
+        // Reception of the response to the broadcast message
         public void handleResponseMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String username = parts[0];
@@ -159,7 +159,7 @@ public class ServerContactDiscoveryController {
             contact.setIPAddress(address);
             contact.setState(true);
 
-            //if the receiver is not already in the contact list, he is added to the contact list
+            // if the receiver is not already in the contact list, he is added to the contact list
             if (!server.containsContact(server.getContactList(), contact)) {
                 server.addContact(contact);
                 System.out.println("New contact added");
@@ -173,12 +173,12 @@ public class ServerContactDiscoveryController {
             });
         }
 
-        //reception of end message
+        // Reception of an end message
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
             for (User u : server.getContactList()) {
                 if (u.getIPAddress().equals(address)) {
-                    //set the sender state to disconnected (false)
+                    // set the sender state to disconnected (false)
                     u.setState(false);
                     disconnectedUser = u.getUsername();
                     break;
@@ -191,7 +191,7 @@ public class ServerContactDiscoveryController {
             server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
         }
 
-        //ask for permission to change the sender username
+        // Ask for permission to change the sender's username
         public void handleChangeUsernameMessage(String message, InetAddress address) {
             String[] parts = message.split(":");
             String oldUsername = parts[1];
@@ -231,7 +231,7 @@ public class ServerContactDiscoveryController {
                         System.out.println(u.getUsername());
                     }
                 });
-                //send a message to the sender to informs him that his username can be changed
+                // Send a message to the sender to inform him that his username can be changed
                 sendIP("USERNAME_UPDATED"+newUsername, address, socket);
             } else {
                 // Notify the client that the new username is not unique
@@ -240,7 +240,7 @@ public class ServerContactDiscoveryController {
             }
         }
 
-        //check in the connected users in the contact list has a unique username (except himself)
+        // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
             if (!username.equals(server.getUsername())) {
                 return server.getContactList().stream()
@@ -250,7 +250,7 @@ public class ServerContactDiscoveryController {
             else return false;
         }
 
-        //check in the connected users in the contact list has a unique username
+        // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username) {
             if (!username.equals(server.getUsername())) {
                 return server.getContactList().stream()

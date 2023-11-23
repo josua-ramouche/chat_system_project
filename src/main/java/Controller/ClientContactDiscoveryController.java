@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientContactDiscoveryController {
-    //send a broadcast message on the current network of the interface on socket 1556
+    // Send a broadcast message on the current network of the interface on socket 1556
     public static void broadcast(String broadcastMessage, InetAddress address) throws IOException{
-        //create a new datagram that is closed after the packet is sent
+        // Create a new datagram that is closed after the packet is sent
         try (DatagramSocket socket = new DatagramSocket()) {
             socket.setBroadcast(true);
             byte[] buffer = broadcastMessage.getBytes();
@@ -23,7 +23,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    //create a list of all the broadcast addresses available on a computer
+    // Create a list of all the broadcast addresses available on a computer
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
         Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
@@ -42,7 +42,7 @@ public class ClientContactDiscoveryController {
         return broadcastList;
     }
 
-    //Allow a user to use the application with multiple interfaces and IP addresses
+    // Allow a user to use the application with multiple interfaces and IP addresses
     public static List<InetAddress> getInterfacesIP() throws SocketException {
         Enumeration<NetworkInterface> e = NetworkInterface.getNetworkInterfaces();
         List<InetAddress> interfacesIP = new ArrayList<>();
@@ -57,7 +57,7 @@ public class ClientContactDiscoveryController {
         return interfacesIP;
     }
 
-    //send the user's username with broadcast to others users in the network, a check is made to verify that the username is unique
+    // Send the user's username with broadcast to other users in the network, a check is made to verify that the username is unique
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
         try (DatagramSocket ignored = new DatagramSocket()) {
             String username = client.getUsername();
@@ -79,14 +79,14 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    //check if the username is already present in the contact list of the user (others checks are made in the ServerContactDiscoveryController to check if the username is
-    //present in others users contact lists
+    // Check if a username is already present in the contact list of the user (other checks are made in the ServerContactDiscoveryController to check if the username is
+    // present in other users' contact lists)
     private static boolean isUsernameUnique(String username, List<User> contactList) {
             return contactList.stream()
                     .noneMatch(u -> u.getUsername().equals(username));
     }
 
-    //send a broadcast message to ask for a change of username (check if the username is unique on the server side to accept the demand or not)
+    // Send a broadcast message to ask for a change of username (checks if the username is unique on the server side to accept the demand or not)
     public static void sendChangeUsername(User client, String newUsername) {
         try (DatagramSocket ignored = new DatagramSocket()) {
             // Notify other users about the new username
@@ -106,7 +106,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    //send a message in broadcast so others users can change his status to disconnected (false)
+    // Send a message in broadcast so other users can change his status to disconnected (false)
     public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
         client.getContactList().forEach(u -> { try {

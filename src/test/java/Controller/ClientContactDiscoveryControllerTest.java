@@ -26,7 +26,6 @@ class ClientContactDiscoveryControllerTest {
         try {
             List<InetAddress> broadcastAddresses = ClientContactDiscoveryController.listAllBroadcastAddresses();
             assertNotNull(broadcastAddresses);
-            // You can add more specific assertions about the expected broadcast addresses if needed
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());
         }

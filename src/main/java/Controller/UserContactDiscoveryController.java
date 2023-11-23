@@ -8,7 +8,7 @@ import static Controller.ClientContactDiscoveryController.*;
 
 public class UserContactDiscoveryController {
     public static void main(String[] args) throws IOException, InterruptedException {
-        //User data
+        // User data
         User user = new User();
         user.setUsername("Test1");
         user.setIPAddress(InetAddress.getLocalHost());
@@ -19,24 +19,22 @@ public class UserContactDiscoveryController {
 
         Thread Server = new ServerContactDiscoveryController.EchoServer(user, interfacesIP);
 
-        //find the broadcasts addresses
+        // Find the broadcast addresses
         System.out.println("Broadcast address(es):");
         List<InetAddress> broadcastList = listAllBroadcastAddresses();
 
-        //Client actions (send broadcast for contact discovery, change of username, end connection)
-        //Add server users to contact list
+        // Client (initial sender) actions (send broadcast for contact discovery, change of username, end connection)
         sendUsername(broadcastList,user);
 
-        //Server actions (wait for message from a Client)
-        //Add client users to contact list
+        // Server (connected user) actions (wait for message from a Client)
         Server.setDaemon(true);
         Server.start();
 
-        //the user ask for a change of username Test1 -> Test2
+        // User asks for a change of username Test1 -> Test2
         TimeUnit.SECONDS.sleep(3);
         sendChangeUsername(user, "Test2");
 
-        //Client disconnection
+        // User disconnection
         TimeUnit.SECONDS.sleep(3);
         sendEndConnection(user);
     }
