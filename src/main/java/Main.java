@@ -1,4 +1,4 @@
-package Controller;
+import Controller.ServerContactDiscoveryController;
 import Model.User;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import static Controller.ClientContactDiscoveryController.*;
 
-public class UserContactDiscoveryController {
+public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         // User data
         User user = new User();
