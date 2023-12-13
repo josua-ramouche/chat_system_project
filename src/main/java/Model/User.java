@@ -6,22 +6,22 @@ import java.util.List;
 public class User {
     private String username;
     private InetAddress ipaddress;
-    private List<User> contactList;
     public Boolean state;
 
     // Constructors
     public User(){
-        this.contactList = new ArrayList<>();
+    }
+
+    public User(String username){
+        this.username = username;
     }
 
     public User(String username, InetAddress ipaddress){
-        this.contactList = new ArrayList<>();
         this.username = username;
         this.ipaddress = ipaddress;
     }
 
     public User(String username, InetAddress ipaddress, Boolean state){
-        this.contactList = new ArrayList<>();
         this.username = username;
         this.ipaddress = ipaddress;
         this.state = state;
@@ -39,10 +39,7 @@ public class User {
     public void setIPAddress(InetAddress ipaddress){
         this.ipaddress = ipaddress;
     }
-    public List<User> getContactList(){
-        return this.contactList;
-    }
-    public void setContactList(List<User> contList){ this.contactList = contList;}
+
     public Boolean getState(){
         return this.state;
     }
@@ -51,13 +48,7 @@ public class User {
     }
 
     // Add a user to the contact list
-    public void addContact(User u){
-        contactList.add(u);
-    }
-    // Remove a user from the contact list
-    public void deleteContact(User u){
-        contactList.remove(u);
-    }
+
     // Checks if a user is in the contact list
     public Boolean containsContact(List<User> contactList, User u) {
         boolean contained = false;

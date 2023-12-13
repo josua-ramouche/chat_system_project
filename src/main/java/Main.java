@@ -18,7 +18,7 @@ public class Main {
         List<InetAddress> interfacesIP;
         interfacesIP = getInterfacesIP();
 
-        Thread Server = new ServerContactDiscoveryController.EchoServer(user, interfacesIP);
+        Thread Server = new ServerContactDiscoveryController.EchoServer(user);
 
         // Find the broadcast addresses
         System.out.println("Broadcast address(es):");

@@ -1,4 +1,5 @@
 package Controller;
+import Model.ContactList;
 import Model.User;
 import View.CustomListener;
 
@@ -15,11 +16,10 @@ public class ServerContactDiscoveryController {
         private List<InetAddress> interfacesIP;
 
         // Constructor
-        public EchoServer(User server, List<InetAddress> interfacesIP) throws SocketException {
+        public EchoServer(User server) throws SocketException {
             this.socket = new DatagramSocket(1556);
             this.server = server;
             this.interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
-            //this.interfacesIP = interfacesIP;
         }
 
         // For testing usage
@@ -139,13 +139,13 @@ public class ServerContactDiscoveryController {
                 contact.setState(true);
 
                 // if the sender is not already in the contact list, he is added to the contact list
-                if (!server.containsContact(server.getContactList(), contact)) {
-                    server.addContact(contact);
+                if (!server.containsContact(ContactList.getContacts(), contact)) {
+                    ContactList.addContact(contact);
                     System.out.println("New contact added");
                 }
 
                 System.out.println("Contact List (connected):");
-                server.getContactList().forEach(u -> {
+                ContactList.getContacts().forEach(u -> {
                     if (u.getState()) {
                         System.out.println(u.getUsername());
                     }
@@ -176,13 +176,13 @@ public class ServerContactDiscoveryController {
             contact.setState(true);
 
             // if the receiver is not already in the contact list, he is added to the contact list
-            if (!server.containsContact(server.getContactList(), contact)) {
-                server.addContact(contact);
+            if (!server.containsContact(ContactList.getContacts(), contact)) {
+                ContactList.addContact(contact);
                 System.out.println("New contact added");
             }
 
             System.out.println("Contact List (connected):");
-            server.getContactList().forEach(u -> {
+            ContactList.getContacts().forEach(u -> {
                 if (u.getState()) {
                     System.out.println(u.getUsername());
                 }
@@ -192,7 +192,7 @@ public class ServerContactDiscoveryController {
         // Reception of an end message
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
-            for (User u : server.getContactList()) {
+            for (User u : ContactList.getContacts()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
                     u.setState(false);
@@ -204,7 +204,7 @@ public class ServerContactDiscoveryController {
                 System.out.println("User " + disconnectedUser + " disconnected");
             }
             System.out.println("Contact List (connected):");
-            server.getContactList().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+            ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
         }
 
         // Ask for permission to change the sender's username
@@ -215,7 +215,7 @@ public class ServerContactDiscoveryController {
 
             //check if the sender new username is unique
             if (isUsernameUnique(newUsername, address)) {
-                for (User u : server.getContactList()) {
+                for (User u : ContactList.getContacts()) {
                     if (u.getUsername().equals(oldUsername)) {
                         u.setUsername(newUsername);
                         System.out.println("Username changed: " + oldUsername + " to " + newUsername);
@@ -224,7 +224,7 @@ public class ServerContactDiscoveryController {
                 }
 
                 // Notify other users about the username change
-                server.getContactList().forEach(u -> {
+                ContactList.getContacts().forEach(u -> {
                     try {
                         if (!u.getIPAddress().equals(address)) {
                             broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPAddress());
@@ -235,14 +235,14 @@ public class ServerContactDiscoveryController {
                 });
 
                 // Update the client's username
-                server.getContactList().forEach(u -> {
+                ContactList.getContacts().forEach(u -> {
                     if (u.getIPAddress().equals(address)) {
                         u.setUsername(newUsername);
                     }
                 });
 
                 System.out.println("Contact List (connected):");
-                server.getContactList().forEach(u -> {
+                ContactList.getContacts().forEach(u -> {
                     if (u.getState()) {
                         System.out.println(u.getUsername());
                     }
@@ -259,7 +259,7 @@ public class ServerContactDiscoveryController {
         // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
             if (!username.equals(server.getUsername())) {
-                return server.getContactList().stream()
+                return ContactList.getContacts().stream()
                         .filter(u -> u.getState() && !u.getIPAddress().equals(requesterAddress))
                         .noneMatch(u -> u.getUsername().equals(username));
             }
@@ -269,7 +269,7 @@ public class ServerContactDiscoveryController {
         // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username) {
             if (!username.equals(server.getUsername())) {
-                return server.getContactList().stream()
+                return ContactList.getContacts().stream()
                         .filter(User::getState)
                         .noneMatch(u -> u.getUsername().equals(username));
             }

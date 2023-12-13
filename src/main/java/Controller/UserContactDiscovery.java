@@ -29,7 +29,7 @@ public class UserContactDiscovery extends Component {
         List<InetAddress> interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
 
         // Start the server thread
-        Thread serverThread = new ServerContactDiscoveryController.EchoServer(tempUser, interfacesIP);
+        Thread serverThread = new ServerContactDiscoveryController.EchoServer(tempUser);
 
 
         // Find the broadcast addresses

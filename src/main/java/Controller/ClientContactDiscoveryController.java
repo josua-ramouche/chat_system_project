@@ -1,4 +1,5 @@
 package Controller;
+import Model.ContactList;
 import Model.User;
 import java.io.IOException;
 import java.net.*;
@@ -61,7 +62,7 @@ public class ClientContactDiscoveryController {
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
         try (DatagramSocket ignored = new DatagramSocket()) {
             String username = client.getUsername();
-            if (isUsernameUnique(username, client.getContactList())) {
+            if (isUsernameUnique(username, ContactList.getContacts())) {
                 for (InetAddress inetAddress : broadcastList) {
                     try {
                         System.out.println("Broadcast address : " + inetAddress);
@@ -90,7 +91,7 @@ public class ClientContactDiscoveryController {
     public static void sendChangeUsername(User client, String newUsername) {
         try (DatagramSocket ignored = new DatagramSocket()) {
             // Notify other users about the new username
-            client.getContactList().forEach(u -> {
+            ContactList.getContacts().forEach(u -> {
                 try {
                     if (!u.getIPAddress().equals(client.getIPAddress())) {
                         broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
@@ -109,7 +110,7 @@ public class ClientContactDiscoveryController {
     // Send a message in broadcast so other users can change his status to disconnected (false)
     public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
-        client.getContactList().forEach(u -> { try {
+        ContactList.getContacts().forEach(u -> { try {
             broadcast("end",u.getIPAddress());
         } catch (IOException e) {
             throw new RuntimeException(e);

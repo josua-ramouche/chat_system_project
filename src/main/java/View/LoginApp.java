@@ -76,7 +76,7 @@ public class LoginApp extends JFrame implements CustomListener{
                 LoginApp loginApp = new LoginApp();
                 loginApp.setVisible(true);
 
-                ServerContactDiscoveryController.addActionListener(loginApp);
+                //ServerContactDiscoveryController.addActionListener(loginApp);
             }
         });
     }
