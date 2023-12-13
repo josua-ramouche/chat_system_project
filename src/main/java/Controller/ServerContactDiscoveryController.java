@@ -1,7 +1,10 @@
 package Controller;
 import Model.User;
+import View.CustomListener;
+
 import java.io.IOException;
 import java.net.*;
+import java.util.ArrayList;
 import java.util.List;
 import static Controller.ClientContactDiscoveryController.broadcast;
 
@@ -15,7 +18,8 @@ public class ServerContactDiscoveryController {
         public EchoServer(User server, List<InetAddress> interfacesIP) throws SocketException {
             this.socket = new DatagramSocket(1556);
             this.server = server;
-            this.interfacesIP = interfacesIP;
+            this.interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
+            //this.interfacesIP = interfacesIP;
         }
 
         // For testing usage
@@ -95,6 +99,14 @@ public class ServerContactDiscoveryController {
             System.out.println("Your username is now: " + message);
         }
 
+        //signals and slots for unicity with GUI
+        private List<CustomListener> listeners = new ArrayList<>();
+
+        public void addActionListener(CustomListener listener) {
+            listeners.add(listener);
+        }
+
+
         // Change of username declined
         public void handleNotUnique(String message) {
             String[] parts = message.split(":");
@@ -103,10 +115,14 @@ public class ServerContactDiscoveryController {
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);
+                for (CustomListener listener : listeners) {
+                    listener.showPopup("Username not unique");
+                }
             }
             else {
                 // the user cannot connect to the application because his first username is not unique, he needs to change it first
                 System.out.println("Your new username is already used by someone, try to enter a new username.");
+
             }
         }
 

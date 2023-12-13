@@ -81,7 +81,7 @@ public class ClientContactDiscoveryController {
 
     // Check if a username is already present in the contact list of the user (other checks are made in the ServerContactDiscoveryController to check if the username is
     // present in other users' contact lists)
-    private static boolean isUsernameUnique(String username, List<User> contactList) {
+    public static boolean isUsernameUnique(String username, List<User> contactList) {
             return contactList.stream()
                     .noneMatch(u -> u.getUsername().equals(username));
     }
@@ -118,4 +118,6 @@ public class ClientContactDiscoveryController {
         client.setState(false);
         System.out.println("You are now disconnected\n");
     }
+
+
 }
