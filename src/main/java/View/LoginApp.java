@@ -5,6 +5,8 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
 
 import Controller.ServerContactDiscoveryController;
 import Controller.UserContactDiscovery;
@@ -14,7 +16,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     private JTextField usernameField;
-    private boolean loginSuccessful = false;
+    private final boolean loginSuccessful = false;
 
     public LoginApp() {
         setTitle("Login");
@@ -53,12 +55,13 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     private void onLoginButtonClick() throws IOException, InterruptedException {
-        String enteredUsername = usernameField.getText();
-        if (enteredUsername.isEmpty()) {
+        String username = usernameField.getText();
+        if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        UserContactDiscovery U = new UserContactDiscovery(enteredUsername);
+        UserContactDiscovery.inituser(username);
+        UserContactDiscovery U = new UserContactDiscovery(username);
         U.Action();
     }
 
@@ -75,8 +78,15 @@ public class LoginApp extends JFrame implements CustomListener{
             public void run() {
                 LoginApp loginApp = new LoginApp();
                 loginApp.setVisible(true);
-
-                //ServerContactDiscoveryController.addActionListener(loginApp);
+                try {
+                    UserContactDiscovery.inituser("");
+                    ServerContactDiscoveryController.EchoServer server = UserContactDiscovery.Init();
+                    server.setDaemon(true);
+                    server.start();
+                    server.addActionListener(loginApp);
+                } catch (SocketException | UnknownHostException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }

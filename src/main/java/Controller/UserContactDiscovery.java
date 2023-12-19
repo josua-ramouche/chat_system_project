@@ -1,6 +1,7 @@
 package Controller;
 
 import Model.User;
+import View.ContactListApp;
 import View.LoginApp;
 
 import javax.swing.*;
@@ -12,42 +13,49 @@ import java.util.List;
 
 public class UserContactDiscovery extends Component {
     String enteredUsername;
+
+    static User temp = new User();
     public UserContactDiscovery (String enteredUsername)
     {
         this.enteredUsername=enteredUsername;
     }
 
-    public void Action() throws UnknownHostException, SocketException {
-
-
-
+    public static void inituser(String username) throws UnknownHostException, SocketException {
         // Check if the entered username is unique
-        User tempUser = new User();
-        tempUser.setUsername(enteredUsername);
-        tempUser.setIPAddress(InetAddress.getLocalHost());
-        tempUser.setState(true);
+        temp.setUsername(username);
+        temp.setIPAddress(InetAddress.getLocalHost());
+        temp.setState(true);
         List<InetAddress> interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
 
+    }
+
+    public static ServerContactDiscoveryController.EchoServer Init() throws SocketException {
+
         // Start the server thread
-        Thread serverThread = new ServerContactDiscoveryController.EchoServer(tempUser);
+        return new ServerContactDiscoveryController.EchoServer(temp);
+    }
+
+    public void Action() throws UnknownHostException, SocketException, InterruptedException {
+
+
+
 
 
         // Find the broadcast addresses
         List<InetAddress> broadcastList = ClientContactDiscoveryController.listAllBroadcastAddresses();
 
         // Send the username for contact discovery
-        ClientContactDiscoveryController.sendUsername(broadcastList, tempUser);
-
-        serverThread.setDaemon(true);
-        serverThread.start();
+        ClientContactDiscoveryController.sendUsername(broadcastList, temp);
 
 
+
+        //wait(10000);
         // User disconnection
-        ClientContactDiscoveryController.sendEndConnection(tempUser);
+        //ClientContactDiscoveryController.sendEndConnection(temp);
 
         // Start the main application interface
-        //MainApplicationInterface mainAppInterface = new MainApplicationInterface(tempUser);
-        //mainAppInterface.setVisible(true);
+        ContactListApp mainAppInterface = new ContactListApp(temp);
+        mainAppInterface.setVisible(true);
         //add disconnection and change of username in it
 
     }

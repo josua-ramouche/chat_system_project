@@ -10,6 +10,8 @@ import java.util.List;
 import static Controller.ClientContactDiscoveryController.broadcast;
 
 public class ServerContactDiscoveryController {
+
+
     public static class EchoServer extends Thread {
         private final User server;
         private final DatagramSocket socket;
@@ -115,11 +117,12 @@ public class ServerContactDiscoveryController {
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);
+
+            }
+            else {
                 for (CustomListener listener : listeners) {
                     listener.showPopup("Username not unique");
                 }
-            }
-            else {
                 // the user cannot connect to the application because his first username is not unique, he needs to change it first
                 System.out.println("Your new username is already used by someone, try to enter a new username.");
 
