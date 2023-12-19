@@ -1,5 +1,6 @@
 package View;
 
+import Model.ContactList;
 import Model.User;
 
 import javax.swing.*;
@@ -24,7 +25,7 @@ public class ContactListApp extends JPanel{
         //Get information on the connected user
         this.u = u;
         //Get user's contact list
-        contactList = u.getContactList();
+        contactList = ContactList.getContacts();
 
         //Create a new JFrame for the ContactListApp
         frame = new JFrame("Chat System");
@@ -102,7 +103,7 @@ public class ContactListApp extends JPanel{
         contactListModel.clear();
 
         //Get updated contact list;
-        contactList = u.getContactList();
+        contactList = ContactList.getContacts();
         addContactsToDisplayedList();
     }
 
@@ -146,7 +147,7 @@ public class ContactListApp extends JPanel{
         contactListTest.add(contact2);
         contactListTest.add(contact3);
 
-        user.setContactList(contactListTest);
+        ContactList.setContacts(contactListTest);
 
         SwingUtilities.invokeLater(() -> new ContactListApp(user));
     }

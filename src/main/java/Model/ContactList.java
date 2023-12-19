@@ -15,6 +15,9 @@ public class ContactList {
     {
         return contacts;
     }
+
+    public static void setContacts(List<User> c)
+    {contacts = c;}
     private ContactList() {
     }
 
