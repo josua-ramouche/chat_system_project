@@ -1,4 +1,4 @@
-package Controller;
+package Controller.ContactDiscovery;
 import Model.ContactList;
 import Model.User;
 import View.CustomListener;
@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import static Controller.ClientContactDiscoveryController.broadcast;
+import static Controller.ContactDiscovery.ClientUDP.broadcast;
 
-public class ServerContactDiscoveryController {
+public class ServerUDP {
 
 
     public static class EchoServer extends Thread {
@@ -21,7 +21,7 @@ public class ServerContactDiscoveryController {
         public EchoServer(User server) throws SocketException {
             this.socket = new DatagramSocket(1556);
             this.server = server;
-            this.interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
+            this.interfacesIP = ClientUDP.getInterfacesIP();
         }
 
         // For testing usage

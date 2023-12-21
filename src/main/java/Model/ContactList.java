@@ -25,7 +25,7 @@ public class ContactList {
         contacts.add(u);
     }
     // Remove a user from the contact list
-    public void deleteContact(User u){
+    public static void deleteContact(User u){
         contacts.remove(u);
     }
 

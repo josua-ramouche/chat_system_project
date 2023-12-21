@@ -8,8 +8,8 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import Controller.ServerContactDiscoveryController;
-import Controller.UserContactDiscovery;
+import Controller.ContactDiscovery.ServerUDP;
+import Controller.ContactDiscovery.UserContactDiscovery;
 
 
 public class LoginApp extends JFrame implements CustomListener{
@@ -80,7 +80,7 @@ public class LoginApp extends JFrame implements CustomListener{
                 loginApp.setVisible(true);
                 try {
                     UserContactDiscovery.inituser("");
-                    ServerContactDiscoveryController.EchoServer server = UserContactDiscovery.Init();
+                    ServerUDP.EchoServer server = UserContactDiscovery.Init();
                     server.setDaemon(true);
                     server.start();
                     server.addActionListener(loginApp);

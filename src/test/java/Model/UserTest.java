@@ -40,7 +40,6 @@ class UserTest {
 
     @Test
     void testSetAndGetContactList() throws UnknownHostException {
-        User user = new User();
         List<User> contactList = new ArrayList<>();
 
         User contact1 = new User("Josua",InetAddress.getLoopbackAddress());
@@ -50,38 +49,36 @@ class UserTest {
         contactList.add(contact2);
 
         // Test setter
-        user.setContactList(contactList);
+        ContactList.setContacts(contactList);
         // Test getter
-        assertEquals(user.getContactList().size(),2);
-        assertEquals(user.getContactList().get(0),contact1);
-        assertEquals(user.getContactList().get(1),contact2);
+        assertEquals(ContactList.getContacts().size(),2);
+        assertEquals(ContactList.getContacts().get(0),contact1);
+        assertEquals(ContactList.getContacts().get(1),contact2);
     }
 
     @Test
     void testAddContact() throws UnknownHostException {
-        User user = new User();
         User contact = new User("ContactUser", InetAddress.getByName("192.168.0.2"), true);
 
         // Add contact
-        user.addContact(contact);
+        ContactList.addContact(contact);
 
         // Check if the contact is added to the contact list
-        assertTrue(user.getContactList().contains(contact));
+        assertTrue(ContactList.getContacts().contains(contact));
     }
 
     @Test
     void testDeleteContact() throws UnknownHostException {
-        User user = new User();
         User contact = new User("ContactUser", InetAddress.getByName("192.168.0.2"), true);
 
         // Add contact
-        user.addContact(contact);
+        ContactList.addContact(contact);
 
         // Delete contact
-        user.deleteContact(contact);
+        ContactList.deleteContact(contact);
 
         // Check if the contact is removed from the contact list
-        assertFalse(user.getContactList().contains(contact));
+        assertFalse(ContactList.getContacts().contains(contact));
     }
 
     @Test
@@ -90,10 +87,10 @@ class UserTest {
         User contact = new User("ContactUser", InetAddress.getByName("192.168.0.2"), true);
 
         // Add contact
-        user.addContact(contact);
+        ContactList.addContact(contact);
 
         // Check if the contact is contained in the contact list
-        assertTrue(user.containsContact(user.getContactList(), contact));
+        assertTrue(user.containsContact(ContactList.getContacts(), contact));
     }
 
     @Test
@@ -102,7 +99,7 @@ class UserTest {
         User contact = new User("ContactUser", InetAddress.getByName("192.168.0.2"), true);
 
         // Check if the contact is not contained in an empty contact list
-        assertFalse(user.containsContact(user.getContactList(), contact));
+        assertFalse(user.containsContact(ContactList.getContacts(), contact));
     }
 
 }

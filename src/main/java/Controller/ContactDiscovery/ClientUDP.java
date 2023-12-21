@@ -1,4 +1,4 @@
-package Controller;
+package Controller.ContactDiscovery;
 import Model.ContactList;
 import Model.User;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Objects;
 
-public class ClientContactDiscoveryController {
+public class ClientUDP {
     // Send a broadcast message on the current network of the interface on socket 1556
     public static void broadcast(String broadcastMessage, InetAddress address) throws IOException{
         // Create a new datagram that is closed after the packet is sent
@@ -80,7 +80,7 @@ public class ClientContactDiscoveryController {
         }
     }
 
-    // Check if a username is already present in the contact list of the user (other checks are made in the ServerContactDiscoveryController to check if the username is
+    // Check if a username is already present in the contact list of the user (other checks are made in the ServerUDP to check if the username is
     // present in other users' contact lists)
     public static boolean isUsernameUnique(String username, List<User> contactList) {
             return contactList.stream()

@@ -1,10 +1,8 @@
-package Controller;
+package Controller.ContactDiscovery;
 
 import Model.User;
 import View.ContactListApp;
-import View.LoginApp;
 
-import javax.swing.*;
 import java.awt.*;
 import java.net.InetAddress;
 import java.net.SocketException;
@@ -25,14 +23,14 @@ public class UserContactDiscovery extends Component {
         temp.setUsername(username);
         temp.setIPAddress(InetAddress.getLocalHost());
         temp.setState(true);
-        List<InetAddress> interfacesIP = ClientContactDiscoveryController.getInterfacesIP();
+        List<InetAddress> interfacesIP = ClientUDP.getInterfacesIP();
 
     }
 
-    public static ServerContactDiscoveryController.EchoServer Init() throws SocketException {
+    public static ServerUDP.EchoServer Init() throws SocketException {
 
         // Start the server thread
-        return new ServerContactDiscoveryController.EchoServer(temp);
+        return new ServerUDP.EchoServer(temp);
     }
 
     public void Action() throws UnknownHostException, SocketException, InterruptedException {
@@ -42,16 +40,16 @@ public class UserContactDiscovery extends Component {
 
 
         // Find the broadcast addresses
-        List<InetAddress> broadcastList = ClientContactDiscoveryController.listAllBroadcastAddresses();
+        List<InetAddress> broadcastList = ClientUDP.listAllBroadcastAddresses();
 
         // Send the username for contact discovery
-        ClientContactDiscoveryController.sendUsername(broadcastList, temp);
+        ClientUDP.sendUsername(broadcastList, temp);
 
 
 
         //wait(10000);
         // User disconnection
-        //ClientContactDiscoveryController.sendEndConnection(temp);
+        //ClientUDP.sendEndConnection(temp);
 
         // Start the main application interface
         ContactListApp mainAppInterface = new ContactListApp(temp);

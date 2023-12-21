@@ -1,4 +1,4 @@
-package Controller;
+package Controller.Database;
 
 
 import java.sql.Connection;
@@ -60,7 +60,7 @@ public class DatabaseController {
         try (Statement stmt = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS Contacts (\n"
                     + "		contactID INTEGER PRIMARY KEY AUTOINCREMENT, \n"
-                    + "		chatID UNIQUE INTEGER AUTOINCREMENT \n"
+                    + "		chatID UNIQUE INTEGER AUTOINCREMENT \n" // NEED TO SEE IF ITS POSSIBLE TO HAVE A SINGLE ID FOR A WHOLE TABLE
                     + ");";
             stmt.executeUpdate(sql);
             System.out.println("Contacts table created successfully\n");

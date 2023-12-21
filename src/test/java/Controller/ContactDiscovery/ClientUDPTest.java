@@ -1,4 +1,6 @@
-package Controller;
+package Controller.ContactDiscovery;
+import Controller.ContactDiscovery.ClientUDP;
+import Model.ContactList;
 import Model.User;
 import org.junit.jupiter.api.Test;
 
@@ -8,13 +10,13 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClientContactDiscoveryControllerTest {
+class ClientUDPTest {
 
     @Test
     void broadcast() {
         // Test broadcast method
         try {
-            ClientContactDiscoveryController.broadcast("Test Message", InetAddress.getLocalHost());
+            ClientUDP.broadcast("Test Message", InetAddress.getLocalHost());
         } catch (IOException e) {
             fail("Exception not expected: " + e.getMessage());
         }
@@ -24,7 +26,7 @@ class ClientContactDiscoveryControllerTest {
     void listAllBroadcastAddresses() {
         // Test listAllBroadcastAddresses method
         try {
-            List<InetAddress> broadcastAddresses = ClientContactDiscoveryController.listAllBroadcastAddresses();
+            List<InetAddress> broadcastAddresses = ClientUDP.listAllBroadcastAddresses();
             assertNotNull(broadcastAddresses);
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());
@@ -37,11 +39,11 @@ class ClientContactDiscoveryControllerTest {
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         List<InetAddress> broadcastList;
         try {
-            broadcastList = ClientContactDiscoveryController.listAllBroadcastAddresses();
-            ClientContactDiscoveryController.sendUsername(broadcastList, user);
+            broadcastList = ClientUDP.listAllBroadcastAddresses();
+            ClientUDP.sendUsername(broadcastList, user);
 
             // Verify that the contact list is empty before sending the first broadcast to check the unicity of the username
-            assertEquals(0, user.getContactList().size());
+            assertEquals(0, ContactList.getContacts().size());
         } catch (IOException e) {
             fail("Exception not expected: " + e.getMessage());
         }
@@ -52,7 +54,7 @@ class ClientContactDiscoveryControllerTest {
         // Test sendChangeUsername method
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         try {
-            ClientContactDiscoveryController.sendChangeUsername(user, "NewUsername");
+            ClientUDP.sendChangeUsername(user, "NewUsername");
 
             // Verify that the username is changed as expected
             assertEquals("NewUsername", user.getUsername());
@@ -66,10 +68,10 @@ class ClientContactDiscoveryControllerTest {
         // Test sendEndConnection method
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         try {
-            ClientContactDiscoveryController.sendEndConnection(user);
+            ClientUDP.sendEndConnection(user);
 
             // Verify that the contact list is empty and user state is false after disconnection
-            assertTrue(user.getContactList().isEmpty());
+            assertTrue(ContactList.getContacts().isEmpty());
             assertFalse(user.getState());
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());

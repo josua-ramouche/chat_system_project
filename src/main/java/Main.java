@@ -1,10 +1,10 @@
-import Controller.ServerContactDiscoveryController;
+import Controller.ContactDiscovery.ServerUDP;
 import Model.User;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import static Controller.ClientContactDiscoveryController.*;
+import static Controller.ContactDiscovery.ClientUDP.*;
 
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
@@ -17,8 +17,9 @@ public class Main {
 
         List<InetAddress> interfacesIP;
         interfacesIP = getInterfacesIP();
+        System.out.println(user.getIPAddress());
 
-        Thread Server = new ServerContactDiscoveryController.EchoServer(user);
+        Thread Server = new ServerUDP.EchoServer(user);
 
         // Find the broadcast addresses
         System.out.println("Broadcast address(es):");
@@ -32,14 +33,14 @@ public class Main {
         Server.start();
 
         // User asks for a change of username Test1 -> Test2
-        TimeUnit.SECONDS.sleep(5);
+        //TimeUnit.SECONDS.sleep(5);
 
         //------------STRING TO MODIFY TO CHANGE USERNAME AFTER THREE SECONDS---------------
-        sendChangeUsername(user, "Test2");
+        //sendChangeUsername(user, "Test2");
 
         // User disconnection
-        TimeUnit.SECONDS.sleep(5);
-        sendEndConnection(user);
+        //TimeUnit.SECONDS.sleep(5);
+        //sendEndConnection(user);
     }
 }
 

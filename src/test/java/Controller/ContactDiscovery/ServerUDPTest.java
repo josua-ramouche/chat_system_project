@@ -1,5 +1,7 @@
-package Controller;
+package Controller.ContactDiscovery;
 
+import Controller.ContactDiscovery.ServerUDP;
+import Model.ContactList;
 import Model.User;
 import org.junit.jupiter.api.Test;
 
@@ -13,14 +15,14 @@ import static org.mockito.Mockito.mock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ServerContactDiscoveryControllerTest {
+class ServerUDPTest {
 
     @Test
     void testEchoServer_HandleBroadcastMessage() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
-        ServerContactDiscoveryController.EchoServer echoServer = new ServerContactDiscoveryController.EchoServer(testUser,socket);
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
         // Simulate broadcast messages
         String broadcastMessage1 = "BROADCAST:TestUser1";
@@ -41,7 +43,7 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage4.substring("BROADCAST:".length()), senderAddress4);
 
         // Actual list obtained from tested method
-        List<User> contactList = echoServer.getServer().getContactList();
+        List<User> contactList = ContactList.getContacts();
 
         // Expected list of user
         List<User> expectedList = new ArrayList<>();
@@ -64,7 +66,7 @@ class ServerContactDiscoveryControllerTest {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
-        ServerContactDiscoveryController.EchoServer echoServer = new ServerContactDiscoveryController.EchoServer(testUser, socket);
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
 
         // Simulate a response message
         String responseMessage1 = "TestUser1";
@@ -81,7 +83,7 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(responseMessage3, senderAddress3);
 
         // Actual list obtained from response messages from server (connected user)
-        List<User> contactList = echoServer.getServer().getContactList();
+        List<User> contactList = ContactList.getContacts();
 
         // Expected list after response messages sent by server (connected user)
         List<User> expectedList = new ArrayList<>();
@@ -104,7 +106,7 @@ class ServerContactDiscoveryControllerTest {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
-        ServerContactDiscoveryController.EchoServer echoServer = new ServerContactDiscoveryController.EchoServer(testUser, socket);
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
 
         // Simulate broadcast messages
         String broadcastMessage1 = "BROADCAST:TestUser1";
@@ -117,7 +119,7 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
         // Actual list obtained after first broadcast messages
-        List<User> contactList = echoServer.getServer().getContactList();
+        List<User> contactList = ContactList.getContacts();
 
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
@@ -136,7 +138,7 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleEndMessage(senderAddress1);
 
         // Actual list obtained after disconnection of a user
-        contactList = echoServer.getServer().getContactList();
+        contactList = ContactList.getContacts();
 
         // Expected list after disconnection of a user (State of connection = false)
         List<User> expectedList2 = new ArrayList<>();
@@ -157,7 +159,7 @@ class ServerContactDiscoveryControllerTest {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
-        ServerContactDiscoveryController.EchoServer echoServer = new ServerContactDiscoveryController.EchoServer(testUser,socket);
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
         // Simulate broadcast messages
         String broadcastMessage1 = "BROADCAST:TestUser1";
@@ -170,7 +172,7 @@ class ServerContactDiscoveryControllerTest {
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
         // Actual list obtained after first broadcast messages
-        List<User> contactList = echoServer.getServer().getContactList();
+        List<User> contactList = ContactList.getContacts();
 
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
