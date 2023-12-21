@@ -52,8 +52,7 @@ public class UserContactDiscovery extends Component {
         //ClientUDP.sendEndConnection(temp);
 
         // Start the main application interface
-        ContactListApp mainAppInterface = new ContactListApp(temp);
-        mainAppInterface.setVisible(true);
+
         //add disconnection and change of username in it
 
     }
