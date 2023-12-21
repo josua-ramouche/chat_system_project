@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 
-import Controller.ContactDiscovery.ServerUDP;
-import Controller.ContactDiscovery.UserContactDiscovery;
+import Controller.ContactDiscovery.*;
 
 
 public class LoginApp extends JFrame implements CustomListener{
@@ -17,6 +16,9 @@ public class LoginApp extends JFrame implements CustomListener{
 
     private JTextField usernameField;
     private final boolean loginSuccessful = false;
+    ContactListApp mainAppInterface;
+
+
 
     public LoginApp() {
         setTitle("Login");
@@ -63,14 +65,23 @@ public class LoginApp extends JFrame implements CustomListener{
         UserContactDiscovery.inituser(username);
         UserContactDiscovery U = new UserContactDiscovery(username);
         U.Action();
+
+    }
+    @Override
+    public void unique(String message) {
+        mainAppInterface = new ContactListApp();
+        mainAppInterface.setVisible(true);
     }
 
 
     @Override
-    public void showPopup(String message) {
-        // Show a popup with the received message
+    public void notUniquePopup(String message) {
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.INFORMATION_MESSAGE);
+        this.setVisible(true);
+        // Show a popup with the received message
     }
+
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {

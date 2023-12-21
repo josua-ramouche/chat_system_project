@@ -1,5 +1,7 @@
 package View;
 
+
 public interface CustomListener {
-    void showPopup(String message);
+    void notUniquePopup(String message);
+    void unique(String message);
 }

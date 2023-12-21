@@ -18,12 +18,12 @@ public class ContactListApp extends JPanel{
     private final DefaultListModel<String> contactListModel;
     private final JList<String> contactListView;
     private final JButton changeButton;
-    private final User u;
+    //private final User u;
     private List<User> contactList;
 
-    public ContactListApp(User u){
+    public ContactListApp(){
         //Get information on the connected user
-        this.u = u;
+        //this.u = u;
         //Get user's contact list
         contactList = ContactList.getContacts();
 
@@ -56,7 +56,7 @@ public class ContactListApp extends JPanel{
 
         changeButton.setActionCommand("Change Username");
         changeButton.setEnabled(true);
-        changeButton.addActionListener(new changeUsername(u));
+        //changeButton.addActionListener(new changeUsername(u));
 
         contactListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         contactListView.setSelectedIndex(0);
@@ -149,7 +149,7 @@ public class ContactListApp extends JPanel{
 
         ContactList.setContacts(contactListTest);
 
-        SwingUtilities.invokeLater(() -> new ContactListApp(user));
+        //SwingUtilities.invokeLater(() -> new ContactListApp(user));
     }
 
 }
