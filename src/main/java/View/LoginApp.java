@@ -71,7 +71,7 @@ public class LoginApp extends JFrame implements CustomListener{
         U.Action();
         //Timer T = new Timer(5000,null);
         //T.start();
-        TimeUnit.SECONDS.sleep(2);
+        TimeUnit.SECONDS.sleep(1);
         unique("Test");
         // todo create timer calling unique
 

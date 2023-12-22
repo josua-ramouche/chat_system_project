@@ -1,55 +1,60 @@
 package Controller.Chat;
-
 import java.io.*;
 import java.net.*;
-import java.util.concurrent.TimeUnit;
 
 public class ServerTCP {
+    public static class ClientHandler extends Thread {
+        private final Socket clientSocket;
 
-    private ServerSocket serverSocket;
-    private Socket clientSocket;
-    private PrintWriter out;
-    private BufferedReader in;
+        public ClientHandler(Socket socket) {
+            this.clientSocket = socket;
+        }
+        public void run() {
+            try {
+                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                while (true) {
+                    System.out.println("CONVERSATION: Waiting for message");
+                    String inputLine = in.readLine();
+                    if ("END".equals(inputLine)) {
+                        out.println("END");
+                        break;
+                    }
+                    System.out.println("Received: " + inputLine);
+                }
+                endConnection();
+                System.out.println("CONVERSATION: Connection ended with client");
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
 
+        public void endConnection() {
+            try {
+                clientSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
-    public void start(int port) {
-        try{
-            serverSocket = new ServerSocket(port);
-            clientSocket = serverSocket.accept();
-            out = new PrintWriter(clientSocket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-
-            out.println("Welcome to the ChatSystem client\n");
+    public static void main(String[] args) throws IOException {
+        int port = 1556;
+        try (ServerSocket serverSocket = new ServerSocket(port)) {
+            System.out.println("Server is listening on port " + port);
 
             while (true) {
-                String inputLine = in.readLine();
-                if (".".equals(inputLine)) {
-                    out.println("END");
-                    stop();
-                    System.out.println("Connection ended");
-                    break;
-                }
-                System.out.println("Received: " + inputLine);
+                System.out.println("SERVER: Waiting for a client connection");
+                Socket clientSocket = serverSocket.accept();
+                System.out.println("SERVER: Client connection accepted");
+                // Create a new thread to handle a client
+                Thread clientThread = new ClientHandler(clientSocket);
+                clientThread.start();
             }
-
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+
     }
 
-    public void stop() {
-        try{
-            in.close();
-            out.close();
-            clientSocket.close();
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        ServerTCP server=new ServerTCP();
-        server.start(1789);
-    }
 }
+
+
