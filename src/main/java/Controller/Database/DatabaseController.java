@@ -60,7 +60,7 @@ public class DatabaseController {
         try (Statement stmt = conn.createStatement()) {
             String sql = "CREATE TABLE IF NOT EXISTS Contacts (\n"
                     + "		contactID INTEGER PRIMARY KEY AUTOINCREMENT, \n"
-                    + "		chatID UNIQUE INTEGER AUTOINCREMENT \n" // NEED TO SEE IF ITS POSSIBLE TO HAVE A SINGLE ID FOR A WHOLE TABLE
+                    + "     FOREIGN KEY (contactID) REFERENCES Users(userId) \n"
                     + ");";
             stmt.executeUpdate(sql);
             System.out.println("Contacts table created successfully\n");
@@ -84,10 +84,12 @@ public class DatabaseController {
         Connection conn = connect();
         // Create Contact table after connection to the database
         try (Statement stmt = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS Chat" + id + "(\n"
+            String sql = "CREATE TABLE IF NOT EXISTS Chat" + id + " (\n"
                     + "		messageID INTEGER PRIMARY KEY AUTOINCREMENT, \n"
                     + "		message TEXT NOT NULL, \n"
-                    + "     time DATETIME NOT NULL \n"
+                    + "		senderID INTEGER, \n"
+                    + "     time DATETIME NOT NULL, \n"
+                    + "     FOREIGN KEY (senderID) REFERENCES Contacts(contactID) \n"
                     + ");";
             stmt.executeUpdate(sql);
             System.out.println("Chat table created successfully\n");
@@ -107,8 +109,6 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) {
-        createUserTable();
-        createContactTable();
         createChatTable(1);
     }
 }
