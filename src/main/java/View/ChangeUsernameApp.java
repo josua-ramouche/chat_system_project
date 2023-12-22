@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class LoginApp extends JFrame implements CustomListener{
+public class ChangeUsernameApp extends JFrame implements CustomListener{
 
     private final AtomicBoolean check= new AtomicBoolean(false);
     private JTextField usernameField;
@@ -20,8 +20,8 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
 
-    public LoginApp() {
-        setTitle("Login");
+    public ChangeUsernameApp() {
+        setTitle("Change username");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
@@ -35,7 +35,7 @@ public class LoginApp extends JFrame implements CustomListener{
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
 
-        JButton loginButton = new JButton("Log In");
+        JButton loginButton = new JButton("Change username");
         loginButton.addActionListener(e -> {
             try {
                 onLoginButtonClick();
@@ -94,7 +94,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            LoginApp loginApp = new LoginApp();
+            ChangeUsernameApp loginApp = new ChangeUsernameApp();
             loginApp.setVisible(true);
             try {
                 UserContactDiscovery.inituser("");
@@ -108,3 +108,4 @@ public class LoginApp extends JFrame implements CustomListener{
         });
     }
 }
+
