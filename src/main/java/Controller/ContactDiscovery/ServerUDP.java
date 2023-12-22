@@ -143,6 +143,8 @@ public class ServerUDP {
                 contact.setIPAddress(address);
                 contact.setState(true);
 
+
+
                 // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(ContactList.getContacts(), contact)) {
                     ContactList.addContact(contact);
@@ -180,6 +182,10 @@ public class ServerUDP {
             contact.setIPAddress(address);
             contact.setState(true);
 
+
+            for (CustomListener listener : listeners) {
+                listener.unique("Username unique");
+            }
             // if the receiver is not already in the contact list, he is added to the contact list
             if (!server.containsContact(ContactList.getContacts(), contact)) {
                 ContactList.addContact(contact);
