@@ -36,7 +36,7 @@ public class UserContactDiscovery extends Component {
     public void Action() throws UnknownHostException, SocketException, InterruptedException {
 
 
-
+//
 
 
         // Find the broadcast addresses

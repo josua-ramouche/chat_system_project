@@ -65,7 +65,7 @@ public class LoginApp extends JFrame implements CustomListener{
         UserContactDiscovery.inituser(username);
         UserContactDiscovery U = new UserContactDiscovery(username);
         U.Action();
-
+//
     }
     @Override
     public void unique(String message) {

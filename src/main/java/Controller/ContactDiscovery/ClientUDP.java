@@ -23,7 +23,7 @@ public class ClientUDP {
             e.printStackTrace();
         }
     }
-
+//
     // Create a list of all the broadcast addresses available on a computer
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
