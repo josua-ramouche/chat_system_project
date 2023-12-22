@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import Controller.ContactDiscovery.*;
@@ -68,8 +69,9 @@ public class LoginApp extends JFrame implements CustomListener{
         // set atomic bool no_unique to false to reset it
         check.set(false);
         U.Action();
-        Timer T = new Timer(1000,null);
-        T.start();
+        //Timer T = new Timer(5000,null);
+        //T.start();
+        TimeUnit.SECONDS.sleep(2);
         unique("Test");
         // todo create timer calling unique
 
@@ -87,11 +89,11 @@ public class LoginApp extends JFrame implements CustomListener{
     @Override
     public void notUniquePopup(String message) {
         // set atomic bool no_unique to true
-        if (check.get()) {
-            JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-            this.setVisible(true);
-            // Show a popup with the received message
-        }
+        check.set(true);
+        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
+        this.setVisible(true);
+        // Show a popup with the received message
+
     }
 
 
