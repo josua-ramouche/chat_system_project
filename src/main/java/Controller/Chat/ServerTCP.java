@@ -16,6 +16,7 @@ public class ServerTCP {
                 while (true) {
                     System.out.println("CONVERSATION: Waiting for message");
                     String inputLine = in.readLine();
+                    //If end connection message received from client
                     if ("END".equals(inputLine)) {
                         out.println("END");
                         break;

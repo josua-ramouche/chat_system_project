@@ -27,6 +27,7 @@ public class ClientTCP {
         String input;
         while((input = reader.readLine()) != null) {
             out.println(input);
+            //Sending end connection message to the server
             if (input.equals("END")) {
                 break;
             }
