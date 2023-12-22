@@ -88,7 +88,7 @@ public class DatabaseController {
                     + "		messageID INTEGER PRIMARY KEY AUTOINCREMENT, \n"
                     + "		message TEXT NOT NULL, \n"
                     + "		senderID INTEGER, \n"
-                    + "     time DATETIME NOT NULL, \n"
+                    + "     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, \n"
                     + "     FOREIGN KEY (senderID) REFERENCES Contacts(contactID) \n"
                     + ");";
             stmt.executeUpdate(sql);
