@@ -7,13 +7,14 @@ import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import Controller.ContactDiscovery.*;
 
 
 public class LoginApp extends JFrame implements CustomListener{
 
-
+    private AtomicBoolean check= new AtomicBoolean(false);
     private JTextField usernameField;
     private final boolean loginSuccessful = false;
     ContactListApp mainAppInterface;
@@ -64,21 +65,33 @@ public class LoginApp extends JFrame implements CustomListener{
         }
         UserContactDiscovery.inituser(username);
         UserContactDiscovery U = new UserContactDiscovery(username);
+        // set atomic bool no_unique to false to reset it
+        check.set(false);
         U.Action();
-//
+        Timer T = new Timer(1000,null);
+        T.start();
+        unique("Test");
+        // todo create timer calling unique
+
     }
     @Override
     public void unique(String message) {
-        mainAppInterface = new ContactListApp();
-        mainAppInterface.setVisible(true);
+        // check if atomic bool not_unique if at false to continue
+        if (!check.get()) {
+            mainAppInterface = new ContactListApp();
+            mainAppInterface.setVisible(true);
+        }
     }
 
 
     @Override
     public void notUniquePopup(String message) {
-        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-        this.setVisible(true);
-        // Show a popup with the received message
+        // set atomic bool no_unique to true
+        if (check.get()) {
+            JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
+            this.setVisible(true);
+            // Show a popup with the received message
+        }
     }
 
 
