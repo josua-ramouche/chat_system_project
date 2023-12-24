@@ -1,9 +1,10 @@
 package Controller.Chat;
 
-import java.io.*;
-import java.net.*;
-
-import java.lang.*;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 
 public class ClientTCP {
     private static Socket socket;
@@ -12,7 +13,7 @@ public class ClientTCP {
 
     public static void startConnection(String ip, int port) {
         try {
-            socket = new Socket(ip,port);
+            socket = new Socket(ip, port);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             System.out.println("Welcome to the ChatSystem client\n");
@@ -21,18 +22,21 @@ public class ClientTCP {
         }
     }
 
-    public static void sendMessage() throws IOException {
-        // System.in is an InputStream which we wrap into the more capable BufferedReader
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        String input;
-        while((input = reader.readLine()) != null) {
-            out.println(input);
-            //Sending end connection message to the server
-            if (input.equals("END")) {
-                break;
+    public static void sendMessage() {
+        try {
+            // System.in is an InputStream which we wrap into the more capable BufferedReader
+            BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+            String input;
+            while ((input = reader.readLine()) != null) {
+                out.println(input);
+                // Sending end connection message to the server
+                if (input.equals("END")) {
+                    break;
+                }
             }
-        }
-        if(in.readLine().equals("END")) {
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
             stopConnection();
         }
     }
@@ -47,9 +51,8 @@ public class ClientTCP {
         }
     }
 
-    public static void main(String[] args) throws IOException {
-        startConnection("127.0.0.1",1556);
+    public static void main(String[] args) {
+        startConnection("127.0.0.1", 1556);
         sendMessage();
     }
-
 }
