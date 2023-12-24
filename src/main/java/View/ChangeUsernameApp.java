@@ -11,14 +11,11 @@ import java.net.UnknownHostException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+public class ChangeUsernameApp extends JFrame implements CustomListener {
 
-public class ChangeUsernameApp extends JFrame implements CustomListener{
-
-    private final AtomicBoolean check= new AtomicBoolean(false);
+    private final AtomicBoolean check = new AtomicBoolean(false);
     private JTextField usernameField;
-    ContactListApp mainAppInterface;
-
-
+    private ContactListApp mainAppInterface;
 
     public ChangeUsernameApp() {
         setTitle("Change username");
@@ -44,14 +41,20 @@ public class ChangeUsernameApp extends JFrame implements CustomListener{
             }
         });
 
+        JButton backButton = new JButton("Back");
+        backButton.addActionListener(e -> {
+            goBack();
+        });
+
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(new JLabel());
         panel.add(loginButton);
+        panel.add(new JLabel());
+        panel.add(backButton);
 
         add(panel);
     }
-
 
     private void onLoginButtonClick() throws IOException, InterruptedException {
         String username = usernameField.getText();
@@ -68,8 +71,8 @@ public class ChangeUsernameApp extends JFrame implements CustomListener{
         TimeUnit.SECONDS.sleep(1);
         unique("Test");
         // todo create timer calling unique
-
     }
+
     @Override
     public void unique(String message) {
         // check if atomic bool not_unique if at false to continue
@@ -79,7 +82,6 @@ public class ChangeUsernameApp extends JFrame implements CustomListener{
         }
     }
 
-
     @Override
     public void notUniquePopup(String message) {
         // set atomic bool no_unique to true
@@ -87,10 +89,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener{
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
         this.setVisible(true);
         // Show a popup with the received message
-
     }
 
-
+    private void goBack() {
+        mainAppInterface = new ContactListApp();
+        mainAppInterface.setVisible(true);
+        this.dispose(); // Close the current window
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
@@ -108,4 +113,3 @@ public class ChangeUsernameApp extends JFrame implements CustomListener{
         });
     }
 }
-

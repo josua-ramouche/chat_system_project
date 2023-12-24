@@ -10,6 +10,8 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Controller.ContactDiscovery.ClientUDP.sendEndConnection;
+
 
 public class ContactListApp extends JFrame {
 
@@ -30,32 +32,27 @@ public class ContactListApp extends JFrame {
         contactListView = new JList<>(contactListModel);
 
         addContactsToDisplayedList();
-        initializeUI();
-    }
 
-
-    private void initializeUI() {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 680);
         frame.setLocationRelativeTo(null);
+
 
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
             ChangeUsernameApp change = new ChangeUsernameApp();
             change.setVisible(true);
             System.out.println("Change username button clicked");
-            this.dispose(); // Close the current window after opening the new one
+            frame.dispose();
         });
-
-
-
 
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
+            //sendEndConnection(me);  comment ajouter le usr ici ??
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
             System.out.println("Back button clicked");
-            this.dispose(); // Close the current window after opening the new one
+            frame.dispose();
         });
 
         contactListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
