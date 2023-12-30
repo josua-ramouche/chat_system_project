@@ -1,4 +1,5 @@
 package Controller.ContactDiscovery;
+import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
 import View.CustomListener;
@@ -149,6 +150,8 @@ public class ServerUDP {
                 // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(ContactList.getContacts(), contact)) {
                     ContactList.addContact(contact);
+                    //Adds user to the database
+                    DatabaseController.addUser(contact);
                     System.out.println("New contact added");
                 }
 
@@ -207,6 +210,7 @@ public class ServerUDP {
             for (User u : ContactList.getContacts()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
+                    DatabaseController.disconnectUser(u);
                     u.setState(false);
                     disconnectedUser = u.getUsername();
                     break;
@@ -229,6 +233,8 @@ public class ServerUDP {
             if (isUsernameUnique(newUsername, address)) {
                 for (User u : ContactList.getContacts()) {
                     if (u.getUsername().equals(oldUsername)) {
+                        //Updates username in database
+                        DatabaseController.updateUsername(u,newUsername);
                         u.setUsername(newUsername);
                         System.out.println("Username changed: " + oldUsername + " to " + newUsername);
                         break;

@@ -1,6 +1,8 @@
 package Controller.ContactDiscovery;
+import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
+
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -67,6 +69,9 @@ public class ClientUDP {
                     try {
                         System.out.println("Broadcast address : " + inetAddress);
                         broadcast("BROADCAST:" + username, inetAddress);
+                        //If this is the first connection, creates a local database
+                        DatabaseController.createUserTable();
+                        DatabaseController.createContactTable();
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);
