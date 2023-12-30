@@ -193,6 +193,7 @@ public class ServerUDP {
             // if the receiver is not already in the contact list, he is added to the contact list
             if (!server.containsContact(ContactList.getContacts(), contact)) {
                 ContactList.addContact(contact);
+                DatabaseController.addUser(contact);
                 System.out.println("New contact added");
             }
 

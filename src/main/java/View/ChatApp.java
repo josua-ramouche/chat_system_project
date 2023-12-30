@@ -12,10 +12,10 @@ public class ChatApp extends JFrame {
     private final JTextPane chatArea;
     private final JTextField messageField;
 
-    private static final User me = new User("User1");
+    private static final User me = new User("Me");
     private static final User partner = new User("User2");
 
-    public ChatApp(User me, User partner) {
+    public ChatApp(User partner) {
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,6 +63,8 @@ public class ChatApp extends JFrame {
     private void sendMessage() {
         String message = messageField.getText();
         if (!Objects.equals(message, "")) {
+            //TO BE ADDED : Start connection with contact
+            //TO BE ADDED : Send TCP message
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
 
@@ -81,7 +83,7 @@ public class ChatApp extends JFrame {
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            ChatApp chatApp = new ChatApp(me, partner);
+            ChatApp chatApp = new ChatApp(partner);
             chatApp.setVisible(true);
         });
     }

@@ -120,7 +120,7 @@ public class DatabaseController {
             pstmt.setString(2,u.getIPAddress().getHostAddress());
             pstmt.setBoolean(3,u.getState());
             pstmt.executeUpdate();
-            int id = getUserID(u,conn);
+            int id = getUserID(u);
             if (id != 0){
                 addContact(id, conn);
             }
@@ -141,7 +141,8 @@ public class DatabaseController {
         }
     }
 
-    public static int getUserID(User u, Connection conn){
+    public static int getUserID(User u){
+        Connection conn = connect();
         int id = 0;
         String sql = "SELECT userID FROM Users WHERE username = ? AND ipaddress = ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -158,6 +159,15 @@ public class DatabaseController {
         catch (SQLException e) {
             System.out.println("Could not get userID in database\n");
             e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
         }
         return id;
     }
@@ -218,8 +228,8 @@ public class DatabaseController {
         }
     }
 
-    public static void addContact(int id, Connection conn){
-        String sql = "INSERT OR IGNORE INTO Contacts (contactID) VALUES (?);";
+    private static void addContact(int id, Connection conn){
+        String sql = "INSERT OR IGNORE INTO Contacts (contactID) VALUES (?);"; //IGNORE might be an obstacle
         try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, id);
             pstmt.executeUpdate();
@@ -231,8 +241,56 @@ public class DatabaseController {
         }
     }
 
+    public static void saveSentMessage(int id, String message) {
+        String sql = "INSERT INTO Chat" + id + " (message,senderID) VALUES (?,?);";
+
+        Connection conn = connect();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,message);
+            pstmt.setInt(2, 0);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public static void saveReceivedMessage(int id, String message) {
+        String sql = "INSERT INTO Chat" + id + " (message,senderID) VALUES (?,?);";
+
+        Connection conn = connect();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,message);
+            pstmt.setInt(2, id);
+            pstmt.executeUpdate();
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        User contact1 = new User();
+        /*User contact1 = new User();
         contact1.setUsername("Contact1");
         contact1.setIPAddress(InetAddress.getByName("198.162.5.1"));
         contact1.setState(true);
@@ -254,7 +312,10 @@ public class DatabaseController {
         TimeUnit.SECONDS.sleep(10);
 
         updateUsername(contact3,"newUsername");
-        disconnectUser(contact1);
+        disconnectUser(contact1);*/
+
+        saveReceivedMessage(1,"Hey!");
+        saveSentMessage(1,"Helluw!");
 
     }
 }

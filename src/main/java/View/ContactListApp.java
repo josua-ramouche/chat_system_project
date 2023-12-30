@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
 
@@ -60,7 +61,7 @@ public class ContactListApp extends JFrame {
         contactListView.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 // Handle the selection of a contact
-                System.out.println("Test");
+                onContactSelection();
             }
         });
         contactListView.setVisibleRowCount(5);
@@ -86,6 +87,25 @@ public class ContactListApp extends JFrame {
 
         frame.getContentPane().add(mainPanel);
         frame.setVisible(true);
+    }
+
+    private void onContactSelection() {
+        // Index of the selected contact on the interface
+        int index = contactListView.getSelectedIndex();
+
+        // Get the actual user object from the contactList previously created
+        User selectedContact = contactList.get(index);
+
+        // Set the selectedIndex to the index from getSelectedIndex() method
+        contactListView.setSelectedIndex(index);
+        // Highlights the selected mission
+        contactListView.ensureIndexIsVisible(index);
+
+        int id = DatabaseController.getUserID(selectedContact);
+        DatabaseController.createChatTable(id);
+
+        ChatApp chat = new ChatApp(selectedContact);
+        chat.setVisible(true);
     }
 
     private void updateContactList() {
