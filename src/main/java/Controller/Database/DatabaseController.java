@@ -1,11 +1,14 @@
 package Controller.Database;
 
 
+import Model.Message;
 import Model.User;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseController {
 
@@ -293,24 +296,86 @@ public class DatabaseController {
         }
     }
 
+    public static User getUser(int id) {
+        User user = new User();
+        String sql = "SELECT * FROM Users WHERE userID = ?;";
+
+        Connection conn = connect();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1,id);
+
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while(resultSet.next()) {
+                user.setUsername(resultSet.getString("username"));
+                user.setIPAddress(InetAddress.getByName(resultSet.getString("ipaddress")));
+                user.setState(resultSet.getBoolean("connectionState"));
+            }
+            return user;
+        }
+        catch (SQLException | UnknownHostException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return user;
+    }
+
+    public static List<Message> getMessages(int id){
+        List<Message> messages = new ArrayList<>();
+        String content;
+        int senderID;
+        String timeStamp;
+        Connection conn = connect();
+        String sql = "SELECT * FROM Chat" + id +";";
+        try (Statement stmt = conn.createStatement()) {
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while(resultSet.next()) {
+                content = resultSet.getString("message");
+                senderID = resultSet.getInt("senderID");
+                timeStamp = resultSet.getString("timestamp");
+
+                User user = getUser(senderID);
+
+                Message message = new Message(content,timeStamp,user);
+                messages.add(message);
+            }
+            System.out.println("Messages from Chat" + id + " retrieved successfully");
+            return messages;
+        }
+        catch (SQLException e) {
+            System.out.println("Could not get messages in database\n");
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return messages;
+    }
+
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        User huh = new User();
-        huh.setUsername("tes22t");
-        huh.setIPAddress(InetAddress.getByName("198.162.5.46"));
-        huh.setState(true);
-
-        addUser(huh);
-        //addUser(contact2);
-        //addUser(contact3);
-
-        /*TimeUnit.SECONDS.sleep(10);
-
-        updateUsername(contact3,"newUsername");
-        disconnectUser(contact1);*/
-
-        //saveReceivedMessage(1,"Hey!");
-        //saveSentMessage(1,"Helluw!");
-
+        List<Message> messages;
+        messages = getMessages(1);
+        for (Message message : messages) {
+            System.out.println("Content : " + message.getContent());
+            System.out.println("sender : " + message.getSender());
+            System.out.println("TimeStamp : " + message.getDate());
+        }
     }
 }
 
