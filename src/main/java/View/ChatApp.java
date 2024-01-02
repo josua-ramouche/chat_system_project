@@ -97,7 +97,7 @@ public class ChatApp extends JFrame {
                 StyleConstants.setForeground(style, Color.RED);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                    doc.insertString(doc.getLength(), "Me" + ": ", style);
                     StyleConstants.setForeground(style, Color.BLACK);
                     doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
                 } catch (BadLocationException e) {
