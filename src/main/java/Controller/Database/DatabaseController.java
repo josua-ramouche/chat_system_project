@@ -278,6 +278,42 @@ public class DatabaseController {
         return id != 0;
     }
 
+    public static List<User> getUsers(){
+        List<User> users = new ArrayList<>();
+        String username;
+        InetAddress ipaddress;
+        boolean state;
+        Connection conn = connect();
+        String sql = "SELECT * FROM Users;";
+        try (Statement stmt = conn.createStatement()) {
+            ResultSet resultSet = stmt.executeQuery(sql);
+
+            while(resultSet.next()) {
+                username = resultSet.getString("username");
+                ipaddress = InetAddress.getByName(resultSet.getString("ipaddress"));
+                state = resultSet.getBoolean("connectionState");
+
+                User user = new User(username,ipaddress,state);
+                users.add(user);
+            }
+            System.out.println("Users retrieved from database successfully");
+            return users;
+        }
+        catch (SQLException | UnknownHostException e) {
+            System.out.println("Could not get messages in database\n");
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return users;
+    }
+
     public static void saveSentMessage(int id, String message) {
         String sql = "INSERT INTO Chat" + id + " (message,senderID) VALUES (?,?);";
 
