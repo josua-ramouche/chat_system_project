@@ -99,7 +99,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
     }
     @Override
-    public void launchtest() {
+    public void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
             System.out.println("check ok listener2");
             listener2.updateContactList();

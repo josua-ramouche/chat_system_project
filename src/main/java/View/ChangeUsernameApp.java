@@ -106,7 +106,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void launchtest() {
+    public void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
             listener2.updateContactList();
             System.out.println("check ok listener2");

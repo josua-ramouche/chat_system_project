@@ -81,6 +81,11 @@ public class ChatApp extends JFrame {
         }
     }
 
+    private void PrintHistory() {
+        //print all the messsages when i send a message or when i receive a message (tcp)
+
+    }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             ChatApp chatApp = new ChatApp(partner);

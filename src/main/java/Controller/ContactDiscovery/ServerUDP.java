@@ -171,7 +171,7 @@ public class ServerUDP {
                 //new listener vers interface contact list pour update
                 for (CustomListener listener : listeners) {
                     System.out.println("check launchtest");
-                    listener.launchtest();
+                    listener.launchTest();
                     System.out.println("check launchtest");
                 }
             } else {
