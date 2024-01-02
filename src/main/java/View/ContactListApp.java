@@ -30,7 +30,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
         contactListModel = new DefaultListModel<>();
         contactListView = new JList<>(contactListModel);
 
-        addContactsToDisplayedList();
+        List<User> users = DatabaseController.getUsers();
+        addContactsToDisplayedList(users);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(900, 680);
@@ -115,12 +116,13 @@ public class ContactListApp extends JFrame implements CustomListener2{
             contactList = ContactList.getContacts();
             System.out.println("contact list size :" + contactList.size());
             printContactList();
-            addContactsToDisplayedList();
+            List<User> users = DatabaseController.getUsers();
+            addContactsToDisplayedList(users);
         });
     }
 
-    private void addContactsToDisplayedList() {
-        for (User user : contactList) {
+    private void addContactsToDisplayedList(List<User> users) {
+        for (User user : users) {
             if (user.getState()) {
                 contactListModel.addElement(user.getUsername() + " Online");
             } else {
