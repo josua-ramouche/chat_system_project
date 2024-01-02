@@ -174,6 +174,36 @@ public class DatabaseController {
         return id;
     }
 
+    public static int getUserID2(InetAddress u){
+        Connection conn = connect();
+        int id = 0;
+        String sql = "SELECT userID FROM Users WHERE ipaddress = ?;";
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, u.getHostAddress());
+
+            ResultSet resultSet = pstmt.executeQuery();
+
+            while(resultSet.next()) {
+                id = resultSet.getInt("userID");
+            }
+            return id;
+        }
+        catch (SQLException e) {
+            System.out.println("Could not get userID in database\n");
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        return id;
+    }
+
     public static void disconnectUser(User u) {
         String sql = "UPDATE Users " +
                 "SET connectionState = '0' " +

@@ -1,5 +1,6 @@
 package View;
 
+import Controller.Chat.ClientTCP;
 import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
@@ -102,6 +103,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         ChatApp chat = new ChatApp(selectedContact);
         chat.setVisible(true);
+        ClientTCP.startConnection(selectedContact.getIPAddress(),1556);
     }
 
     @Override

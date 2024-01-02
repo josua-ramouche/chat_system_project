@@ -1,11 +1,16 @@
 package Controller.Chat;
 
+import Controller.Database.DatabaseController;
+import Model.Message;
+import View.ChatApp;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class ServerTCP {
     public static class ClientHandler extends Thread {
@@ -22,6 +27,13 @@ public class ServerTCP {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
                     System.out.println("Received: " + inputLine);
+
+                    int idsender = DatabaseController.getUserID2(clientSocket.getInetAddress());
+                    DatabaseController.saveReceivedMessage(idsender,in.readLine());
+
+                    List<Message> messages = DatabaseController.getMessages(idsender);
+                    ChatApp.PrintHistory(messages);
+
                     // If end connection message received from client
                     if ("END".equals(inputLine)) {
                         out.println("END");

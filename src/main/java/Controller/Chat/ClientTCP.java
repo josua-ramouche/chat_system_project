@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 
 public class ClientTCP {
@@ -11,7 +12,7 @@ public class ClientTCP {
     private static PrintWriter out;
     private static BufferedReader in;
 
-    public static void startConnection(String ip, int port) {
+    public static void startConnection(InetAddress ip, int port) {
         try {
             socket = new Socket(ip, port);
             out = new PrintWriter(socket.getOutputStream(), true);
@@ -51,8 +52,4 @@ public class ClientTCP {
         }
     }
 
-    public static void main(String[] args) {
-        startConnection("192.168.214.52", 1556);
-        sendMessage();
-    }
 }

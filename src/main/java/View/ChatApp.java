@@ -1,21 +1,24 @@
 package View;
 
+import Controller.Chat.ClientTCP;
+import Controller.Database.DatabaseController;
+import Model.Message;
 import Model.User;
 
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
 import java.util.Objects;
+import java.util.List;
 
 public class ChatApp extends JFrame {
-    private final JTextPane chatArea;
+    private static JTextPane chatArea = null;
     private final JTextField messageField;
 
-    private static final User me = new User("Me");
-    private static final User partner = new User("User2");
+    private static User partner = null;
 
     public ChatApp(User partner) {
+        ChatApp.partner =partner;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -26,8 +29,6 @@ public class ChatApp extends JFrame {
         chatArea = new JTextPane();
         messageField = new JTextField();
         JButton sendButton = new JButton("Send");
-
-        StyledDocument doc = chatArea.getStyledDocument();
 
         setLayout(new BorderLayout());
         JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -51,45 +52,58 @@ public class ChatApp extends JFrame {
         });
 
         // send button action
-        sendButton.addActionListener(e -> sendMessage());
+        sendButton.addActionListener(e -> sendMessageTCP());
 
         // Add an action listener for the Enter key
-        messageField.addActionListener(e -> sendMessage());
+        messageField.addActionListener(e -> sendMessageTCP());
 
         // Set focus to the messageField
         messageField.requestFocusInWindow();
     }
 
-    private void sendMessage() {
+    private void sendMessageTCP() {
         String message = messageField.getText();
         if (!Objects.equals(message, "")) {
-            //TO BE ADDED : Start connection with contact
-            //TO BE ADDED : Send TCP message
+            ClientTCP.sendMessage();
+            DatabaseController.saveSentMessage(DatabaseController.getUserID(partner),message);
+            messageField.setText("");
+        }
+
+        List<Message> messages =DatabaseController.getMessages(DatabaseController.getUserID(partner));
+        PrintHistory(messages);
+    }
+
+
+
+    //print all the messsages when i send a message or when i receive a message (tcp)
+    public static void PrintHistory(List<Message> messages) {
+        messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
 
-            StyleConstants.setForeground(style, Color.BLUE);
-            try {
-                doc.insertString(doc.getLength(), me.getUsername() + ": ", style);
-                StyleConstants.setForeground(style, Color.BLACK);
-                doc.insertString(doc.getLength(), message + "\n", style);
-            } catch (BadLocationException e) {
-                e.printStackTrace();
+            if (msg.getSender().equals(partner)) { //messages i received
+                StyleConstants.setForeground(style, Color.BLUE);
+                try {
+                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                    StyleConstants.setForeground(style, Color.BLACK);
+                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
             }
-
-            messageField.setText("");
-        }
-    }
-
-    private void PrintHistory() {
-        //print all the messsages when i send a message or when i receive a message (tcp)
-
-    }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ChatApp chatApp = new ChatApp(partner);
-            chatApp.setVisible(true);
+            else { //my messages
+                StyleConstants.setForeground(style, Color.RED);
+                try {
+                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                    StyleConstants.setForeground(style, Color.BLACK);
+                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
         });
     }
+
 }
