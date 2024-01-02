@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Chat.ClientTCP;
+import Controller.Chat.ServerTCP;
 import Controller.Database.DatabaseController;
 import Model.Message;
 import Model.User;
@@ -50,6 +51,7 @@ public class ChatApp extends JFrame {
             ContactListApp contact = new ContactListApp();
             contact.setVisible(true);
             //DISCONNECTION
+            //ServerTCP.ClientHandler.endConnection();
             dispose();
         });
 
@@ -61,6 +63,9 @@ public class ChatApp extends JFrame {
 
         // Set focus to the messageField
         messageField.requestFocusInWindow();
+
+        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
+        PrintHistory(messages);
     }
 
     private void sendMessageTCP() {
@@ -72,7 +77,7 @@ public class ChatApp extends JFrame {
             messageField.setText("");
         }
 
-        List<Message> messages =DatabaseController.getMessages(DatabaseController.getUserID(partner));
+        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
         PrintHistory(messages);
     }
 
@@ -80,13 +85,14 @@ public class ChatApp extends JFrame {
 
     //print all the messsages when i send a message or when i receive a message (tcp)
     public static void PrintHistory(List<Message> messages) {
+        chatArea.setText("");
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
             InetAddress partnerip = partner.getIPAddress();
             System.out.println(" Partner : " + partnerip.getHostAddress());
-            if (senderip==null) { //moi
+            if (senderip == null) { //moi
                 StyleConstants.setForeground(style, Color.RED);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
@@ -96,8 +102,7 @@ public class ChatApp extends JFrame {
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
-            }
-            else { //toi
+            } else { //toi
                 StyleConstants.setForeground(style, Color.BLUE);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
@@ -109,6 +114,10 @@ public class ChatApp extends JFrame {
                 }
             }
         });
+
+        // Set the scroll position to the bottom
+        chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
+
 
 }

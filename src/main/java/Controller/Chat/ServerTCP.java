@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ServerTCP {
     public static class ClientHandler extends Thread {
-        private final Socket clientSocket;
+        private Socket clientSocket = null;
 
         public ClientHandler(Socket socket) {
             this.clientSocket = socket;
@@ -25,26 +25,29 @@ public class ServerTCP {
                  BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
                 String inputLine;
-                while ((inputLine = in.readLine()) != null) {
-                    System.out.println("Received: " + inputLine);
+                while (true) {
+                    inputLine = in.readLine();
+                    if (inputLine!=null) {
+                        System.out.println("Received: " + inputLine);
 
-                    int idsender = DatabaseController.getUserID2(clientSocket.getInetAddress());
-                    System.out.println("ID SENDER : "+ idsender);
-                    System.out.println("IP ADDRESS CLIENT: " + clientSocket.getInetAddress().getHostAddress());
-                    System.out.println("CONTENT :"+ inputLine);
-                    DatabaseController.saveReceivedMessage(idsender,inputLine);
+                        int idsender = DatabaseController.getUserID2(clientSocket.getInetAddress());
+                        System.out.println("ID SENDER : " + idsender);
+                        System.out.println("IP ADDRESS CLIENT: " + clientSocket.getInetAddress().getHostAddress());
+                        System.out.println("CONTENT :" + inputLine);
+                        DatabaseController.saveReceivedMessage(idsender, inputLine);
 
-                    List<Message> messages = DatabaseController.getMessages(idsender);
-                    ChatApp.PrintHistory(messages);
+                        List<Message> messages = DatabaseController.getMessages(idsender);
+                        ChatApp.PrintHistory(messages);
 
-                    // If end connection message received from client
-                    if ("END".equals(inputLine)) {
-                        out.println("END");
-                        break;
+                        // If end connection message received from client
+                        if ("END".equals(inputLine)) {
+                            out.println("END");
+                            break;
+                        }
                     }
                 }
 
-                endConnection();
+
                 System.out.println("CONVERSATION: Connection ended with client");
             } catch (IOException e) {
                 e.printStackTrace();
