@@ -14,7 +14,7 @@ import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.sendEndConnection;
 
 
-public class ContactListApp extends JFrame {
+public class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
@@ -107,9 +107,14 @@ public class ContactListApp extends JFrame {
         chat.setVisible(true);
     }
 
-    private void updateContactList() {
+    @Override
+    public void updateContactList() {
+        System.out.println("dans le listener2 : fonctionne");
         contactListModel.clear();
         contactList = ContactList.getContacts();
+        for (User user : contactList) {
+            System.out.println("blablabla" + user);
+        }
         addContactsToDisplayedList();
     }
 
@@ -123,39 +128,4 @@ public class ContactListApp extends JFrame {
         }
     }
 
-    public static void main(String[] args) throws UnknownHostException {
-        User user = new User();
-        user.setUsername("Test1");
-        user.setIPAddress(InetAddress.getLocalHost());
-        user.setState(true);
-
-        User contact1 = new User();
-        contact1.setUsername("Contact1");
-        contact1.setIPAddress(InetAddress.getByName("198.162.5.1"));
-        contact1.setState(true);
-
-        User contact2 = new User();
-        contact2.setUsername("Contact2");
-        contact2.setIPAddress(InetAddress.getByName("198.162.5.2"));
-        contact2.setState(true);
-
-        User contact3 = new User();
-        contact3.setUsername("Contact3");
-        contact3.setIPAddress(InetAddress.getByName("198.162.5.3"));
-        contact3.setState(false);
-
-        List<User> contactListTest = new ArrayList<>();
-        contactListTest.add(contact1);
-        contactListTest.add(contact2);
-        contactListTest.add(contact3);
-
-        ContactList.setContacts(contactListTest);
-
-        SwingUtilities.invokeLater(() -> {
-            ContactListApp contact = new ContactListApp();
-            contact.setVisible(true);
-
-        });
-
-    }
 }

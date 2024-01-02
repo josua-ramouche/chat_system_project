@@ -3,6 +3,7 @@ import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
 import View.CustomListener;
+import View.CustomListener2;
 
 import java.io.IOException;
 import java.net.*;
@@ -29,10 +30,6 @@ public class ServerUDP {
         public EchoServer(User server, DatagramSocket sock) {
             this.socket = sock;
             this.server = server;
-        }
-
-        public User getServer() {
-            return this.server;
         }
 
         // Send a message to a specific IP address
@@ -84,10 +81,9 @@ public class ServerUDP {
                     } else if (received.startsWith("USERNAME_UPDATED")) {
                         // if the permission to change the username is accepted
                         handleChangeOfUsername(received.substring("USERNAME_UPDATED:".length()));
-                    } else {
+                    } else if (received.startsWith("HANDLE_RESPONSE_MESSAGE")) {
                         // if a response to a broadcast message is received
-                        System.out.println("Broadcast response:");
-                        handleResponseMessage(received, address);
+                        handleResponseMessage(received.substring("HANDLE_RESPONSE_MESSAGE:".length()), address);
                         System.out.println("-----------------------------");
                     }
                 }
@@ -104,7 +100,7 @@ public class ServerUDP {
         }
 
         //signals and slots for unicity with GUI
-        private List<CustomListener> listeners = new ArrayList<>();
+        private final List<CustomListener> listeners = new ArrayList<>();
 
         public void addActionListener(CustomListener listener) {
             listeners.add(listener);
@@ -138,6 +134,14 @@ public class ServerUDP {
             String[] parts = message.split(":");
             String username = parts[0];
 
+            System.out.println("handle broadcast message : ");
+            //new listener vers interface contact list pour update
+            for (CustomListener listener : listeners) {
+                System.out.println("check launchtest");
+                listener.launchtest();
+                System.out.println("check launchtest");
+            }
+
             // checks if the user who sends the broadcast message has a unique username
             if (isUsernameUnique(username)) {
                 User contact = new User();
@@ -162,7 +166,7 @@ public class ServerUDP {
                     }
                 });
 
-                sendIP(server.getUsername(), address, socket);
+                sendIP("HANDLE_RESPONSE_MESSAGE:"+server.getUsername(), address, socket);
             } else {
                 // Notify the client that the username is not unique
                 sendIP("USERNAME_NOT_UNIQUE:", address, socket);
@@ -175,6 +179,7 @@ public class ServerUDP {
             String[] parts = message.split(":");
             String username = parts[0];
 
+            System.out.println("HANDLE RESPONSE MESSAGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
             if (address.equals(lastResponseSender)) {
                 return;
             }
@@ -187,10 +192,6 @@ public class ServerUDP {
             contact.setState(true);
 
 
-            //for (CustomListener listener : listeners) {
-            //    listener.unique("Username unique");
-            //}
-            // if the receiver is not already in the contact list, he is added to the contact list
             if (!server.containsContact(ContactList.getContacts(), contact)) {
                 ContactList.addContact(contact);
                 DatabaseController.addUser(contact);

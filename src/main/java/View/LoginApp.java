@@ -8,15 +8,17 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class LoginApp extends JFrame implements CustomListener{
 
-    private final AtomicBoolean check= new AtomicBoolean(false);
+    private final AtomicBoolean not_unique= new AtomicBoolean(false);
     private JTextField usernameField;
-    ContactListApp mainAppInterface;
+    private static ContactListApp mainAppInterface;
 
 
 
@@ -28,6 +30,12 @@ public class LoginApp extends JFrame implements CustomListener{
 
         initComponents();
     }
+
+    public static ContactListApp getContactListApp()
+    {
+        return mainAppInterface;
+    }
+
 
     private void initComponents() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
@@ -62,28 +70,53 @@ public class LoginApp extends JFrame implements CustomListener{
         UserContactDiscovery.inituser(username);
         UserContactDiscovery U = new UserContactDiscovery(username);
         // set atomic bool no_unique to false to reset it
-        check.set(false);
+        not_unique.set(false);
         U.Action();
 
         TimeUnit.SECONDS.sleep(1);
-        unique("Test");
-        // todo create timer calling unique
+
+        // Check if the login is successful before calling unique
+        if (!not_unique.get()) {
+            unique("Test");
+            // todo create timer calling unique
+        }
+    }
+
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
+    public void addActionListener2(CustomListener2 listener) {
+        listeners2.add(listener);
+    }
+
+
+    @Override
+    public void unique(String message) throws SocketException {
+
+        // check if atomic bool not_unique if at false to continue
+        if (!not_unique.get()) {
+            if (mainAppInterface == null) {
+                mainAppInterface = new ContactListApp();
+                this.addActionListener2(mainAppInterface);
+            }
+            mainAppInterface.setVisible(true);
+            this.setVisible(false);
+        }
+
 
     }
     @Override
-    public void unique(String message) {
-        // check if atomic bool not_unique if at false to continue
-        if (!check.get()) {
-            mainAppInterface = new ContactListApp();
-            mainAppInterface.setVisible(true);
+    public void launchtest() {
+        for (CustomListener2 listener2 : listeners2) {
+            System.out.println("check ok listener2");
+            listener2.updateContactList();
+            System.out.println("check ok listener2");
         }
     }
 
 
     @Override
     public void notUniquePopup(String message) {
-        // set atomic bool no_unique to true
-        check.set(true);
+        // set atomic bool not_unique to true
+        not_unique.set(true);
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
         this.setVisible(true);
         // Show a popup with the received message
@@ -92,10 +125,14 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
 
+
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
             LoginApp loginApp = new LoginApp();
             loginApp.setVisible(true);
+
+
             try {
                 UserContactDiscovery.inituser("");
                 ServerUDP.EchoServer server = UserContactDiscovery.Init();
@@ -107,4 +144,5 @@ public class LoginApp extends JFrame implements CustomListener{
             }
         });
     }
+
 }

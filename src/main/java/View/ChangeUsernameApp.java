@@ -8,6 +8,8 @@ import java.awt.*;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -55,6 +57,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
         add(panel);
     }
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
+    public void addActionListener2(CustomListener2 listener) {
+        listeners2.add(listener);
+    }
+
 
     private void onLoginButtonClick() throws IOException, InterruptedException {
         String username = usernameField.getText();
@@ -89,6 +96,14 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
         this.setVisible(true);
         // Show a popup with the received message
+    }
+
+    @Override
+    public void launchtest() {
+        for (CustomListener2 listener2 : listeners2) {
+            listener2.updateContactList();
+            System.out.println("check ok listener2");
+        }
     }
 
     private void goBack() {
