@@ -3,7 +3,6 @@ import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
 import View.CustomListener;
-import View.CustomListener2;
 
 import java.io.IOException;
 import java.net.*;
@@ -150,9 +149,17 @@ public class ServerUDP {
                 // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(ContactList.getContacts(), contact)) {
                     System.out.println("estce quon passe ici 1?");
+                    System.out.println("IPADDRESS : " + address.getHostAddress());
                     ContactList.addContact(contact);
                     //Adds user to the database
-                    DatabaseController.addUser(contact);
+                    if(DatabaseController.containsUser(contact)) {
+                        System.out.println("User already in database, updating username in database");
+                        DatabaseController.updateUsername(contact, contact.getUsername());
+                    }
+                    else {
+                        System.out.println("User not registered in database, adding user to database");
+                        DatabaseController.addUser(contact);
+                    }
                     System.out.println("New contact added");
                 }
 
@@ -194,9 +201,16 @@ public class ServerUDP {
 
             if (!server.containsContact(ContactList.getContacts(), contact)) {
                 System.out.println("estce quon passe ici 2 ?");
-
+                System.out.println("IPADDRESS : " + address.getHostAddress());
                 ContactList.addContact(contact);
-                DatabaseController.addUser(contact);
+                if(DatabaseController.containsUser(contact)) {
+                    System.out.println("User already in database, updating username in database");
+                    DatabaseController.updateUsername(contact, contact.getUsername());
+                }
+                else {
+                    System.out.println("User not registered in database, adding user to database");
+                    DatabaseController.addUser(contact);
+                }
                 System.out.println("New contact added");
             }
 
@@ -260,11 +274,11 @@ public class ServerUDP {
                 });
 
                 System.out.println("Contact List (connected):");
-                ContactList.getContacts().forEach(u -> {
+                /*ContactList.getContacts().forEach(u -> {
                     if (u.getState()) {
                         System.out.println(u.getUsername());
                     }
-                });
+                });*/
                 // Send a message to the sender to inform him that his username can be changed
                 sendIP("USERNAME_UPDATED"+newUsername, address, socket);
             } else {

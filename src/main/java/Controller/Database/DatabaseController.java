@@ -6,7 +6,6 @@ import Model.User;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.*;
-import java.util.concurrent.TimeUnit;
 
 public class DatabaseController {
 
@@ -121,6 +120,7 @@ public class DatabaseController {
             pstmt.setBoolean(3,u.getState());
             pstmt.executeUpdate();
             int id = getUserID(u);
+            System.out.println("ID = :" + id);
             if (id != 0){
                 addContact(id, conn);
             }
@@ -144,10 +144,9 @@ public class DatabaseController {
     public static int getUserID(User u){
         Connection conn = connect();
         int id = 0;
-        String sql = "SELECT userID FROM Users WHERE username = ? AND ipaddress = ?;";
+        String sql = "SELECT userID FROM Users WHERE ipaddress = ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, u.getUsername());
-            pstmt.setString(2, u.getIPAddress().getHostAddress());
+            pstmt.setString(1, u.getIPAddress().getHostAddress());
 
             ResultSet resultSet = pstmt.executeQuery();
 
@@ -202,13 +201,13 @@ public class DatabaseController {
     public static void updateUsername(User u, String name) {
         String sql = "UPDATE OR IGNORE Users " +
                 "SET username = ? " +
-                "WHERE username = ? AND ipaddress = ?;";
+                "WHERE userID = ? AND ipaddress = ?;";
 
         Connection conn = connect();
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,name);
-            pstmt.setString(2,u.getUsername());
+            pstmt.setInt(2,getUserID(u));
             pstmt.setString(3,u.getIPAddress().getHostAddress());
             pstmt.executeUpdate();
             System.out.println("Username updated in database\n");
@@ -239,6 +238,11 @@ public class DatabaseController {
             System.out.print("User addition to Contacts table failed\n");
             e.printStackTrace();
         }
+    }
+
+    public static boolean containsUser(User u) {
+        int id = getUserID(u);
+        return id != 0;
     }
 
     public static void saveSentMessage(int id, String message) {
@@ -290,32 +294,22 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        /*User contact1 = new User();
-        contact1.setUsername("Contact1");
-        contact1.setIPAddress(InetAddress.getByName("198.162.5.1"));
-        contact1.setState(true);
+        User huh = new User();
+        huh.setUsername("tes22t");
+        huh.setIPAddress(InetAddress.getByName("198.162.5.46"));
+        huh.setState(true);
 
-        User contact2 = new User();
-        contact2.setUsername("Contact2");
-        contact2.setIPAddress(InetAddress.getByName("198.162.5.2"));
-        contact2.setState(true);
+        addUser(huh);
+        //addUser(contact2);
+        //addUser(contact3);
 
-        User contact3 = new User();
-        contact3.setUsername("Contact3");
-        contact3.setIPAddress(InetAddress.getByName("198.162.5.3"));
-        contact3.setState(false);
-
-        addUser(contact1);
-        addUser(contact2);
-        addUser(contact3);
-
-        TimeUnit.SECONDS.sleep(10);
+        /*TimeUnit.SECONDS.sleep(10);
 
         updateUsername(contact3,"newUsername");
         disconnectUser(contact1);*/
 
-        saveReceivedMessage(1,"Hey!");
-        saveSentMessage(1,"Helluw!");
+        //saveReceivedMessage(1,"Hey!");
+        //saveSentMessage(1,"Helluw!");
 
     }
 }

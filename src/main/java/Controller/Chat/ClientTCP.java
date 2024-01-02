@@ -52,7 +52,7 @@ public class ClientTCP {
     }
 
     public static void main(String[] args) {
-        startConnection("192.168.214.160", 1556);
+        startConnection("192.168.214.52", 1556);
         sendMessage();
     }
 }

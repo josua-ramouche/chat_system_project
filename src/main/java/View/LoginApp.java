@@ -1,13 +1,12 @@
 package View;
 
+import Controller.Chat.ChatController;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.net.SocketException;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -85,7 +84,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     @Override
-    public void unique() throws SocketException {
+    public void unique() {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
@@ -131,11 +130,13 @@ public class LoginApp extends JFrame implements CustomListener{
 
             try {
                 UserContactDiscovery.inituser("");
-                ServerUDP.EchoServer server = UserContactDiscovery.Init();
-                server.setDaemon(true);
-                server.start();
-                server.addActionListener(loginApp);
-            } catch (SocketException | UnknownHostException e) {
+                ServerUDP.EchoServer serverUDP = UserContactDiscovery.Init();
+                serverUDP.setDaemon(true);
+                serverUDP.start();
+                serverUDP.addActionListener(loginApp);
+                ChatController.listenTCP serverTCP = new ChatController.listenTCP();
+                serverTCP.start();
+            } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         });
