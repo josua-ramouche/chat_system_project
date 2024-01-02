@@ -6,12 +6,10 @@ import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
+
 import java.util.List;
 
-import static Controller.ContactDiscovery.ClientUDP.sendEndConnection;
+import static Model.ContactList.printContactList;
 
 
 public class ContactListApp extends JFrame implements CustomListener2{
@@ -19,16 +17,15 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
     private final JList<String> contactListView;
-    private final JButton changeButton;
-    private final JButton backButton; // Added back button
     private List<User> contactList;
 
     public ContactListApp() {
         contactList = ContactList.getContacts();
 
         frame = new JFrame("Chat System");
-        changeButton = new JButton("Change Username");
-        backButton = new JButton("Disconnect");
+        JButton changeButton = new JButton("Change Username");
+        // Added back button
+        JButton backButton = new JButton("Disconnect");
         contactListModel = new DefaultListModel<>();
         contactListView = new JList<>(contactListModel);
 
@@ -109,13 +106,15 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     @Override
     public void updateContactList() {
-        System.out.println("dans le listener2 : fonctionne");
-        contactListModel.clear();
-        contactList = ContactList.getContacts();
-        for (User user : contactList) {
-            System.out.println("blablabla" + user);
-        }
-        addContactsToDisplayedList();
+        printContactList();
+        SwingUtilities.invokeLater(() -> {
+            System.out.println("dans le listener2 : updateconactlist");
+            contactListModel.clear();
+            contactList = ContactList.getContacts();
+            System.out.println("contact list size :" + contactList.size());
+            printContactList();
+            addContactsToDisplayedList();
+        });
     }
 
     private void addContactsToDisplayedList() {

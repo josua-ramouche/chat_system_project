@@ -10,6 +10,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.broadcast;
+import static Model.ContactList.printContactList;
 
 public class ServerUDP {
 
@@ -135,12 +136,7 @@ public class ServerUDP {
             String username = parts[0];
 
             System.out.println("handle broadcast message : ");
-            //new listener vers interface contact list pour update
-            for (CustomListener listener : listeners) {
-                System.out.println("check launchtest");
-                listener.launchtest();
-                System.out.println("check launchtest");
-            }
+
 
             // checks if the user who sends the broadcast message has a unique username
             if (isUsernameUnique(username)) {
@@ -153,6 +149,7 @@ public class ServerUDP {
 
                 // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(ContactList.getContacts(), contact)) {
+                    System.out.println("estce quon passe ici 1?");
                     ContactList.addContact(contact);
                     //Adds user to the database
                     DatabaseController.addUser(contact);
@@ -160,13 +157,16 @@ public class ServerUDP {
                 }
 
                 System.out.println("Contact List (connected):");
-                ContactList.getContacts().forEach(u -> {
-                    if (u.getState()) {
-                        System.out.println(u.getUsername());
-                    }
-                });
+                printContactList();
 
                 sendIP("HANDLE_RESPONSE_MESSAGE:"+server.getUsername(), address, socket);
+
+                //new listener vers interface contact list pour update
+                for (CustomListener listener : listeners) {
+                    System.out.println("check launchtest");
+                    listener.launchtest();
+                    System.out.println("check launchtest");
+                }
             } else {
                 // Notify the client that the username is not unique
                 sendIP("USERNAME_NOT_UNIQUE:", address, socket);
@@ -193,17 +193,15 @@ public class ServerUDP {
 
 
             if (!server.containsContact(ContactList.getContacts(), contact)) {
+                System.out.println("estce quon passe ici 2 ?");
+
                 ContactList.addContact(contact);
                 DatabaseController.addUser(contact);
                 System.out.println("New contact added");
             }
 
             System.out.println("Contact List (connected):");
-            ContactList.getContacts().forEach(u -> {
-                if (u.getState()) {
-                    System.out.println(u.getUsername());
-                }
-            });
+            printContactList();
         }
 
         // Reception of an end message

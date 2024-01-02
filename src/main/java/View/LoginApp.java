@@ -31,10 +31,6 @@ public class LoginApp extends JFrame implements CustomListener{
         initComponents();
     }
 
-    public static ContactListApp getContactListApp()
-    {
-        return mainAppInterface;
-    }
 
 
     private void initComponents() {
@@ -77,7 +73,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
         // Check if the login is successful before calling unique
         if (!not_unique.get()) {
-            unique("Test");
+            unique();
             // todo create timer calling unique
         }
     }
@@ -89,7 +85,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     @Override
-    public void unique(String message) throws SocketException {
+    public void unique() throws SocketException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {

@@ -11,7 +11,7 @@ public class ContactList {
 
     static List<User> contacts = new ArrayList<>();
 
-    public static List<User> getContacts()
+    public static synchronized List<User> getContacts()
     {
         return contacts;
     }
@@ -21,14 +21,21 @@ public class ContactList {
     private ContactList() {
     }
 
-    public static void addContact(User u){
+    public static synchronized void addContact(User u){
         contacts.add(u);
     }
     // Remove a user from the contact list
-    public static void deleteContact(User u){
+    public static synchronized void deleteContact(User u){
         contacts.remove(u);
     }
 
-
+    public static synchronized void printContactList(){
+        System.out.println("Print Contact List :");
+        contacts.forEach(u -> {
+            if (u.getState()) {
+                System.out.println("user : " + u.getUsername());
+            }
+        });
+    }
 
 }

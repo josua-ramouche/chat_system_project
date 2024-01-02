@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeUsernameApp extends JFrame implements CustomListener {
 
-    private final AtomicBoolean check = new AtomicBoolean(false);
+    private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
     private ContactListApp mainAppInterface;
 
@@ -72,27 +72,34 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         UserContactDiscovery.inituser(username);
         UserContactDiscovery U = new UserContactDiscovery(username);
         // set atomic bool no_unique to false to reset it
-        check.set(false);
+        not_unique.set(false);
         U.Action();
 
         TimeUnit.SECONDS.sleep(1);
-        unique("Test");
+        unique();
         // todo create timer calling unique
     }
 
     @Override
-    public void unique(String message) {
+    public void unique() {
+
         // check if atomic bool not_unique if at false to continue
-        if (!check.get()) {
-            mainAppInterface = new ContactListApp();
+        if (!not_unique.get()) {
+            if (mainAppInterface == null) {
+                mainAppInterface = new ContactListApp();
+                this.addActionListener2(mainAppInterface);
+            }
             mainAppInterface.setVisible(true);
+            this.setVisible(false);
         }
+
+
     }
 
     @Override
     public void notUniquePopup(String message) {
         // set atomic bool no_unique to true
-        check.set(true);
+        not_unique.set(true);
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
         this.setVisible(true);
         // Show a popup with the received message
