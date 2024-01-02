@@ -57,7 +57,6 @@ public class ContactListApp extends JFrame {
         });
 
         contactListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        contactListView.setSelectedIndex(0);
         contactListView.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 // Handle the selection of a contact
