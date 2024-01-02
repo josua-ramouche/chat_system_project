@@ -8,6 +8,7 @@ import Model.User;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
+import java.net.InetAddress;
 import java.util.Objects;
 import java.util.List;
 
@@ -48,6 +49,7 @@ public class ChatApp extends JFrame {
         backButton.addActionListener(e -> {
             ContactListApp contact = new ContactListApp();
             contact.setVisible(true);
+            //DISCONNECTION
             dispose();
         });
 
@@ -81,8 +83,10 @@ public class ChatApp extends JFrame {
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
-
-            if (msg.getSender().equals(partner)) { //messages i received
+            InetAddress senderip = msg.getSender().getIPAddress();
+            InetAddress partnerip = partner.getIPAddress();
+            System.out.println("Sender : " + senderip.getHostAddress() + " Partner : " + partnerip.getHostAddress());
+            if (senderip.equals(partnerip)) { //messages i received
                 StyleConstants.setForeground(style, Color.BLUE);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
