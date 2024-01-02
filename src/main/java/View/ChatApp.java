@@ -85,23 +85,23 @@ public class ChatApp extends JFrame {
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
             InetAddress partnerip = partner.getIPAddress();
-            System.out.println("Sender : " + senderip.getHostAddress() + " Partner : " + partnerip.getHostAddress());
-            if (senderip.equals(partnerip)) { //messages i received
-                StyleConstants.setForeground(style, Color.BLUE);
+            System.out.println(" Partner : " + partnerip.getHostAddress());
+            if (senderip==null) { //moi
+                StyleConstants.setForeground(style, Color.RED);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                    doc.insertString(doc.getLength(), "Me" + ": ", style);
                     StyleConstants.setForeground(style, Color.BLACK);
                     doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
             }
-            else { //my messages
-                StyleConstants.setForeground(style, Color.RED);
+            else { //toi
+                StyleConstants.setForeground(style, Color.BLUE);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                    doc.insertString(doc.getLength(), "Me" + ": ", style);
+                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
                     StyleConstants.setForeground(style, Color.BLACK);
                     doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
                 } catch (BadLocationException e) {
