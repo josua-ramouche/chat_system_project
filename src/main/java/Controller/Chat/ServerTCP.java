@@ -29,7 +29,10 @@ public class ServerTCP {
                     System.out.println("Received: " + inputLine);
 
                     int idsender = DatabaseController.getUserID2(clientSocket.getInetAddress());
-                    DatabaseController.saveReceivedMessage(idsender,in.readLine());
+                    System.out.println("ID SENDER : "+ idsender);
+                    System.out.println("IP ADDRESS CLIENT: " + clientSocket.getInetAddress().getHostAddress());
+                    System.out.println("CONTENT :"+ inputLine);
+                    DatabaseController.saveReceivedMessage(idsender,inputLine);
 
                     List<Message> messages = DatabaseController.getMessages(idsender);
                     ChatApp.PrintHistory(messages);
