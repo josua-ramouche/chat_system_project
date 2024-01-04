@@ -56,11 +56,9 @@ public class ChatApp extends JFrame {
 
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contact = new ContactListApp(me);
-            contact.setVisible(true);
-            //DISCONNECTION
-            disconnectAndNavigateBack();
-            dispose();
+            ContactListApp contactListApp = new ContactListApp(me);
+            contactListApp.setVisible(true);
+            this.setVisible(false);
         });
 
         addWindowListener(new WindowAdapter() {
@@ -85,12 +83,6 @@ public class ChatApp extends JFrame {
         PrintHistory(messages);
     }
 
-    private void disconnectAndNavigateBack() {
-        // Disconnect and navigate back to the contact list
-        ContactListApp contact = new ContactListApp(me);
-        contact.setVisible(true);
-        dispose();
-    }
 
     private void disconnectAndExit() {
         // Disconnect and exit the application
