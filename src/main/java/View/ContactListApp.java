@@ -133,25 +133,42 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     @Override
-    public synchronized void updateContactList() {
-        printContactList();
+    public void updateContactList() {
         SwingUtilities.invokeLater(() -> {
-            System.out.println("dans le listener2 : updateconactlist");
-            contactListModel.clear();
+            printContactList();
+            System.out.println("dans le listener2 : updatecontactlist");
             contactList = DatabaseController.getUsers();
             System.out.println("contact list size :" + contactList.size());
             printContactList();
+
             List<User> users = DatabaseController.getUsers();
+            System.out.println("users !!!!!!!!: ");
+            users.forEach(u -> {
+                if (u.getState()) {
+                    System.out.println("user : " + u.getUsername());
+                }
+            });
             addContactsToDisplayedList(users);
         });
     }
 
-    private void addContactsToDisplayedList(List<User> users) {
-        for (User user : users) {
-            if (user.getState()) {
-                contactListModel.addElement(user.getUsername() + " Online");
+
+    private synchronized void addContactsToDisplayedList(List<User> users) {
+        System.out.println("users2222222 !!!!!!!!: ");
+        users.forEach(u -> {
+            if (u.getState()) {
+                System.out.println("user : " + u.getUsername());
             }
-        }
+        });
+
+        SwingUtilities.invokeLater(() -> {
+            contactListModel.clear();
+            for (User user : users) {
+                if (user.getState()) {
+                    contactListModel.addElement(user.getUsername() + " Online");
+                }
+            }
+        });
     }
 
 }
