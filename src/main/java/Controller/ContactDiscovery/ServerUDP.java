@@ -60,6 +60,7 @@ public class ServerUDP {
 
                 // Allows to handle all the different received messages
                 if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
+
                     if (received.startsWith("BROADCAST:")) {
                         // if a broadcast message is received
                         System.out.println("Broadcast:");
@@ -85,6 +86,11 @@ public class ServerUDP {
                         // if a response to a broadcast message is received
                         handleResponseMessage(received.substring("HANDLE_RESPONSE_MESSAGE:".length()), address);
                         System.out.println("-----------------------------");
+                    }
+                    for (CustomListener listener : listeners) {
+                        System.out.println("check launchtest");
+                        listener.launchTest();
+                        System.out.println("check launchtest");
                     }
                 }
             }
