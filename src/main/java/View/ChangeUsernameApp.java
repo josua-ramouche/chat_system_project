@@ -2,10 +2,12 @@ package View;
 
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
+import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -45,7 +47,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
         JButton backButton = new JButton("Back");
         backButton.addActionListener(e -> {
-            goBack();
+            try {
+                goBack();
+            } catch (UnknownHostException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         panel.add(usernameLabel);
@@ -64,29 +70,35 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
 
     private void onLoginButtonClick() throws IOException, InterruptedException {
+
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        UserContactDiscovery.inituser(username);
-        UserContactDiscovery U = new UserContactDiscovery(username);
-        // set atomic bool no_unique to false to reset it
-        not_unique.set(false);
-        U.Action();
+        else {
+            UserContactDiscovery.inituser(username);
+            UserContactDiscovery U = new UserContactDiscovery(username);
+            // set atomic bool no_unique to false to reset it
+            not_unique.set(false);
+            U.Action();
 
-        TimeUnit.SECONDS.sleep(1);
-        unique();
-        // todo create timer calling unique
+            TimeUnit.SECONDS.sleep(1);
+            unique();
+        }
     }
 
     @Override
-    public void unique() {
+    public void unique() throws UnknownHostException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
             if (mainAppInterface == null) {
-                mainAppInterface = new ContactListApp();
+                User me = new User();
+                me.setUsername(usernameField.getText());
+                me.setIPAddress(InetAddress.getLocalHost());
+                me.setState(true);
+                mainAppInterface = new ContactListApp(me);
                 this.addActionListener2(mainAppInterface);
             }
             mainAppInterface.setVisible(true);
@@ -113,8 +125,12 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         }
     }
 
-    private void goBack() {
-        mainAppInterface = new ContactListApp();
+    private void goBack() throws UnknownHostException {
+        User me = new User();
+        me.setUsername(usernameField.getText());
+        me.setIPAddress(InetAddress.getLocalHost());
+        me.setState(true);
+        mainAppInterface = new ContactListApp(me);
         mainAppInterface.setVisible(true);
         this.dispose(); // Close the current window
     }

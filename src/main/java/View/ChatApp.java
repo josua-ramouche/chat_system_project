@@ -2,6 +2,7 @@ package View;
 
 import Controller.Chat.ClientTCP;
 import Controller.Chat.ServerTCP;
+import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.Message;
 import Model.User;
@@ -9,6 +10,8 @@ import Model.User;
 import javax.swing.*;
 import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.net.InetAddress;
 import java.util.Objects;
 import java.util.List;
@@ -18,9 +21,11 @@ public class ChatApp extends JFrame {
     private final JTextField messageField;
 
     private static User partner = null;
+    private static User me =null;
 
-    public ChatApp(User partner) {
-        ChatApp.partner =partner;
+    public ChatApp(User partner, User me) {
+        ChatApp.partner=partner;
+        ChatApp.me=me;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -46,14 +51,26 @@ public class ChatApp extends JFrame {
         bottomPanel.add(sendButton, BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
 
+
+
+
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contact = new ContactListApp();
+            ContactListApp contact = new ContactListApp(me);
             contact.setVisible(true);
             //DISCONNECTION
-            //ServerTCP.ClientHandler.endConnection();
+            disconnectAndNavigateBack();
             dispose();
         });
+
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                disconnectAndExit();
+            }
+        });
+
+
 
         // send button action
         sendButton.addActionListener(e -> sendMessageTCP());
@@ -67,6 +84,22 @@ public class ChatApp extends JFrame {
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
         PrintHistory(messages);
     }
+
+    private void disconnectAndNavigateBack() {
+        // Disconnect and navigate back to the contact list
+        ServerTCP.ClientHandler.endConnection();
+        ContactListApp contact = new ContactListApp(me);
+        contact.setVisible(true);
+        dispose();
+    }
+
+    private void disconnectAndExit() {
+        // Disconnect and exit the application
+        ServerTCP.ClientHandler.endConnection();
+        ClientUDP.sendEndConnection(me);
+        System.exit(0);
+    }
+
 
     private void sendMessageTCP() {
         String message = messageField.getText();
@@ -92,7 +125,7 @@ public class ChatApp extends JFrame {
             InetAddress senderip = msg.getSender().getIPAddress();
             InetAddress partnerip = partner.getIPAddress();
             System.out.println(" Partner : " + partnerip.getHostAddress());
-            if (senderip == null) { //moi
+            if (senderip == null) { //me
                 StyleConstants.setForeground(style, Color.RED);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
@@ -102,7 +135,7 @@ public class ChatApp extends JFrame {
                 } catch (BadLocationException e) {
                     e.printStackTrace();
                 }
-            } else { //toi
+            } else { //partner
                 StyleConstants.setForeground(style, Color.BLUE);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);

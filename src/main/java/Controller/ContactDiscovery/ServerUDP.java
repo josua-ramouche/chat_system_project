@@ -235,6 +235,11 @@ public class ServerUDP {
             }
             System.out.println("Contact List (connected):");
             ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+            for (CustomListener listener : listeners) {
+                System.out.println("check launchtest");
+                listener.launchTest();
+                System.out.println("check launchtest");
+            }
         }
 
         // Ask for permission to change the sender's username

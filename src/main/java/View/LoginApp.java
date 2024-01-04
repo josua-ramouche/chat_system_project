@@ -3,10 +3,13 @@ package View;
 import Controller.Chat.ChatController;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
+import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -18,8 +21,6 @@ public class LoginApp extends JFrame implements CustomListener{
     private final AtomicBoolean not_unique= new AtomicBoolean(false);
     private JTextField usernameField;
     private static ContactListApp mainAppInterface;
-
-
 
     public LoginApp() {
         setTitle("Login");
@@ -57,23 +58,26 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     private void onLoginButtonClick() throws IOException, InterruptedException {
+
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
-        UserContactDiscovery.inituser(username);
-        UserContactDiscovery U = new UserContactDiscovery(username);
-        // set atomic bool no_unique to false to reset it
-        not_unique.set(false);
-        U.Action();
+        else {
 
-        TimeUnit.SECONDS.sleep(1);
+            UserContactDiscovery.inituser(username);
+            UserContactDiscovery U = new UserContactDiscovery(username);
+            // set atomic bool no_unique to false to reset it
+            not_unique.set(false);
+            U.Action();
 
-        // Check if the login is successful before calling unique
-        if (!not_unique.get()) {
-            unique();
-            // todo create timer calling unique
+            TimeUnit.SECONDS.sleep(1);
+
+            // Check if the login is successful before calling unique
+            if (!not_unique.get()) {
+                unique();
+            }
         }
     }
 
@@ -84,12 +88,16 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     @Override
-    public void unique() {
+    public void unique() throws UnknownHostException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
             if (mainAppInterface == null) {
-                mainAppInterface = new ContactListApp();
+                User me = new User();
+                me.setUsername(usernameField.getText());
+                me.setIPAddress(InetAddress.getLocalHost());
+                me.setState(true);
+                mainAppInterface = new ContactListApp(me);
                 this.addActionListener2(mainAppInterface);
             }
             mainAppInterface.setVisible(true);

@@ -2,6 +2,7 @@ package Model;
 import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class User {
     private String username;
@@ -61,4 +62,21 @@ public class User {
         }
         return contained;
     }
+
+    // In the User class
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return username.equals(user.username) &&
+                ipaddress.equals(user.ipaddress) &&
+                Objects.equals(state, user.state);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, ipaddress, state);
+    }
+
 }

@@ -14,11 +14,12 @@ import java.util.List;
 
 public class ServerTCP {
     public static class ClientHandler extends Thread {
-        private Socket clientSocket = null;
+        private static Socket clientSocket = null;
 
         public ClientHandler(Socket socket) {
-            this.clientSocket = socket;
+            clientSocket = socket;
         }
+
 
         public void run() {
             try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
@@ -54,7 +55,7 @@ public class ServerTCP {
             }
         }
 
-        public void endConnection() {
+        public static void endConnection() {
             try {
                 clientSocket.close();
             } catch (IOException e) {

@@ -1,6 +1,8 @@
 package View;
 
 import Controller.Chat.ClientTCP;
+import Controller.Chat.ServerTCP;
+import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
@@ -8,6 +10,8 @@ import Model.User;
 import javax.swing.*;
 import java.awt.*;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.List;
 
 import static Model.ContactList.printContactList;
@@ -20,7 +24,10 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private final JList<String> contactListView;
     private List<User> contactList;
 
-    public ContactListApp() {
+    private static User me;
+
+    public ContactListApp(User me) {
+        this.me=me;
         contactList = ContactList.getContacts();
 
         frame = new JFrame("Chat System");
@@ -40,6 +47,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
+            ClientUDP.sendEndConnection(me);
             ChangeUsernameApp change = new ChangeUsernameApp();
             change.setVisible(true);
             System.out.println("Change username button clicked");
@@ -48,12 +56,20 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
-            //sendEndConnection(me);  comment ajouter le usr ici ??
+            ClientUDP.sendEndConnection(me);
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
             System.out.println("Back button clicked");
             frame.dispose();
         });
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                disconnectAndExit();
+            }
+        });
+
+
 
         contactListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         contactListView.addListSelectionListener(e -> {
@@ -87,6 +103,12 @@ public class ContactListApp extends JFrame implements CustomListener2{
         frame.setVisible(true);
     }
 
+    private void disconnectAndExit() {
+        // Disconnect and exit the application
+        ClientUDP.sendEndConnection(me);
+        System.exit(0);
+    }
+
     private void onContactSelection() {
         // Index of the selected contact on the interface
         int index = contactListView.getSelectedIndex();
@@ -102,7 +124,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         int id = DatabaseController.getUserID(selectedContact);
         DatabaseController.createChatTable(id);
 
-        ChatApp chat = new ChatApp(selectedContact);
+        ChatApp chat = new ChatApp(selectedContact,me);
         chat.setVisible(true);
         ClientTCP.startConnection(selectedContact.getIPAddress(),1556);
     }
@@ -125,8 +147,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
         for (User user : users) {
             if (user.getState()) {
                 contactListModel.addElement(user.getUsername() + " Online");
-            } else {
-                contactListModel.addElement(user.getUsername() + " Offline");
             }
         }
     }
