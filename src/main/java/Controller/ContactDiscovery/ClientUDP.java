@@ -72,6 +72,7 @@ public class ClientUDP {
                         //If this is the first connection, creates a local database
                         DatabaseController.createUserTable();
                         DatabaseController.createContactTable();
+                        DatabaseController.initConnection();
                     } catch (IOException e) {
                         e.printStackTrace();
                         throw new RuntimeException(e);

@@ -20,8 +20,6 @@ public class DatabaseController {
             //Create a connection to the database
             conn = DriverManager.getConnection(url);
 
-            System.out.println("Connection to SQLite database has been established.");
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -42,7 +40,6 @@ public class DatabaseController {
                     + "     UNIQUE (ipaddress) \n"
                     + ");";
             stmt.executeUpdate(sql);
-            System.out.println("User table created successfully\n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -68,7 +65,6 @@ public class DatabaseController {
                     + "     FOREIGN KEY (contactID) REFERENCES Users(userId) \n"
                     + ");";
             stmt.executeUpdate(sql);
-            System.out.println("Contacts table created successfully\n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -97,11 +93,32 @@ public class DatabaseController {
                     + "     FOREIGN KEY (senderID) REFERENCES Contacts(contactID) \n"
                     + ");";
             stmt.executeUpdate(sql);
-            System.out.println("Chat table created successfully\n");
         } catch (SQLException e) {
             e.printStackTrace();
         }
         // End the connection after the creation of the table
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public static void initConnection() {
+        String sql = "UPDATE Users " +
+                "SET connectionState = '0'; ";
+        Connection conn = connect();
+        try (Statement stmt = conn.createStatement()) {
+            stmt.executeUpdate(sql);
+            System.out.print("Connection states reset in database");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
         finally {
             try {
                 if (conn != null) {
@@ -204,21 +221,22 @@ public class DatabaseController {
         return id;
     }
 
-    public static void disconnectUser(User u) {
+    public static void updateConnectionState(User u,boolean state) {
         String sql = "UPDATE Users " +
-                "SET connectionState = '0' " +
+                "SET connectionState = ? " +
                 "WHERE username = ? AND ipaddress = ?;";
 
         Connection conn = connect();
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,u.getUsername());
-            pstmt.setString(2,u.getIPAddress().getHostAddress());
+            pstmt.setBoolean(1,state);
+            pstmt.setString(2,u.getUsername());
+            pstmt.setString(3,u.getIPAddress().getHostAddress());
             pstmt.executeUpdate();
-            System.out.println("User disconnection transmitted to database\n");
+            System.out.println("User's state of connection transmitted to database\n");
         }
         catch (SQLException e) {
-            System.out.println("User disconnection transmission to database failed\n");
+            System.out.println("User's state of connection transmission to database failed\n");
         }
         finally {
             try {
@@ -435,13 +453,7 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        List<Message> messages;
-        messages = getMessages(1);
-        for (Message message : messages) {
-            System.out.println("Content : " + message.getContent());
-            System.out.println("sender : " + message.getSender());
-            System.out.println("TimeStamp : " + message.getDate());
-        }
+        initConnection();
     }
 }
 

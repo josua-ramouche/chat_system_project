@@ -28,7 +28,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     public ContactListApp(User me) {
         this.me=me;
-        contactList = ContactList.getContacts();
+        contactList = DatabaseController.getUsers();
 
         frame = new JFrame("Chat System");
         JButton changeButton = new JButton("Change Username");
@@ -135,7 +135,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         SwingUtilities.invokeLater(() -> {
             System.out.println("dans le listener2 : updateconactlist");
             contactListModel.clear();
-            contactList = ContactList.getContacts();
+            contactList = DatabaseController.getUsers();
             System.out.println("contact list size :" + contactList.size());
             printContactList();
             List<User> users = DatabaseController.getUsers();

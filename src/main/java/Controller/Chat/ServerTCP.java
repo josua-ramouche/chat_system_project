@@ -26,7 +26,7 @@ public class ServerTCP {
                  BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
                 String inputLine;
-                while (true) {
+                while (!clientSocket.isClosed()) {
                     inputLine = in.readLine();
                     if (inputLine!=null) {
                         System.out.println("Received: " + inputLine);
