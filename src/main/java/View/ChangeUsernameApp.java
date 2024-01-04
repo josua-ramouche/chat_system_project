@@ -93,11 +93,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
+            User me = new User();
+            me.setUsername(usernameField.getText());
+            me.setIPAddress(InetAddress.getLocalHost());
+            me.setState(true);
             if (mainAppInterface == null) {
-                User me = new User();
-                me.setUsername(usernameField.getText());
-                me.setIPAddress(InetAddress.getLocalHost());
-                me.setState(true);
                 mainAppInterface = new ContactListApp(me);
                 this.addActionListener2(mainAppInterface);
             }
