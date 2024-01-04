@@ -19,6 +19,7 @@ public class ClientUDP {
             byte[] buffer = broadcastMessage.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
+            System.out.println("J'ENVOIE");
         }
         catch (Exception e)
         {
@@ -71,7 +72,7 @@ public class ClientUDP {
                         broadcast("BROADCAST:" + username, inetAddress);
                         //If this is the first connection, creates a local database
                         DatabaseController.createUserTable();
-                        DatabaseController.createContactTable();
+                        //DatabaseController.createContactTable();
                         DatabaseController.initConnection();
                     } catch (IOException e) {
                         e.printStackTrace();

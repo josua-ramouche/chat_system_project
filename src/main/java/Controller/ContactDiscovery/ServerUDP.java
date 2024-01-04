@@ -12,7 +12,7 @@ import static Controller.ContactDiscovery.ClientUDP.broadcast;
 import static Model.ContactList.printContactList;
 
 public class ServerUDP {
-
+//TEST
 
     public static class EchoServer extends Thread {
         private final User server;
