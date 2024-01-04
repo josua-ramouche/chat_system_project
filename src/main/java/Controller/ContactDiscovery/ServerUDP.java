@@ -155,6 +155,7 @@ public class ServerUDP {
                     if(DatabaseController.containsUser(contact)) {
                         System.out.println("User already in database, updating username in database");
                         DatabaseController.updateUsername(contact, contact.getUsername());
+                        DatabaseController.updateConnectionState(contact,true);
                     }
                     else {
                         System.out.println("User not registered in database, adding user to database");
