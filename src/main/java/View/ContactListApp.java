@@ -133,7 +133,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     @Override
-    public void updateContactList() {
+    public synchronized void updateContactList() {
         printContactList();
         SwingUtilities.invokeLater(() -> {
             System.out.println("dans le listener2 : updateconactlist");
