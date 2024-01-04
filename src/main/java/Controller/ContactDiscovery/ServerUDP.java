@@ -168,6 +168,7 @@ public class ServerUDP {
                 printContactList();
 
                 sendIP("HANDLE_RESPONSE_MESSAGE:"+server.getUsername(), address, socket);
+                System.out.println("Socket : "+socket.getPort());
 
                 //new listener vers interface contact list pour update
                 for (CustomListener listener : listeners) {

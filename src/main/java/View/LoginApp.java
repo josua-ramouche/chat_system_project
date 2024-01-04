@@ -3,6 +3,7 @@ package View;
 import Controller.Chat.ChatController;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
+import Controller.Database.DatabaseController;
 import Model.User;
 
 import javax.swing.*;
@@ -136,6 +137,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
             try {
+                DatabaseController.initConnection();
                 UserContactDiscovery.inituser("");
                 ServerUDP.EchoServer serverUDP = UserContactDiscovery.Init();
                 serverUDP.setDaemon(true);

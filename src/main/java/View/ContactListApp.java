@@ -26,7 +26,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private static User me;
 
     public ContactListApp(User me) {
-        this.me=me;
+        ContactListApp.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
 
@@ -47,7 +47,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
-            ClientUDP.sendEndConnection(me);
+            //ClientUDP.sendEndConnection(me);
             ChangeUsernameApp change = new ChangeUsernameApp();
             change.setVisible(true);
             System.out.println("Change username button clicked");
