@@ -90,7 +90,7 @@ public class DatabaseController {
                     + "		message TEXT NOT NULL, \n"
                     + "		senderID INTEGER, \n"
                     + "     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP, \n"
-                    + "     FOREIGN KEY (senderID) REFERENCES Contacts(contactID) \n"
+                    + "     FOREIGN KEY (senderID) REFERENCES Users(userID) \n"
                     + ");";
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
@@ -139,11 +139,11 @@ public class DatabaseController {
             pstmt.setString(2,u.getIPAddress().getHostAddress());
             pstmt.setBoolean(3,u.getState());
             pstmt.executeUpdate();
-            int id = getUserID(u);
+            /*int id = getUserID(u);
             System.out.println("ID = :" + id);
             if (id != 0){
                 addContact(id, conn);
-            }
+            }*/
             System.out.println("User added successfully to database\n");
         }
         catch (SQLException e) {

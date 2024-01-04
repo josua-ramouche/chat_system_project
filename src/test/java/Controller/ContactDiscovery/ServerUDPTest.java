@@ -17,6 +17,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
 
+
+    void deleteFromDatabase(User u) {
+        String sql = "DELETE FROM Users WHERE username = ?;";
+
+    }
+
     @Test
     void testEchoServer_HandleBroadcastMessage() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());

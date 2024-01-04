@@ -62,7 +62,6 @@ public class LoginApp extends JFrame implements CustomListener{
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
         }
         else {
 
