@@ -87,7 +87,6 @@ public class ChatApp extends JFrame {
 
     private void disconnectAndNavigateBack() {
         // Disconnect and navigate back to the contact list
-        ServerTCP.ClientHandler.endConnection();
         ContactListApp contact = new ContactListApp(me);
         contact.setVisible(true);
         dispose();
