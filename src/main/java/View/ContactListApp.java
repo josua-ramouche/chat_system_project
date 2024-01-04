@@ -128,6 +128,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         ChatApp chat = new ChatApp(selectedContact,me);
         chat.setVisible(true);
         frame.dispose();
+        frame.setVisible(false);
         ClientTCP.startConnection(selectedContact.getIPAddress(),1556);
     }
 

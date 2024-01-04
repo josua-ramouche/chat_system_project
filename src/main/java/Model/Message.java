@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Objects;
+
 public class Message {
     private String content;
     private String date;
@@ -26,6 +28,10 @@ public class Message {
     public User getSender() {
         return sender;
     }
+
+
+
+
 }
 
 
