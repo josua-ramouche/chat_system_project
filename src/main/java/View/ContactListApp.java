@@ -26,7 +26,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private static User me;
 
     public ContactListApp(User me) {
-        ContactListApp.me =me;
+        this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
 

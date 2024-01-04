@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeUsernameApp extends JFrame implements CustomListener {
-
+//TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
     private ContactListApp mainAppInterface;
