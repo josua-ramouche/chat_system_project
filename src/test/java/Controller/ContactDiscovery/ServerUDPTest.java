@@ -1,26 +1,46 @@
 package Controller.ContactDiscovery;
 
-import Controller.ContactDiscovery.ServerUDP;
 import Model.ContactList;
 import Model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Mockito;
 
 import java.io.IOException;
+import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
 
+    @AfterEach
+    void clearContactList() {
+        ContactList.getContacts().clear();
+    }
 
-    void deleteFromDatabase(User u) {
-        String sql = "DELETE FROM Users WHERE username = ?;";
+    @Test
+    void testEchoServer_SendIP() throws IOException {
+        String message = "test";
+        InetAddress ip_address = mock(InetAddress.class);
+        DatagramSocket socket = mock(DatagramSocket.class);
 
+        assertDoesNotThrow(() -> ServerUDP.EchoServer.sendIP(message,ip_address,socket));
+
+        ArgumentCaptor<DatagramPacket> packetCaptor = ArgumentCaptor.forClass(DatagramPacket.class);
+        Mockito.verify(socket,times(1)).send(packetCaptor.capture());
+
+        DatagramPacket sentPacket = packetCaptor.getValue();
+        assertEquals(message, new String(sentPacket.getData()));
+        assertEquals(ip_address, sentPacket.getAddress());
+        assertEquals(1556, sentPacket.getPort());
     }
 
     @Test
@@ -57,10 +77,10 @@ class ServerUDPTest {
         expectedList.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
         expectedList.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
         expectedList.add(new User("TestUser3",InetAddress.getByName("192.168.0.3"),true));
-        expectedList.add(new User("TestUser4",InetAddress.getByName("192.168.0.4"),true));
 
         // Comparison of expected list and actual list
-        for(int i=0;i<expectedList.size()-1;i++) {
+        assertEquals(expectedList.size(),contactList.size());
+        for(int i=0;i<expectedList.size();i++) {
             assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
@@ -102,7 +122,8 @@ class ServerUDPTest {
         expectedList.add(new User("TestUser3",InetAddress.getByName("192.168.0.3"),true));
 
         // Comparison of expected list and actual list
-        for(int i=0;i<expectedList.size()-1;i++) {
+        assertEquals(expectedList.size(),contactList.size());
+        for(int i=0;i<expectedList.size();i++) {
             assertEquals(expectedList.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
@@ -137,7 +158,8 @@ class ServerUDPTest {
         expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
 
         // Comparison of expected list and actual list after first broadcast messages
-        for(int i=0;i<expectedList1.size()-1;i++) {
+        assertEquals(expectedList1.size(),contactList.size());
+        for(int i=0;i<expectedList1.size();i++) {
             assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList1.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
@@ -155,7 +177,8 @@ class ServerUDPTest {
         expectedList2.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
 
         // Comparison of expected list and actual list after a user disconnects
-        for(int i=0;i<expectedList1.size()-1;i++) {
+        assertEquals(expectedList2.size(),contactList.size());
+        for(int i=0;i<expectedList2.size();i++) {
             assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
@@ -190,7 +213,8 @@ class ServerUDPTest {
         expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
 
         // Comparison of expected list and actual list after first broadcast messages
-        for(int i=0;i<expectedList1.size()-1;i++) {
+        assertEquals(expectedList1.size(),contactList.size());
+        for(int i=0;i<expectedList1.size();i++) {
             assertEquals(expectedList1.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList1.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList1.get(i).getState(), contactList.get(i).getState());
@@ -209,12 +233,41 @@ class ServerUDPTest {
         expectedList2.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
 
         // Comparison of expected list with actual list after change of name
-        for(int i=0;i<expectedList1.size()-1;i++) {
+        assertEquals(expectedList2.size(),contactList.size());
+        for(int i=0;i<expectedList2.size();i++) {
             assertEquals(expectedList2.get(i).getUsername(), contactList.get(i).getUsername());
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
 
+    }
+
+    @Test
+    void testEchoServer_isUsernameUniqueUsernameAddress() throws UnknownHostException {
+        User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        DatagramSocket socket = mock(DatagramSocket.class);
+
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
+
+        ContactList.addContact(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+
+        assertTrue(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.1")));
+        assertFalse(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.3")));
+        assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.1")));
+        assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.2")));
+    }
+
+    @Test
+    void testEchoServer_isUsernameUniqueUsername() throws UnknownHostException {
+        User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        DatagramSocket socket = mock(DatagramSocket.class);
+
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
+
+        ContactList.addContact(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+
+        assertFalse(echoServer.isUsernameUnique("TestUser1"));
+        assertTrue(echoServer.isUsernameUnique("TestUser2"));
     }
 
 
