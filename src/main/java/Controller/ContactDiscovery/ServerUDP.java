@@ -210,7 +210,7 @@ public class ServerUDP {
                 System.out.println("estce quon passe ici 2 ?");
                 System.out.println("IPADDRESS : " + address.getHostAddress());
                 ContactList.addContact(contact);
-                if(DatabaseController.containsUser(contact)) {
+                if(DatabaseController.containsUser(contact) && isUsernameUnique(contact.getUsername())) {
                     System.out.println("User already in database, updating username in database");
                     DatabaseController.updateUsername(contact, contact.getUsername());
                     DatabaseController.updateConnectionState(contact,true);
