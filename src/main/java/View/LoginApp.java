@@ -88,7 +88,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     @Override
-    public void unique() throws UnknownHostException {
+    public void unique() throws UnknownHostException, InterruptedException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
