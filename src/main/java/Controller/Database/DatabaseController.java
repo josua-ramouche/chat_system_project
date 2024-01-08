@@ -107,27 +107,27 @@ public class DatabaseController {
     }
 
     public static void addUser(User u){
-        String sql = "INSERT OR IGNORE INTO Users (username,ipaddress,connectionState) VALUES (?,?,?);";
-        Connection conn = connect();
-        //SQL Statement to add a user to table Users
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,u.getUsername());
-            pstmt.setString(2,u.getIPAddress().getHostAddress());
-            pstmt.setBoolean(3,u.getState());
-            pstmt.executeUpdate();
-            System.out.println("User added successfully to database\n");
-        }
-        catch (SQLException e) {
-            System.out.println("User addition to database failed\n");
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
+        if(!u.getUsername().equals("")) {
+            String sql = "INSERT OR IGNORE INTO Users (username,ipaddress,connectionState) VALUES (?,?,?);";
+            Connection conn = connect();
+            //SQL Statement to add a user to table Users
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, u.getUsername());
+                pstmt.setString(2, u.getIPAddress().getHostAddress());
+                pstmt.setBoolean(3, u.getState());
+                pstmt.executeUpdate();
+                System.out.println("User added successfully to database\n");
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.out.println("User addition to database failed\n");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }
@@ -221,30 +221,30 @@ public class DatabaseController {
     }
 
     public static void updateUsername(User u, String name) {
-        String sql = "UPDATE OR IGNORE Users " +
-                "SET username = ? " +
-                "WHERE userID = ? AND ipaddress = ?;";
+        if(!u.getUsername().equals("")) {
+            String sql = "UPDATE OR IGNORE Users " +
+                    "SET username = ? " +
+                    "WHERE userID = ? AND ipaddress = ?;";
 
-        Connection conn = connect();
+            Connection conn = connect();
 
-        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,name);
-            pstmt.setInt(2,getUserID(u));
-            pstmt.setString(3,u.getIPAddress().getHostAddress());
-            pstmt.executeUpdate();
-            System.out.println("Username updated in database\n");
-        }
-        catch (SQLException e) {
-            System.out.println("Username update failed in database\n");
-            e.printStackTrace();
-        }
-        finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
+            try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                pstmt.setString(1, name);
+                pstmt.setInt(2, getUserID(u));
+                pstmt.setString(3, u.getIPAddress().getHostAddress());
+                pstmt.executeUpdate();
+                System.out.println("Username updated in database\n");
             } catch (SQLException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Username update failed in database\n");
+                e.printStackTrace();
+            } finally {
+                try {
+                    if (conn != null) {
+                        conn.close();
+                    }
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
             }
         }
     }

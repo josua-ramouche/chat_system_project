@@ -6,6 +6,7 @@ import View.CustomListener;
 
 import java.io.IOException;
 import java.net.*;
+import java.sql.DataTruncation;
 import java.util.ArrayList;
 import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.broadcast;
@@ -230,7 +231,7 @@ public class ServerUDP {
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
             System.out.println("ON EST DANS HANDLEENDMESSAGE");
-            for (User u : ContactList.getContacts()) {
+            for (User u : DatabaseController.getUsers()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
                     System.out.println("Update de l'état de connection dans la database en cours...");
@@ -240,7 +241,6 @@ public class ServerUDP {
                     System.out.println("Etat de l'utilisateur à false");
                     disconnectedUser = u.getUsername();
                     System.out.println("Disconnected User : " + disconnectedUser);
-                    break;
                 }
             }
             if (disconnectedUser != null) {
