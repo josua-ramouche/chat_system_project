@@ -96,10 +96,10 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setUsername(usernameField.getText());
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
-            if (mainAppInterface == null) {
-                mainAppInterface = new ContactListApp(me);
-                this.addActionListener2(mainAppInterface);
-            }
+
+            mainAppInterface = new ContactListApp(me);
+            this.addActionListener2(mainAppInterface);
+
             mainAppInterface.setVisible(true);
             this.setVisible(false);
         }
