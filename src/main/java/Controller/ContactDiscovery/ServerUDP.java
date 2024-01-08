@@ -1,6 +1,5 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
-import Model.ContactList;
 import Model.User;
 import View.CustomListener;
 
@@ -9,7 +8,8 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.broadcast;
-import static Model.ContactList.printContactList;
+import static Controller.Database.DatabaseController.printContactList;
+
 
 public class ServerUDP {
 //TEST
@@ -149,13 +149,14 @@ public class ServerUDP {
                 contact.setIPAddress(address);
                 contact.setState(true);
 
+                List<User> Users = DatabaseController.getUsers();
 
 
                 // if the sender is not already in the contact list, he is added to the contact list
-                if (!server.containsContact(ContactList.getContacts(), contact)) {
+                if (!server.containsContact(Users, contact)) {
                     System.out.println("estce quon passe ici 1?");
                     System.out.println("IPADDRESS : " + address.getHostAddress());
-                    ContactList.addContact(contact);
+                    //ContactList.addContact(contact); contact list retirée
                     //Adds user to the database
                     if(DatabaseController.containsUser(contact)) {
                         System.out.println("User already in database, updating username in database");
@@ -205,11 +206,12 @@ public class ServerUDP {
             contact.setIPAddress(address);
             contact.setState(true);
 
+            List<User> Users = DatabaseController.getUsers();
 
-            if (!server.containsContact(ContactList.getContacts(), contact)) {
+            if (!server.containsContact(Users, contact)) {
                 System.out.println("estce quon passe ici 2 ?");
                 System.out.println("IPADDRESS : " + address.getHostAddress());
-                ContactList.addContact(contact);
+                //ContactList.addContact(contact); retirée contact list
                 if(DatabaseController.containsUser(contact) && isUsernameUnique(contact.getUsername())) {
                     System.out.println("User already in database, updating username in database");
                     DatabaseController.updateUsername(contact, contact.getUsername());
@@ -247,7 +249,7 @@ public class ServerUDP {
                 System.out.println("User " + disconnectedUser + " disconnected");
             }
             System.out.println("Contact List (connected) after disconnection:");
-            ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
+            //ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
             for (CustomListener listener : listeners) {
                 System.out.println("check launchtest");
                 listener.launchTest();
@@ -266,10 +268,11 @@ public class ServerUDP {
             String[] parts = message.split(":");
             String oldUsername = parts[1];
             String newUsername = parts[2];
+            List<User> Users = DatabaseController.getUsers();
 
             //check if the sender new username is unique
             if (isUsernameUnique(newUsername, address)) {
-                for (User u : ContactList.getContacts()) {
+                for (User u : Users) {
                     if (u.getUsername().equals(oldUsername)) {
                         //Updates username in database
                         DatabaseController.updateUsername(u,newUsername);
@@ -280,7 +283,7 @@ public class ServerUDP {
                 }
 
                 // Notify other users about the username change
-                ContactList.getContacts().forEach(u -> {
+                Users.forEach(u -> {
                     try {
                         if (!u.getIPAddress().equals(address)) {
                             broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPAddress());
@@ -291,18 +294,14 @@ public class ServerUDP {
                 });
 
                 // Update the client's username
-                ContactList.getContacts().forEach(u -> {
+                /*ContactList.getContacts().forEach(u -> {
                     if (u.getIPAddress().equals(address)) {
                         u.setUsername(newUsername);
                     }
-                });
+                });*/
 
                 System.out.println("Contact List (connected):");
-                /*ContactList.getContacts().forEach(u -> {
-                    if (u.getState()) {
-                        System.out.println(u.getUsername());
-                    }
-                });*/
+
                 // Send a message to the sender to inform him that his username can be changed
                 sendIP("USERNAME_UPDATED"+newUsername, address, socket);
             } else {

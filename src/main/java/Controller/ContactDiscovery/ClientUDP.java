@@ -1,6 +1,5 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
-import Model.ContactList;
 import Model.User;
 import View.CustomListener;
 
@@ -105,9 +104,10 @@ public class ClientUDP {
 
     // Send a broadcast message to ask for a change of username (checks if the username is unique on the server side to accept the demand or not)
     public static void sendChangeUsername(User client, String newUsername) {
+        List<User> Users = DatabaseController.getUsers();
         try (DatagramSocket ignored = new DatagramSocket()) {
             // Notify other users about the new username
-            ContactList.getContacts().forEach(u -> {
+            Users.forEach(u -> {
                 try {
                     if (!u.getIPAddress().equals(client.getIPAddress())) {
                         broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
@@ -126,7 +126,8 @@ public class ClientUDP {
     // Send a message in broadcast so other users can change his status to disconnected (false)
     public static void sendEndConnection(User client){
         System.out.println("Disconnection...");
-        ContactList.getContacts().forEach(u -> { try {
+        List<User> Users = DatabaseController.getUsers();
+        Users.forEach(u -> { try {
             broadcast("end",u.getIPAddress());
         } catch (IOException e) {
             throw new RuntimeException(e);

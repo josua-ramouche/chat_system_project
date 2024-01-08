@@ -1,6 +1,5 @@
 package Controller.ContactDiscovery;
-import Controller.ContactDiscovery.ClientUDP;
-import Model.ContactList;
+import Controller.Database.DatabaseController;
 import Model.User;
 import org.junit.jupiter.api.Test;
 
@@ -38,12 +37,13 @@ class ClientUDPTest {
         // Test sendUsername method
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         List<InetAddress> broadcastList;
+        List<User> Users = DatabaseController.getUsers();
         try {
             broadcastList = ClientUDP.listAllBroadcastAddresses();
             ClientUDP.sendUsername(broadcastList, user);
 
             // Verify that the contact list is empty before sending the first broadcast to check the unicity of the username
-            assertEquals(0, ContactList.getContacts().size());
+            assertEquals(0, Users.size());
         } catch (IOException e) {
             fail("Exception not expected: " + e.getMessage());
         }
@@ -69,9 +69,9 @@ class ClientUDPTest {
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         try {
             ClientUDP.sendEndConnection(user);
-
+            List<User> Users = DatabaseController.getUsers();
             // Verify that the contact list is empty and user state is false after disconnection
-            assertTrue(ContactList.getContacts().isEmpty());
+            assertTrue(Users.isEmpty());
             assertFalse(user.getState());
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());

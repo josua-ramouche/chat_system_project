@@ -47,7 +47,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
-            ClientUDP.sendEndConnection(me);
+            //ClientUDP.sendEndConnection(me);
             ChangeUsernameApp change = new ChangeUsernameApp();
             change.setVisible(true);
             System.out.println("Change username button clicked");

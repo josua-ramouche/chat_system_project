@@ -1,6 +1,5 @@
 package Controller.ContactDiscovery;
 
-import Model.ContactList;
 import Model.User;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

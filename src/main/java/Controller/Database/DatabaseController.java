@@ -446,6 +446,16 @@ public class DatabaseController {
         return messages;
     }
 
+    public static synchronized void printContactList(){
+        System.out.println("Print Contact List :");
+        List<User> Users = DatabaseController.getUsers();
+        Users.forEach(u -> {
+            if (u.getState()) {
+                System.out.println("user : " + u.getUsername());
+            }
+        });
+    }
+
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
         updateConnectionState(getUser(4),true);
     }
