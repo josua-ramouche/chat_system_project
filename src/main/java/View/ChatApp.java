@@ -114,8 +114,6 @@ public class ChatApp extends JFrame {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
-            InetAddress partnerip = partner.getIPAddress();
-            System.out.println(" Partner : " + partnerip.getHostAddress());
             if (senderip == null) { //me
                 StyleConstants.setForeground(style, Color.RED);
                 try {

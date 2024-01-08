@@ -113,20 +113,24 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private void onContactSelection() {
         // Index of the selected contact on the interface
         int index = contactListView.getSelectedIndex();
+        System.out.println("INDEX: " + index);
 
-        // Get the actual user object from the contactList previously created
-        User selectedContact = contactList.get(index);
+        if(index!=-1) {
+            // Get the actual user object from the contactList previously created
+            User selectedContact = contactList.get(index);
 
-        // Set the selectedIndex to the index from getSelectedIndex() method
-        contactListView.setSelectedIndex(index);
-        // Highlights the selected mission
-        contactListView.ensureIndexIsVisible(index);
+            // Set the selectedIndex to the index from getSelectedIndex() method
+            contactListView.setSelectedIndex(index);
+            // Highlights the selected mission
+            contactListView.ensureIndexIsVisible(index);
 
-        ChatApp chat = new ChatApp(selectedContact,me);
-        chat.setVisible(true);
-        //frame.dispose();
-        frame.setVisible(false);
-        ClientTCP.startConnection(selectedContact.getIPAddress(),1556);
+
+            ChatApp chat = new ChatApp(selectedContact, me);
+            chat.setVisible(true);
+            //frame.dispose();
+            frame.setVisible(false);
+            ClientTCP.startConnection(selectedContact.getIPAddress(), 1556);
+        }
     }
 
     @Override

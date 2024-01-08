@@ -85,6 +85,7 @@ public class DatabaseController {
     }
 
     public static void initConnection() {
+        createUserTable();
         String sql = "UPDATE Users " +
                 "SET connectionState = '0'; ";
         Connection conn = connect();
