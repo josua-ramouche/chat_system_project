@@ -1,5 +1,6 @@
 package View;
 
+import Controller.ContactDiscovery.ClientUDP;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
 import Model.User;
@@ -21,7 +22,10 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private JTextField usernameField;
     private ContactListApp mainAppInterface;
 
-    public ChangeUsernameApp() {
+    private User oldme;
+
+    public ChangeUsernameApp(User oldme) {
+        this.oldme=oldme;
         setTitle("Change username");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -78,11 +82,10 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         }
         else {
             UserContactDiscovery.inituser(username);
-            UserContactDiscovery U = new UserContactDiscovery(username);
             // set atomic bool no_unique to false to reset it
             not_unique.set(false);
-            U.Action();
 
+            ClientUDP.sendChangeUsername(oldme,usernameField.getText());
             TimeUnit.SECONDS.sleep(1);
             unique();
         }
@@ -135,19 +138,5 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         this.dispose(); // Close the current window
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            ChangeUsernameApp loginApp = new ChangeUsernameApp();
-            loginApp.setVisible(true);
-            try {
-                UserContactDiscovery.inituser("");
-                ServerUDP.EchoServer server = UserContactDiscovery.Init();
-                server.setDaemon(true);
-                server.start();
-                server.addActionListener(loginApp);
-            } catch (SocketException | UnknownHostException e) {
-                throw new RuntimeException(e);
-            }
-        });
-    }
+
 }

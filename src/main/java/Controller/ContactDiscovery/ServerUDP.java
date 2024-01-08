@@ -100,8 +100,14 @@ public class ServerUDP {
 
         // Change of username accepted
         public void handleChangeOfUsername(String message) {
+
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
+            for (CustomListener listener : listeners) {
+                System.out.println("check launchtest");
+                listener.launchTest();
+                System.out.println("check launchtest");
+            }
         }
 
         //signals and slots for unicity with GUI
@@ -269,7 +275,7 @@ public class ServerUDP {
             String oldUsername = parts[1];
             String newUsername = parts[2];
             List<User> Users = DatabaseController.getUsers();
-
+            System.out.println("ask for change of username received");
             //check if the sender new username is unique
             if (isUsernameUnique(newUsername, address)) {
                 for (User u : Users) {
@@ -277,33 +283,15 @@ public class ServerUDP {
                         //Updates username in database
                         DatabaseController.updateUsername(u,newUsername);
                         u.setUsername(newUsername);
-                        System.out.println("Username changed: " + oldUsername + " to " + newUsername);
+                        System.out.println("Username changed: " + oldUsername + " to " + newUsername + "in the database");
                         break;
                     }
                 }
 
-                // Notify other users about the username change
-                Users.forEach(u -> {
-                    try {
-                        if (!u.getIPAddress().equals(address)) {
-                            broadcast("CHANGE_USERNAME:" + oldUsername + ":" + newUsername, u.getIPAddress());
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
-                });
-
-                // Update the client's username
-                /*ContactList.getContacts().forEach(u -> {
-                    if (u.getIPAddress().equals(address)) {
-                        u.setUsername(newUsername);
-                    }
-                });*/
-
-                System.out.println("Contact List (connected):");
 
                 // Send a message to the sender to inform him that his username can be changed
                 sendIP("USERNAME_UPDATED"+newUsername, address, socket);
+
             } else {
                 // Notify the client that the new username is not unique
                 sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
