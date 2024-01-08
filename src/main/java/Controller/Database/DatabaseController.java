@@ -302,7 +302,7 @@ public class DatabaseController {
         InetAddress ipaddress;
         boolean state;
         Connection conn = connect();
-        String sql = "SELECT * FROM Users;";
+        String sql = "SELECT * FROM Users WHERE connectionState='1';";
         try (Statement stmt = conn.createStatement()) {
             ResultSet resultSet = stmt.executeQuery(sql);
 
