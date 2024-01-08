@@ -90,15 +90,11 @@ public class ServerUDP {
                         System.out.println("End message received by distant server");
                         handleResponseEnd();
                     }
-                    for (CustomListener listener : listeners) {
-                        System.out.println("check launchtest");
-                        listener.launchTest();
-                        System.out.println("check launchtest");
-                    }
                 }
             }
             //
             socket.close();
+            System.out.println("Socket correctly closed");
         }
         private InetAddress lastResponseSender = null;
 
