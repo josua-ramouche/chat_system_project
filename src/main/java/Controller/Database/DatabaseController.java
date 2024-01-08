@@ -55,30 +55,6 @@ public class DatabaseController {
         }
     }
 
-    //Create a Contact Table in database
-    public static void createContactTable() {
-        Connection conn = connect();
-        // Create Contact table after connection to the database
-        try (Statement stmt = conn.createStatement()) {
-            String sql = "CREATE TABLE IF NOT EXISTS Contacts (\n"
-                    + "		contactID INTEGER PRIMARY KEY, \n"
-                    + "     FOREIGN KEY (contactID) REFERENCES Users(userId) \n"
-                    + ");";
-            stmt.executeUpdate(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        // End the connection after the creation of the table
-        finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
 
     //Create a Chat Table in the database
     public static void createChatTable(int id) {
@@ -139,11 +115,6 @@ public class DatabaseController {
             pstmt.setString(2,u.getIPAddress().getHostAddress());
             pstmt.setBoolean(3,u.getState());
             pstmt.executeUpdate();
-            /*int id = getUserID(u);
-            System.out.println("ID = :" + id);
-            if (id != 0){
-                addContact(id, conn);
-            }*/
             System.out.println("User added successfully to database\n");
         }
         catch (SQLException e) {
@@ -275,19 +246,6 @@ public class DatabaseController {
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-        }
-    }
-
-    private static void addContact(int id, Connection conn){
-        String sql = "INSERT OR IGNORE INTO Contacts (contactID) VALUES (?);"; //IGNORE might be an obstacle
-        try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-            System.out.print("User addition to Contacts table succeeded\n");
-        }
-        catch (SQLException e) {
-            System.out.print("User addition to Contacts table failed\n");
-            e.printStackTrace();
         }
     }
 
@@ -453,7 +411,7 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        initConnection();
+        updateConnectionState(getUser(6),false);
     }
 }
 

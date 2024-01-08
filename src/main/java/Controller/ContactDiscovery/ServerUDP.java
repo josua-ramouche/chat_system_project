@@ -86,6 +86,9 @@ public class ServerUDP {
                         // if a response to a broadcast message is received
                         handleResponseMessage(received.substring("HANDLE_RESPONSE_MESSAGE:".length()), address);
                         System.out.println("-----------------------------");
+                    } else if (received.startsWith("HANDLE_RESPONSE_END")) {
+                        System.out.println("End message received by distant server");
+                        handleResponseEnd();
                     }
                     for (CustomListener listener : listeners) {
                         System.out.println("check launchtest");
@@ -230,25 +233,35 @@ public class ServerUDP {
         // Reception of an end message
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
+            System.out.println("ON EST DANS HANDLEENDMESSAGE");
             for (User u : ContactList.getContacts()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
+                    System.out.println("Update de l'état de connection dans la database en cours...");
                     DatabaseController.updateConnectionState(u,false);
+                    System.out.println("Utilisateur + " + u.getUsername() + " déconnecté dans la database");
                     u.setState(false);
+                    System.out.println("Etat de l'utilisateur à false");
                     disconnectedUser = u.getUsername();
+                    System.out.println("Disconnected User : " + disconnectedUser);
                     break;
                 }
             }
             if (disconnectedUser != null) {
                 System.out.println("User " + disconnectedUser + " disconnected");
             }
-            System.out.println("Contact List (connected):");
+            System.out.println("Contact List (connected) after disconnection:");
             ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
             for (CustomListener listener : listeners) {
                 System.out.println("check launchtest");
                 listener.launchTest();
                 System.out.println("check launchtest");
             }
+        }
+
+        public void handleResponseEnd() {
+            server.setState(false);
+            System.out.println("You are now disconnected\n");
         }
 
         // Ask for permission to change the sender's username
