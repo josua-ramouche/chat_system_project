@@ -314,9 +314,10 @@ public class ServerUDP {
 
         // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username, InetAddress requesterAddress) {
+            List<User> Users = DatabaseController.getUsers();
             if (!username.equals(server.getUsername())) {
-                return ContactList.getContacts().stream()
-                        .filter(u -> u.getState() && !u.getIPAddress().equals(requesterAddress))
+                return Users.stream()
+                        .filter(u -> !u.getIPAddress().equals(requesterAddress))
                         .noneMatch(u -> u.getUsername().equals(username));
             }
             else return false;
@@ -324,9 +325,9 @@ public class ServerUDP {
 
         // Check among the connected users in the contact list that a username is unique (except himself)
         public boolean isUsernameUnique(String username) {
+            List<User> Users = DatabaseController.getUsers();
             if (!username.equals(server.getUsername())) {
-                return ContactList.getContacts().stream()
-                        .filter(User::getState)
+                return Users.stream()
                         .noneMatch(u -> u.getUsername().equals(username));
             }
             else return false;
