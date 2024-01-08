@@ -456,8 +456,34 @@ public class DatabaseController {
         });
     }
 
+    public static void deleteUser(String username) {
+        String sql = "DELETE FROM Users WHERE username=?;";
+
+        Connection conn = connect();
+
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1,username);
+            pstmt.executeUpdate();
+            System.out.println("User deleted from database successfully");
+        }
+        catch (SQLException e) {
+            e.printStackTrace();
+        }
+        finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        updateConnectionState(getUser(4),true);
+        deleteUser("TestUser1");
+        deleteUser("TestUser2");
+        deleteUser("TestUser3");
     }
 }
 

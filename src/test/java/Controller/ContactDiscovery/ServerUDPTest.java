@@ -1,7 +1,7 @@
 package Controller.ContactDiscovery;
 
+import Controller.Database.DatabaseController;
 import Model.User;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -14,16 +14,12 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static Controller.Database.DatabaseController.deleteUser;
 import static org.mockito.Mockito.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
-
-    @AfterEach
-    void clearContactList() {
-        ContactList.getContacts().clear();
-    }
 
     @Test
     void testEchoServer_SendIP() throws IOException {
@@ -68,7 +64,7 @@ class ServerUDPTest {
         echoServer.handleBroadcastMessage(broadcastMessage4.substring("BROADCAST:".length()), senderAddress4);
 
         // Actual list obtained from tested method
-        List<User> contactList = ContactList.getContacts();
+        List<User> contactList = DatabaseController.getUsers();
 
         // Expected list of user
         List<User> expectedList = new ArrayList<>();
@@ -84,6 +80,9 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
+        deleteUser("TestUser1");
+        deleteUser("TestUser2");
+        deleteUser("TestUser3");
     }
 
     @Test
@@ -108,7 +107,7 @@ class ServerUDPTest {
         echoServer.handleBroadcastMessage(responseMessage3, senderAddress3);
 
         // Actual list obtained from response messages from server (connected user)
-        List<User> contactList = ContactList.getContacts();
+        List<User> contactList = DatabaseController.getUsers();
         for (User user : contactList) {
             System.out.println("Username : "+ user.getUsername() + " / IPAddress : "+ user.getIPAddress() + " / connectionState / " + user.getState());
         }
@@ -127,6 +126,9 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
+        deleteUser("TestUser1");
+        deleteUser("TestUser2");
+        deleteUser("TestUser3");
 
     }
 
@@ -148,7 +150,7 @@ class ServerUDPTest {
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
         // Actual list obtained after first broadcast messages
-        List<User> contactList = ContactList.getContacts();
+        List<User> contactList = DatabaseController.getUsers();
 
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
@@ -168,7 +170,7 @@ class ServerUDPTest {
         echoServer.handleEndMessage(senderAddress1);
 
         // Actual list obtained after disconnection of a user
-        contactList = ContactList.getContacts();
+        contactList = DatabaseController.getUsers();
 
         // Expected list after disconnection of a user (State of connection = false)
         List<User> expectedList2 = new ArrayList<>();
@@ -182,7 +184,8 @@ class ServerUDPTest {
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
-
+        deleteUser("TestUser1");
+        deleteUser("TestUser2");
     }
 
     @Test
@@ -203,7 +206,7 @@ class ServerUDPTest {
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
 
         // Actual list obtained after first broadcast messages
-        List<User> contactList = ContactList.getContacts();
+        List<User> contactList = DatabaseController.getUsers();
 
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
@@ -238,7 +241,8 @@ class ServerUDPTest {
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
-
+        deleteUser("NewUsername");
+        deleteUser("TestUser2");
     }
 
     @Test
@@ -248,12 +252,14 @@ class ServerUDPTest {
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
-        ContactList.addContact(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        DatabaseController.addUser(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
 
         assertTrue(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.1")));
         assertFalse(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.3")));
         assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.1")));
         assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.2")));
+
+        deleteUser("TestUser1");
     }
 
     @Test
@@ -263,11 +269,12 @@ class ServerUDPTest {
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
-        ContactList.addContact(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        DatabaseController.addUser(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
 
         assertFalse(echoServer.isUsernameUnique("TestUser1"));
         assertTrue(echoServer.isUsernameUnique("TestUser2"));
-    }
 
+        deleteUser("TestUser1");
+    }
 
 }
