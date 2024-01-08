@@ -13,7 +13,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
 
-import static Model.ContactList.printContactList;
+import static Controller.Database.DatabaseController.printContactList;
 
 
 public class ContactListApp extends JFrame implements CustomListener2{
