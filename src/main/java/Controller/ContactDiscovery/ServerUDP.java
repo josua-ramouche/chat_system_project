@@ -6,7 +6,6 @@ import View.CustomListener;
 
 import java.io.IOException;
 import java.net.*;
-import java.sql.DataTruncation;
 import java.util.ArrayList;
 import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.broadcast;
@@ -241,6 +240,7 @@ public class ServerUDP {
                     System.out.println("Etat de l'utilisateur à false");
                     disconnectedUser = u.getUsername();
                     System.out.println("Disconnected User : " + disconnectedUser);
+                    break;
                 }
             }
             if (disconnectedUser != null) {
