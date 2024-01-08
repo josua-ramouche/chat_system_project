@@ -230,6 +230,8 @@ class ServerUDPTest {
         echoServer.handleChangeUsernameMessage(changeUsernameMessage, senderAddress1);
         echoServer.handleChangeUsernameMessage(changeUsernameMessage, senderAddress2);
 
+        contactList = DatabaseController.getUsers();
+
         // Expected list after TestUser1 changes name to NewUsername
         List<User> expectedList2 = new ArrayList<>();
 
