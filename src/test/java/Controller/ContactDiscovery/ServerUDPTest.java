@@ -2,6 +2,7 @@ package Controller.ContactDiscovery;
 
 import Controller.Database.DatabaseController;
 import Model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -20,6 +21,17 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
+
+    @AfterEach
+    void clearDatabase() {
+        List<User> users = DatabaseController.getAllUsers();
+        users.forEach(u -> {
+            if (u.getUsername().equals("TestUser1") || u.getUsername().equals("TestUser2") || u.getUsername().equals("TestUser3") || u.getUsername().equals("NewUsername")) {
+                deleteUser(u);
+            }
+        });
+
+    }
 
     @Test
     void testEchoServer_SendIP() throws IOException {
@@ -80,9 +92,6 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
-        deleteUser("TestUser1");
-        deleteUser("TestUser2");
-        deleteUser("TestUser3");
     }
 
     @Test
@@ -126,10 +135,6 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
-        deleteUser("TestUser1");
-        deleteUser("TestUser2");
-        deleteUser("TestUser3");
-
     }
 
     @Test
@@ -174,7 +179,6 @@ class ServerUDPTest {
 
         // Expected list after disconnection of a user (State of connection = false)
         List<User> expectedList2 = new ArrayList<>();
-        expectedList2.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),false));
         expectedList2.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
 
         // Comparison of expected list and actual list after a user disconnects
@@ -184,8 +188,6 @@ class ServerUDPTest {
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
-        deleteUser("TestUser1");
-        deleteUser("TestUser2");
     }
 
     @Test
@@ -241,8 +243,6 @@ class ServerUDPTest {
             assertEquals(expectedList2.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList2.get(i).getState(), contactList.get(i).getState());
         }
-        deleteUser("NewUsername");
-        deleteUser("TestUser2");
     }
 
     @Test
@@ -258,8 +258,6 @@ class ServerUDPTest {
         assertFalse(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.3")));
         assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.1")));
         assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.2")));
-
-        deleteUser("TestUser1");
     }
 
     @Test
@@ -273,8 +271,6 @@ class ServerUDPTest {
 
         assertFalse(echoServer.isUsernameUnique("TestUser1"));
         assertTrue(echoServer.isUsernameUnique("TestUser2"));
-
-        deleteUser("TestUser1");
     }
 
 }

@@ -456,13 +456,13 @@ public class DatabaseController {
         });
     }
 
-    public static void deleteUser(String username) {
-        String sql = "DELETE FROM Users WHERE username=?;";
+    public static void deleteUser(User u) {
+        String sql = "DELETE FROM Users WHERE userID=?;";
 
         Connection conn = connect();
 
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1,username);
+            pstmt.setInt(1,getUserID(u));
             pstmt.executeUpdate();
             System.out.println("User deleted from database successfully");
         }
@@ -481,9 +481,6 @@ public class DatabaseController {
     }
 
     public static void main(String[] args) throws UnknownHostException, InterruptedException {
-        deleteUser("TestUser1");
-        deleteUser("TestUser2");
-        deleteUser("TestUser3");
     }
 }
 
