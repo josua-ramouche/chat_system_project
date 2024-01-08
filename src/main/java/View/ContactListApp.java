@@ -122,9 +122,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
         // Highlights the selected mission
         contactListView.ensureIndexIsVisible(index);
 
-        int id = DatabaseController.getUserID(selectedContact);
-        DatabaseController.createChatTable(id);
-
         ChatApp chat = new ChatApp(selectedContact,me);
         chat.setVisible(true);
         //frame.dispose();

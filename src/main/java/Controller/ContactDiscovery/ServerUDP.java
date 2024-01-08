@@ -8,6 +8,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
 import static Controller.ContactDiscovery.ClientUDP.broadcast;
+import static Controller.Database.DatabaseController.getUserID;
 import static Controller.Database.DatabaseController.printContactList;
 
 
@@ -172,6 +173,7 @@ public class ServerUDP {
                     else {
                         System.out.println("User not registered in database, adding user to database");
                         DatabaseController.addUser(contact);
+                        DatabaseController.createChatTable(getUserID(contact));
                     }
                     System.out.println("New contact added");
                 }
@@ -226,12 +228,18 @@ public class ServerUDP {
                 else {
                     System.out.println("User not registered in database, adding user to database");
                     DatabaseController.addUser(contact);
+                    DatabaseController.createChatTable(getUserID(contact));
                 }
                 System.out.println("New contact added");
             }
 
             System.out.println("Contact List (connected):");
             printContactList();
+            for (CustomListener listener : listeners) {
+                System.out.println("check launchtest");
+                listener.launchTest();
+                System.out.println("check launchtest");
+            }
         }
 
         // Reception of an end message
@@ -296,6 +304,11 @@ public class ServerUDP {
                 // Notify the client that the new username is not unique
                 sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
                 System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
+            }
+            for (CustomListener listener : listeners) {
+                System.out.println("check launchtest");
+                listener.launchTest();
+                System.out.println("check launchtest");
             }
         }
 
