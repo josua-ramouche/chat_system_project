@@ -65,7 +65,7 @@ public class ClientUDP {
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
         try (DatagramSocket ignored = new DatagramSocket()) {
             String username = client.getUsername();
-            if (isUsernameUnique(username, ContactList.getContacts())) {
+            if (isUsernameUnique(username)) {
                 for (InetAddress inetAddress : broadcastList) {
                     try {
                         System.out.println("Broadcast address : " + inetAddress);
@@ -87,8 +87,9 @@ public class ClientUDP {
 
     // Check if a username is already present in the contact list of the user (other checks are made in the ServerUDP to check if the username is
     // present in other users' contact lists)
-    public static boolean isUsernameUnique(String username, List<User> contactList) {
-            return contactList.stream()
+    public static boolean isUsernameUnique(String username) {
+        List<User> Users = DatabaseController.getAllUsers();
+            return Users.stream()
                     .noneMatch(u -> u.getUsername().equals(username));
     }
 
