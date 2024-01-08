@@ -2,6 +2,7 @@ package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.ContactList;
 import Model.User;
+import View.CustomListener;
 
 import java.io.IOException;
 import java.net.*;
@@ -79,10 +80,19 @@ public class ClientUDP {
                 }
             } else {
                 System.out.println("Username '" + username + "' is not unique. Please choose a different username.");
+                for (CustomListener listener : listeners) {
+                    listener.notUniquePopup("Username not unique");
+                }
             }
         } catch (SocketException e) {
             e.printStackTrace();
         }
+    }
+
+    private static final List<CustomListener> listeners = new ArrayList<>();
+
+    public static void addActionListener(CustomListener listener) {
+        listeners.add(listener);
     }
 
     // Check if a username is already present in the contact list of the user (other checks are made in the ServerUDP to check if the username is

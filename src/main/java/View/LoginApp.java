@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Chat.ChatController;
+import Controller.ContactDiscovery.ClientUDP;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
 import Controller.Database.DatabaseController;
@@ -28,7 +29,6 @@ public class LoginApp extends JFrame implements CustomListener{
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
         initComponents();
     }
 
@@ -144,6 +144,8 @@ public class LoginApp extends JFrame implements CustomListener{
                 //serverUDP.setDaemon(true);
                 serverUDP.start();
                 serverUDP.addActionListener(loginApp);
+
+                ClientUDP.addActionListener(loginApp);
 
                 ChatController.listenTCP serverTCP = new ChatController.listenTCP();
                 serverTCP.start();
