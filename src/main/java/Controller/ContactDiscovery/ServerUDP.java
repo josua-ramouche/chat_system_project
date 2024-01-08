@@ -257,6 +257,7 @@ public class ServerUDP {
                 listener.launchTest();
                 System.out.println("check launchtest");
             }
+            sendIP("HANDLE_RESPONSE_END", address, socket);
         }
 
         public void handleResponseEnd() {
