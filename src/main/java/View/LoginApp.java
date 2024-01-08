@@ -137,14 +137,13 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
             try {
+                DatabaseController.initConnection();
                 UserContactDiscovery.inituser("");
 
                 ServerUDP.EchoServer serverUDP = UserContactDiscovery.Init();
                 //serverUDP.setDaemon(true);
                 serverUDP.start();
                 serverUDP.addActionListener(loginApp);
-
-                DatabaseController.initConnection();
 
                 ChatController.listenTCP serverTCP = new ChatController.listenTCP();
                 serverTCP.start();
