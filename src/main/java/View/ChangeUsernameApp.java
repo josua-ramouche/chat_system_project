@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeUsernameApp extends JFrame implements CustomListener {
-//TEST
+    //TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
 
@@ -88,13 +88,18 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() throws InterruptedException {
+    public void unique() {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
             ContactListApp contactListApp = null;
             oldme.setUsername(usernameField.getText());
-            contactListApp = new ContactListApp(oldme);
+
+            try {
+                contactListApp = new ContactListApp(oldme);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
+            }
             this.addActionListener2(contactListApp);
             contactListApp.setVisible(true);
             this.setVisible(false);
@@ -127,7 +132,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
     private void goBack() throws UnknownHostException, InterruptedException {
         ContactListApp contactListApp = null;
-        contactListApp = new ContactListApp(oldme);
+        try {
+            contactListApp = new ContactListApp(oldme);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
         contactListApp.setVisible(true);
         this.setVisible(false);
 
