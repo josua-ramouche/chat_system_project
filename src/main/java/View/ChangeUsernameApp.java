@@ -20,7 +20,6 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 //TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
-    private ContactListApp mainAppInterface;
 
     private User oldme;
 
@@ -92,21 +91,27 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() throws UnknownHostException, InterruptedException {
+    public void unique() {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
-            User me = new User();
-            me.setUsername(usernameField.getText());
-            me.setIPAddress(InetAddress.getLocalHost());
-            me.setState(true);
-            if (mainAppInterface == null) {
-                mainAppInterface = new ContactListApp(me);
-                this.addActionListener2(mainAppInterface);
+            ContactListApp contactListApp = null;
+            oldme.setUsername(usernameField.getText());
+
+            try {
+                contactListApp = new ContactListApp(oldme);
+            } catch (InterruptedException ex) {
+                throw new RuntimeException(ex);
             }
-            mainAppInterface.setVisible(true);
+            this.addActionListener2(contactListApp);
+            contactListApp.setVisible(true);
             this.setVisible(false);
+
         }
+
+
+
+
 
 
     }
@@ -129,13 +134,16 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     private void goBack() throws UnknownHostException, InterruptedException {
-        User me = new User();
-        me.setUsername(usernameField.getText());
-        me.setIPAddress(InetAddress.getLocalHost());
-        me.setState(true);
-        mainAppInterface = new ContactListApp(me);
-        mainAppInterface.setVisible(true);
-        this.dispose(); // Close the current window
+        ContactListApp contactListApp = null;
+        try {
+            contactListApp = new ContactListApp(oldme);
+        } catch (InterruptedException ex) {
+            throw new RuntimeException(ex);
+        }
+        contactListApp.setVisible(true);
+        this.setVisible(false);
+
+
     }
 
 
