@@ -1,15 +1,12 @@
 package View;
 
 import Controller.ContactDiscovery.ClientUDP;
-import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
 import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,7 +88,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() {
+    public void unique() throws InterruptedException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {

@@ -1,7 +1,6 @@
 package View;
 
 import Controller.Chat.ClientTCP;
-import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.User;
@@ -25,12 +24,11 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     private static User me;
 
-    public ContactListApp(User me) {
+    public ContactListApp(User me) throws InterruptedException {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
 
-        setTitle("Chat System");
         JButton changeButton = new JButton("Change Username");
         // Added back button
         JButton backButton = new JButton("Disconnect");
@@ -38,11 +36,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         contactListView = new JList<>(contactListModel);
 
         List<User> users = DatabaseController.getUsers();
-        try {
-            addContactsToDisplayedList(users);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        addContactsToDisplayedList(users);
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(900, 680);
@@ -51,7 +45,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
-            //ClientUDP.sendEndConnection(me);
             ChangeUsernameApp change = new ChangeUsernameApp(me);
             change.setVisible(true);
             System.out.println("Change username button clicked");
@@ -109,7 +102,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     private void disconnectAndExit() {
         // Disconnect and exit the application
-        ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection(me);
         System.exit(0);
     }
