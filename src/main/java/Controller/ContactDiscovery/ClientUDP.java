@@ -26,7 +26,7 @@ public class ClientUDP {
             e.printStackTrace();
         }
     }
-//
+    //
     // Create a list of all the broadcast addresses available on a computer
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
@@ -98,31 +98,31 @@ public class ClientUDP {
     // present in other users' contact lists)
     public static boolean isUsernameUnique(String username) {
         List<User> Users = DatabaseController.getAllUsers();
-            return Users.stream()
-                    .noneMatch(u -> u.getUsername().equals(username));
+        return Users.stream()
+                .noneMatch(u -> u.getUsername().equals(username));
     }
 
     // Send a broadcast message to ask for a change of username (checks if the username is unique on the server side to accept the demand or not)
     public static void sendChangeUsername(User client, String newUsername) {
         List<User> Users = DatabaseController.getUsers();
         if (isUsernameUnique(newUsername)) {
-        try (DatagramSocket ignored = new DatagramSocket()) {
-            // Notify other users about the new username
-            Users.forEach(u -> {
-                try {
+            try (DatagramSocket ignored = new DatagramSocket()) {
+                // Notify other users about the new username
+                Users.forEach(u -> {
+                    try {
 
-                    if (!u.getIPAddress().equals(client.getIPAddress())) {
-                        broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
+                        if (!u.getIPAddress().equals(client.getIPAddress())) {
+                            broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
+                        }
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
                     }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
-            // Update the client's username
-            client.setUsername(newUsername);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }}
+                });
+                // Update the client's username
+                client.setUsername(newUsername);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }}
         else
         {
             System.out.println("New username '" + newUsername + "' is not unique. Please choose a different username.");

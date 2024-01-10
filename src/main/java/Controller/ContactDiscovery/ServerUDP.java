@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import static Controller.ContactDiscovery.ClientUDP.broadcast;
 import static Controller.Database.DatabaseController.getUserID;
 import static Controller.Database.DatabaseController.printContactList;
 

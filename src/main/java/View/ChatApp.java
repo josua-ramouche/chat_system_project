@@ -56,12 +56,7 @@ public class ChatApp extends JFrame {
 
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contactListApp = null;
-            try {
-                contactListApp = new ContactListApp(me);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            ContactListApp contactListApp = new ContactListApp(me);
             contactListApp.setVisible(true);
             this.setVisible(false);
         });

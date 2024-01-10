@@ -19,13 +19,13 @@ import static Controller.Database.DatabaseController.printContactList;
 public class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
-    private DefaultListModel<String> contactListModel;
-    private JList<String> contactListView;
+    private final DefaultListModel<String> contactListModel;
+    private final JList<String> contactListView;
     private List<User> contactList;
 
     private static User me;
 
-    public ContactListApp(User me) throws InterruptedException {
+    public ContactListApp(User me) {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
@@ -149,24 +149,25 @@ public class ContactListApp extends JFrame implements CustomListener2{
                     System.out.println("user : " + u.getUsername());
                 }
             });
-            try {
-                addContactsToDisplayedList(users);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            addContactsToDisplayedList(users);
         });
     }
 
 
-    private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
-        contactListModel.clear();
+    private synchronized void addContactsToDisplayedList(List<User> users) {
         System.out.println("users2222222 !!!!!!!!: ");
-        printContactList();
-        //TimeUnit.SECONDS.sleep(1);
+        users.forEach(u -> {
+            if (u.getState()) {
+                System.out.println("user : " + u.getUsername());
+            }
+        });
+
         SwingUtilities.invokeLater(() -> {
+            contactListModel.clear();
             for (User user : users) {
-                contactListModel.addElement(user.getUsername() + " Online");
-                contactListModel.elements();
+                if (user.getState() && !user.getUsername().equals("")) {
+                    contactListModel.addElement(user.getUsername() + " Online");
+                }
             }
         });
     }

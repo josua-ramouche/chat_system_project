@@ -88,7 +88,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
     @Override
-    public void unique() throws UnknownHostException, InterruptedException {
+    public void unique() throws UnknownHostException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
@@ -96,8 +96,10 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setUsername(usernameField.getText());
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
+
             mainAppInterface = new ContactListApp(me);
             this.addActionListener2(mainAppInterface);
+
             mainAppInterface.setVisible(true);
             this.setVisible(false);
         }
