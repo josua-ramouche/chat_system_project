@@ -97,12 +97,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         if (!not_unique.get()) {
             ContactListApp contactListApp = null;
             oldme.setUsername(usernameField.getText());
-
-            try {
-                contactListApp = new ContactListApp(oldme);
-            } catch (InterruptedException ex) {
-                throw new RuntimeException(ex);
-            }
+            contactListApp = new ContactListApp(oldme);
             this.addActionListener2(contactListApp);
             contactListApp.setVisible(true);
             this.setVisible(false);
@@ -135,11 +130,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
     private void goBack() throws UnknownHostException, InterruptedException {
         ContactListApp contactListApp = null;
-        try {
-            contactListApp = new ContactListApp(oldme);
-        } catch (InterruptedException ex) {
-            throw new RuntimeException(ex);
-        }
+        contactListApp = new ContactListApp(oldme);
         contactListApp.setVisible(true);
         this.setVisible(false);
 
