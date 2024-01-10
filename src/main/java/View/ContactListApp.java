@@ -11,6 +11,7 @@ import java.awt.*;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -57,7 +58,11 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
-            ClientUDP.sendEndConnection(me);
+            try {
+                ClientUDP.sendEndConnection(me);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
             System.out.println("Back button clicked");
@@ -66,7 +71,11 @@ public class ContactListApp extends JFrame implements CustomListener2{
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                disconnectAndExit();
+                try {
+                    disconnectAndExit();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -104,9 +113,9 @@ public class ContactListApp extends JFrame implements CustomListener2{
         frame.setVisible(true);
     }
 
-    private void disconnectAndExit() {
+    private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
-        ServerTCP.ClientHandler.endConnection();
+        //ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection(me);
         System.exit(0);
     }
@@ -160,14 +169,14 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
 
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
+        contactListModel.clear();
+
         System.out.println("users2222222 !!!!!!!!: ");
         printContactList();
         TimeUnit.SECONDS.sleep(1);
         SwingUtilities.invokeLater(() -> {
-            contactListModel.clear();
             for (User user : users) {
                 contactListModel.addElement(user.getUsername() + " Online");
-                contactListModel.elements();
             }
         });
     }

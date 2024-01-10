@@ -12,6 +12,7 @@ import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.IOException;
 import java.net.InetAddress;
 import java.util.Objects;
 import java.util.List;
@@ -69,7 +70,11 @@ public class ChatApp extends JFrame {
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                disconnectAndExit();
+                try {
+                    disconnectAndExit();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
 
@@ -89,7 +94,7 @@ public class ChatApp extends JFrame {
     }
 
 
-    private void disconnectAndExit() {
+    private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection(me);

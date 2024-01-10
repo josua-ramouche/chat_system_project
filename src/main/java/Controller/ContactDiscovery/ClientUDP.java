@@ -19,7 +19,7 @@ public class ClientUDP {
             byte[] buffer = broadcastMessage.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
-            System.out.println("J'ENVOIE LE SOCKET :" + socket.getPort());
+            System.out.println("J'ENVOIE LE SOCKET :" + socket.toString());
         }
         catch (Exception e)
         {
@@ -63,7 +63,6 @@ public class ClientUDP {
 
     // Send the user's username with broadcast to other users in the network, a check is made to verify that the username is unique
     public static void sendUsername(List<InetAddress> broadcastList, User client) {
-        try (DatagramSocket ignored = new DatagramSocket()) {
             String username = client.getUsername();
             if (isUsernameUnique(username)) {
                 for (InetAddress inetAddress : broadcastList) {
@@ -83,9 +82,6 @@ public class ClientUDP {
                     listener.notUniquePopup("Username not unique");
                 }
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        }
     }
 
     private static final List<CustomListener> listeners = new ArrayList<>();
@@ -133,15 +129,13 @@ public class ClientUDP {
     }
 
     // Send a message in broadcast so other users can change his status to disconnected (false)
-    public static void sendEndConnection(User client){
+    public static void sendEndConnection(User client) throws IOException {
         System.out.println("Disconnection...");
-        List<User> Users = DatabaseController.getUsers();
-        Users.forEach(u -> { try {
-            broadcast("end",u.getIPAddress());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        List<InetAddress> broadcastList = listAllBroadcastAddresses();
+        for (InetAddress inetAddress : broadcastList) {
+            broadcast("end", inetAddress);
         }
-        });
+
         client.setState(false);
         System.out.println("You are now disconnected\n");
     }
