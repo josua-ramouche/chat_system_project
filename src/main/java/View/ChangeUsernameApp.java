@@ -53,7 +53,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         backButton.addActionListener(e -> {
             try {
                 goBack();
-            } catch (UnknownHostException ex) {
+            } catch (UnknownHostException | InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -92,7 +92,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() throws UnknownHostException {
+    public void unique() throws UnknownHostException, InterruptedException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
@@ -128,7 +128,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         }
     }
 
-    private void goBack() throws UnknownHostException {
+    private void goBack() throws UnknownHostException, InterruptedException {
         User me = new User();
         me.setUsername(usernameField.getText());
         me.setIPAddress(InetAddress.getLocalHost());

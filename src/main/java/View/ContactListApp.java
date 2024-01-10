@@ -12,6 +12,7 @@ import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import static Controller.Database.DatabaseController.printContactList;
 
@@ -19,13 +20,13 @@ import static Controller.Database.DatabaseController.printContactList;
 public class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
-    private final DefaultListModel<String> contactListModel;
-    private final JList<String> contactListView;
+    private DefaultListModel<String> contactListModel;
+    private JList<String> contactListView;
     private List<User> contactList;
 
     private static User me;
 
-    public ContactListApp(User me) {
+    public ContactListApp(User me) throws InterruptedException {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
@@ -149,25 +150,24 @@ public class ContactListApp extends JFrame implements CustomListener2{
                     System.out.println("user : " + u.getUsername());
                 }
             });
-            addContactsToDisplayedList(users);
+            try {
+                addContactsToDisplayedList(users);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         });
     }
 
 
-    private synchronized void addContactsToDisplayedList(List<User> users) {
+    private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
         System.out.println("users2222222 !!!!!!!!: ");
-        users.forEach(u -> {
-            if (u.getState()) {
-                System.out.println("user : " + u.getUsername());
-            }
-        });
-
+        printContactList();
+        TimeUnit.SECONDS.sleep(1);
         SwingUtilities.invokeLater(() -> {
             contactListModel.clear();
             for (User user : users) {
-                if (user.getState() && !user.getUsername().equals("")) {
-                    contactListModel.addElement(user.getUsername() + " Online");
-                }
+                contactListModel.addElement(user.getUsername() + " Online");
+                contactListModel.elements();
             }
         });
     }
