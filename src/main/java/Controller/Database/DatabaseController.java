@@ -115,7 +115,7 @@ public class DatabaseController {
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, u.getUsername());
                 pstmt.setString(2, u.getIPAddress().getHostAddress());
-                pstmt.setBoolean(3, u.getState());
+                pstmt.setBoolean(3, true);
                 pstmt.executeUpdate();
                 System.out.println("User added successfully to database\n");
             } catch (SQLException e) {
