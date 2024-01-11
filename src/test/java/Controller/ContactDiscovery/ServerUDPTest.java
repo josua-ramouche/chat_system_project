@@ -21,7 +21,7 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
-
+    //COMMIT
     @AfterEach
     void clearDatabase() {
         List<User> users = DatabaseController.getAllUsers();
