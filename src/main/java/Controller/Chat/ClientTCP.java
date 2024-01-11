@@ -24,16 +24,8 @@ public class ClientTCP {
     }
 
     public static void sendMessage(String message) {
-
-            // System.in is an InputStream which we wrap into the more capable BufferedReader
             BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-
-                out.println(message);
-                // Sending end connection message to the server
-                //if (message.equals("END")) {
-                //    break;
-                //}
-
+            out.println(message);
     }
 
     public static void stopConnection() {

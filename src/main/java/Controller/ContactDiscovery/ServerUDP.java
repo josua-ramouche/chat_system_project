@@ -95,9 +95,6 @@ public class ServerUDP {
                     }
                 }
             }
-            //
-            //socket.close();
-            //System.out.println("Socket correctly closed");
         }
         private InetAddress lastResponseSender = null;
 

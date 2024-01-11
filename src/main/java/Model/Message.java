@@ -1,16 +1,11 @@
 package Model;
 
-import java.util.Objects;
-
 public class Message {
-    private String content;
-    private String date;
-    private User sender;
+    private final String content;
+    private final String date;
+    private final User sender;
 
     // Constructors
-    public Message(){
-    }
-
     public Message(String content, String date, User sender){
         this.content=content;
         this.date=date;
@@ -28,9 +23,6 @@ public class Message {
     public User getSender() {
         return sender;
     }
-
-
-
 
 }
 

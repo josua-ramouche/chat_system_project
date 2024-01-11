@@ -1,14 +1,12 @@
 package View;
 
 import Controller.Chat.ClientTCP;
-import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
-
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
@@ -21,8 +19,8 @@ import static Controller.Database.DatabaseController.printContactList;
 public class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
-    private DefaultListModel<String> contactListModel;
-    private JList<String> contactListView;
+    private final DefaultListModel<String> contactListModel;
+    private final JList<String> contactListView;
     private List<User> contactList;
 
     private static User me;
