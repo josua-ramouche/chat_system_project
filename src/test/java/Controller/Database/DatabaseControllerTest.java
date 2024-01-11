@@ -22,7 +22,4 @@ class DatabaseControllerTest {
     void createChatTable() {
     }
 
-    @Test
-    void main() {
-    }
 }

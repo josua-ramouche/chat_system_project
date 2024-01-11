@@ -1,53 +1,62 @@
 package Controller.Chat;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
+import static org.junit.jupiter.api.Assertions.*;
+
+import java.io.*;
+import java.net.Socket;
 public class ServerTCPTest {
+    @Test
+    void clientHandlerRunTest() throws IOException {
+        // Redirect System.out to capture the output
+        ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(capturedOutput));
+
+        // Mock the static method of Socket class
+        Socket fakeSocket = Mockito.mock(Socket.class);
+        Mockito.when(fakeSocket.getOutputStream()).thenReturn(new ByteArrayOutputStream());
+        Mockito.when(fakeSocket.getInputStream()).thenReturn(new ByteArrayInputStream("Test Message\n".getBytes()));
+
+        // Create a new client handler with the fake socket
+        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(fakeSocket);
+
+        // Start the client handler
+        clientHandler.start();
+
+        // Sleep to allow the client handler to process the message
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        // Restore the original System.out
+        System.setOut(System.out);
+
+        // Assert that the client handler processed the message
+        // Add more assertions based on your specific logic
+        // Here, we are just checking if the message was printed
+        // to the console.
+        assertTrue(capturedOutput.toString().contains("Received: Test Message"));
+    }
 
     @Test
-    public void testServerTCP() throws UnknownHostException {
-        // Créer une instance de la classe ServerTCP
-        ServerTCP server = new ServerTCP();
+    void endConnectionTest() throws IOException {
+        // Mock the static method of Socket class
+        Socket fakeSocket = Mockito.mock(Socket.class);
 
-        // Démarrer le serveur dans un thread distinct
-        Thread serverThread = new Thread(() -> server.main(null));
-        serverThread.start();
+        // Create a new client handler with the fake socket
+        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(fakeSocket);
 
-        // Attendre un certain temps pour que le serveur puisse démarrer (ajuster selon les besoins)
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // End the connection
+        ServerTCP.ClientHandler.endConnection();
 
-        // Créer une instance de la classe ClientTCP pour simuler un client
-        ClientTCP client = new ClientTCP();
-
-        // Adresse IP et port pour la connexion (ajuster selon vos besoins)
-        String serverIP = "localhost";
-        int serverPort = 1556;
-
-        // Démarrer la connexion du client
-        client.startConnection(InetAddress.getByName(serverIP), serverPort);
-
-        // Tester l'envoi de message depuis le client vers le serveur
-        String testMessage = "Hello, server!";
-        client.sendMessage(testMessage);
-
-        // Attendre un certain temps pour que le message soit traité par le serveur (ajuster selon les besoins)
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // Arrêter la connexion du client
-        client.stopConnection();
-
-        // Arrêter le serveur
-        serverThread.interrupt();
+        // Assert that the socket is closed
+        Mockito.verify(fakeSocket);
+        fakeSocket.close();
+        Mockito.verifyNoMoreInteractions(fakeSocket);
     }
 }
