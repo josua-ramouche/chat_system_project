@@ -1,15 +1,12 @@
 package View;
 
 import Controller.ContactDiscovery.ClientUDP;
-import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
 import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +75,6 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
-            return;
         }
         else {
             UserContactDiscovery.inituser(username);
@@ -92,16 +88,14 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() throws UnknownHostException, InterruptedException {
+    public void unique() throws InterruptedException {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
-            User me = new User();
-            me.setUsername(usernameField.getText());
-            me.setIPAddress(InetAddress.getLocalHost());
-            me.setState(true);
+            oldme.setUsername(usernameField.getText());
+            oldme.setState(true);
             if (mainAppInterface == null) {
-                mainAppInterface = new ContactListApp(me);
+                mainAppInterface = new ContactListApp(oldme);
                 this.addActionListener2(mainAppInterface);
             }
             mainAppInterface.setVisible(true);
@@ -129,11 +123,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     private void goBack() throws UnknownHostException, InterruptedException {
-        User me = new User();
-        me.setUsername(usernameField.getText());
-        me.setIPAddress(InetAddress.getLocalHost());
-        me.setState(true);
-        mainAppInterface = new ContactListApp(me);
+        mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
         this.dispose(); // Close the current window
     }

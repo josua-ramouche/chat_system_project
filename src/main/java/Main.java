@@ -1,46 +1,37 @@
+import Controller.Chat.ChatController;
+import Controller.ContactDiscovery.ClientUDP;
 import Controller.ContactDiscovery.ServerUDP;
-import Model.User;
+import Controller.ContactDiscovery.UserContactDiscovery;
+import Controller.Database.DatabaseController;
+import View.LoginApp;
+
+import javax.swing.*;
 import java.io.IOException;
-import java.net.InetAddress;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import static Controller.ContactDiscovery.ClientUDP.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException, InterruptedException {
-        // User data
-        User user = new User();
-        //------------STRING TO MODIFY TO CHANGE INITIAL USERNAME---------------
-        user.setUsername("Test1");
-        user.setIPAddress(InetAddress.getLocalHost());
-        user.setState(true);
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> {
+            LoginApp loginApp = new LoginApp();
+            loginApp.setVisible(true);
 
-        List<InetAddress> interfacesIP;
-        interfacesIP = getInterfacesIP();
-        System.out.println(user.getIPAddress());
 
-        Thread Server = new ServerUDP.EchoServer(user);
+            try {
+                DatabaseController.initConnection();
+                UserContactDiscovery.inituser("");
 
-        // Find the broadcast addresses
-        System.out.println("Broadcast address(es):");
-        List<InetAddress> broadcastList = listAllBroadcastAddresses();
+                ServerUDP.EchoServer serverUDP = UserContactDiscovery.Init();
+                //serverUDP.setDaemon(true);
+                serverUDP.start();
+                serverUDP.addActionListener(loginApp);
 
-        // Client (initial sender) actions (send broadcast for contact discovery, change of username, end connection)
-        sendUsername(broadcastList,user);
+                ClientUDP.addActionListener(loginApp);
 
-        // Server (connected user) actions (wait for message from a Client)
-        Server.setDaemon(true);
-        Server.start();
-
-        // User asks for a change of username Test1 -> Test2
-        //TimeUnit.SECONDS.sleep(5);
-
-        //------------STRING TO MODIFY TO CHANGE USERNAME AFTER THREE SECONDS---------------
-        //sendChangeUsername(user, "Test2");
-
-        // User disconnection
-        //TimeUnit.SECONDS.sleep(5);
-        //sendEndConnection(user);
+                ChatController.listenTCP serverTCP = new ChatController.listenTCP();
+                serverTCP.start();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 }
 

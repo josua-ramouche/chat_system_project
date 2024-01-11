@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
-import static Controller.ContactDiscovery.ClientUDP.broadcast;
 import static Controller.Database.DatabaseController.getUserID;
 import static Controller.Database.DatabaseController.printContactList;
 
@@ -48,10 +47,13 @@ public class ServerUDP {
         public void run() {
             System.out.println("-----------------------------");
             // Stops if the user is disconnected (if getState() is false)
-            while (server.getState()) {
+            while (true) {
+                System.out.println("Le serveur tourne...");
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
+                    System.out.println("Before Datagram reception");
                     socket.receive(packet);
+                    System.out.println("After Datagram reception");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

@@ -1,7 +1,6 @@
 package Controller.ContactDiscovery;
 
 import Model.User;
-import View.ContactListApp;
 
 import java.awt.*;
 import java.net.InetAddress;
@@ -23,7 +22,6 @@ public class UserContactDiscovery extends Component {
         temp.setUsername(username);
         temp.setIPAddress(InetAddress.getLocalHost());
         temp.setState(true);
-        List<InetAddress> interfacesIP = ClientUDP.getInterfacesIP();
 
     }
 
@@ -35,25 +33,11 @@ public class UserContactDiscovery extends Component {
 
     public void Action() throws UnknownHostException, SocketException, InterruptedException {
 
-
-//
-
-
         // Find the broadcast addresses
         List<InetAddress> broadcastList = ClientUDP.listAllBroadcastAddresses();
 
         // Send the username for contact discovery
         ClientUDP.sendUsername(broadcastList, temp);
-
-
-
-        //wait(10000);
-        // User disconnection
-        //ClientUDP.sendEndConnection(temp);
-
-        // Start the main application interface
-
-        //add disconnection and change of username in it
 
     }
 
