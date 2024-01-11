@@ -12,9 +12,6 @@ To test this functionnality :
 - Make sure to reload the maven project (if possible on the tool you are using) in case you did not use the same dependencies.
   *(If the software you are using cannot handle a maven project, or if you want to use only a command prompt. Please refer to the next section)*
 - Run the **Main.java** in src/main/java on two different computers connected on the same network.
-- You are free to modify the initial username before launching the program (line 14) as well as the new username used to test the change of username after 5 seconds (line 38).
-- The program will end after 10 seconds, as we send a disconnection request at the end. Feel free to modify the delay before disconnection (line 41 : TimeUnit.SECONDS.sleep(seconds)) or comment the disconnection instruction (line 42 : sendEndConnection(user)) if it is too short.
-- JUnit tests for our methoods can be found in **ClientContactDiscoveryControllerTest.java**, **ServerContactDiscoveryControllerTest.java** (both located in src/test/java/Controller) and **UserTest.java** (src/test/java/Model).
 
 --------------------------------------------------------------------------------------------------------------------------------------------
 (The next steps must be done only if the software you are using cannot handle a maven project, or if you want to use only a command prompt)
