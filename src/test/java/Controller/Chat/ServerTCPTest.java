@@ -1,5 +1,7 @@
 package Controller.Chat;
 
+import Controller.Database.DatabaseController;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -9,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;
 import java.net.Socket;
 public class ServerTCPTest {
+
+    @BeforeAll
+    static void ensure_database_is_created() {
+        DatabaseController.createUserTable();
+    }
     @Test
     void clientHandlerRunTest() throws IOException {
         // Redirect System.out to capture the output

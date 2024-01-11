@@ -2,12 +2,19 @@ package Controller.Chat;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import Controller.Database.DatabaseController;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.Socket;
 
-public class ChatControllerTest {
+class ChatControllerTest {
+
+    @BeforeAll
+    static void ensure_database_is_created() {
+        DatabaseController.createUserTable();
+    }
 
     @Test
     public void testChatController() {

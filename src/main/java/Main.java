@@ -16,6 +16,7 @@ public class Main {
 
 
             try {
+                DatabaseController.createUserTable();
                 DatabaseController.initConnection();
                 UserContactDiscovery.inituser("");
 

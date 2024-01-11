@@ -3,6 +3,7 @@ package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -21,7 +22,12 @@ import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ServerUDPTest {
-    //COMMIT
+
+    @BeforeAll
+    static void ensure_database_is_created() {
+        DatabaseController.createUserTable();
+    }
+
     @AfterEach
     void clearDatabase() {
         List<User> users = DatabaseController.getAllUsers();

@@ -1,5 +1,7 @@
 package Controller.ContactDiscovery;
 
+import Controller.Database.DatabaseController;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
@@ -9,6 +11,11 @@ import java.net.UnknownHostException;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UserContactDiscoveryTest {
+
+    @BeforeAll
+    static void ensure_database_is_created() {
+        DatabaseController.createUserTable();
+    }
 
     @Test
     void testInituser() {

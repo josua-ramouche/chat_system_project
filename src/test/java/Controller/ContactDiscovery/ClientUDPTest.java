@@ -1,6 +1,7 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -10,7 +11,11 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ClientUDPTest {
-//COMMIT
+    @BeforeAll
+    static void ensure_database_is_created() {
+        DatabaseController.createUserTable();
+    }
+
     @Test
     void broadcast() {
         // Test broadcast method
