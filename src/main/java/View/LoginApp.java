@@ -18,7 +18,6 @@ public class LoginApp extends JFrame implements CustomListener{
 
     private final AtomicBoolean not_unique= new AtomicBoolean(false);
     private JTextField usernameField;
-    private static ContactListApp mainAppInterface;
 
     public LoginApp() {
         setTitle("Login");
@@ -93,7 +92,7 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
 
-            mainAppInterface = new ContactListApp(me);
+            ContactListApp mainAppInterface = new ContactListApp(me);
             this.addActionListener2(mainAppInterface);
 
             mainAppInterface.setVisible(true);

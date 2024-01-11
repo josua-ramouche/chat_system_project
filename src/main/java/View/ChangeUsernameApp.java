@@ -19,7 +19,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private JTextField usernameField;
     private ContactListApp mainAppInterface;
 
-    private User oldme;
+    private final User oldme;
 
     public ChangeUsernameApp(User oldme) {
         this.oldme=oldme;

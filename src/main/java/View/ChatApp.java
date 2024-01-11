@@ -57,7 +57,7 @@ public class ChatApp extends JFrame {
 
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contactListApp = null;
+            ContactListApp contactListApp;
             try {
                 contactListApp = new ContactListApp(me);
             } catch (InterruptedException ex) {

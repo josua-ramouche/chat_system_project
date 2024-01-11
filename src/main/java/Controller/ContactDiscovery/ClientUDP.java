@@ -19,7 +19,7 @@ public class ClientUDP {
             byte[] buffer = broadcastMessage.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
-            System.out.println("J'ENVOIE LE SOCKET :" + socket.toString());
+            System.out.println("J'ENVOIE LE SOCKET :" + socket);
         }
         catch (Exception e)
         {
