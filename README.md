@@ -3,11 +3,7 @@
 The objective of this project is to create a chatsystem application for users connected on the same network. Each user has a username, associated to an IP address. A user should be able to send messages to connected contacts, change his username, notify it to all connected contacts, disconnect and also notify it to all connected contacts in this case.
 
 
-## First milestone : Contact discovery 
-
-Our first step on this project is to do a contact discovery on the network : When a user connects, its username is sent to connected users on the same network to verify its unicity. If the first sent username is not unique, the user must change it. When the username is valid, every connected user adds our freshly connected user to their contact list. So does the new user with every other connected user. 
-
-To test this functionnality : 
+## How to run the program : 
 
 - Make sure to reload the maven project (if possible on the tool you are using) in case you did not use the same dependencies.
   *(If the software you are using cannot handle a maven project, or if you want to use only a command prompt. Please refer to the next section)*
