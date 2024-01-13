@@ -8,7 +8,7 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class ClientTCP {
-    private static Socket socket;
+    static Socket socket;
     private static PrintWriter out;
     private static BufferedReader in;
 
