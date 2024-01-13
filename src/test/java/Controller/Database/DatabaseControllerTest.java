@@ -26,7 +26,7 @@ class DatabaseControllerTest {
     void beforeEach() {
         cleanDatabase();
         DatabaseController.createUserTable();
-        DatabaseController.createChatTable(1);
+        DatabaseController.createChatTable(Integer.MAX_VALUE);
     }
 
     @AfterEach
@@ -105,7 +105,7 @@ class DatabaseControllerTest {
 
     @Test
     void testSaveSentMessage() {
-        int chatId = 1;
+        int chatId = Integer.MAX_VALUE;
         String message = "Hello, this is a test message.";
         DatabaseController.saveSentMessage(chatId, message);
         List<Message> messages = DatabaseController.getMessages(chatId);
@@ -115,7 +115,7 @@ class DatabaseControllerTest {
 
     @Test
     void testSaveReceivedMessage() {
-        int chatId = 1;
+        int chatId = Integer.MAX_VALUE;
         String message = "Hello, this is a test message.";
         DatabaseController.saveReceivedMessage(chatId, message);
         List<Message> messages = DatabaseController.getMessages(chatId);
