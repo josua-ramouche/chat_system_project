@@ -91,6 +91,9 @@ public class ChatApp extends JFrame {
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
         PrintHistory(messages);
+
+        setLocationRelativeTo(null);
+        setVisible(true);
     }
 
 
@@ -124,6 +127,10 @@ public class ChatApp extends JFrame {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
+
+            Style rightAlignStyle = doc.addStyle("RightAlignStyle", style);
+            StyleConstants.setAlignment(rightAlignStyle, StyleConstants.ALIGN_RIGHT);
+
             if (senderip == null) { //me
                 StyleConstants.setForeground(style, Color.RED);
                 try {
@@ -136,6 +143,9 @@ public class ChatApp extends JFrame {
                 }
             } else { //partner
                 StyleConstants.setForeground(style, Color.BLUE);
+                int length = doc.getLength();
+                doc.setParagraphAttributes(length - msg.getContent().length(), length,
+                        rightAlignStyle, false);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
                     doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
@@ -150,6 +160,5 @@ public class ChatApp extends JFrame {
         // Set the scroll position to the bottom
         chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
-
 
 }
