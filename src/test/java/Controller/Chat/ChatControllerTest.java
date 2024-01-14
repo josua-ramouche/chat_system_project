@@ -18,9 +18,6 @@ class ChatControllerTest {
 
     @Test
     public void testChatController() {
-        // Créer une instance de la classe ChatController
-        ChatController chatController = new ChatController();
-
         // Créer une instance de la classe listenTCP
         ChatController.listenTCP listenThread = new ChatController.listenTCP();
 

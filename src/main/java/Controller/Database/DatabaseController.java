@@ -163,12 +163,12 @@ public class DatabaseController {
         return id;
     }
 
-    public static int getUserID2(InetAddress u){
+    public static int getUserID2(InetAddress address){
         Connection conn = connect();
         int id = 0;
         String sql = "SELECT userID FROM Users WHERE ipaddress = ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-            pstmt.setString(1, u.getHostAddress());
+            pstmt.setString(1, address.getHostAddress());
 
             ResultSet resultSet = pstmt.executeQuery();
 

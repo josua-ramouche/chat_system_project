@@ -59,9 +59,9 @@ class ServerUDPTest {
     @Test
     void testEchoServer_HandleBroadcastMessage() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
-        DatagramSocket socket = mock(DatagramSocket.class);
+        DatagramSocket datagramSocket = mock(DatagramSocket.class);
 
-        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,datagramSocket);
 
         // Simulate broadcast messages
         String broadcastMessage1 = "BROADCAST:TestUser1";
