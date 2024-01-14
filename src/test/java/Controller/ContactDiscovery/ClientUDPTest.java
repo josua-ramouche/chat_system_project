@@ -14,6 +14,7 @@ class ClientUDPTest {
     @BeforeAll
     static void ensure_database_is_created() {
         DatabaseController.createUserTable();
+        DatabaseController.createChatTable(0);
     }
 
     @Test
