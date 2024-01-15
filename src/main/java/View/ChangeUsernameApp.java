@@ -95,8 +95,9 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             oldme.setUsername(usernameField.getText());
             oldme.setState(true);
 
-                mainAppInterface = new ContactListApp(oldme);
-                this.addActionListener2(mainAppInterface);
+            mainAppInterface = new ContactListApp(oldme);
+            this.addActionListener2(mainAppInterface);
+            launchTest();
 
             mainAppInterface.setVisible(true);
             this.setVisible(false);
