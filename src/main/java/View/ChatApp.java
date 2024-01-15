@@ -131,14 +131,10 @@ public class ChatApp extends JFrame {
 
 
 
-
             if (senderip == null) { //me
-                Style leftAlignStyle = doc.addStyle("LeftAlignStyle", style);
-                StyleConstants.setAlignment(leftAlignStyle, StyleConstants.ALIGN_LEFT);
+
                 StyleConstants.setForeground(style, Color.RED);
-                int length = doc.getLength();
-                doc.setParagraphAttributes(length - msg.getContent().length(), length,
-                        leftAlignStyle, false);
+
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
                     doc.insertString(doc.getLength(), "Me" + ": ", style);
@@ -148,12 +144,9 @@ public class ChatApp extends JFrame {
                     e.printStackTrace();
                 }
             } else if (partner.getUsername().equals(msg.getSender().getUsername())){ //partner
-                Style rightAlignStyle = doc.addStyle("RightAlignStyle", style);
-                StyleConstants.setAlignment(rightAlignStyle, StyleConstants.ALIGN_RIGHT);
+
                 StyleConstants.setForeground(style, Color.BLUE);
-                int length = doc.getLength();
-                doc.setParagraphAttributes(length - msg.getContent().length(), length,
-                        rightAlignStyle, false);
+
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
                     doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
