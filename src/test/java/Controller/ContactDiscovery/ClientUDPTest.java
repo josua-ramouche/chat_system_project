@@ -83,13 +83,11 @@ class ClientUDPTest {
     @Test
     void sendEndConnection() {
         // Test sendEndConnection method
-        User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         try {
-            ClientUDP.sendEndConnection(user);
+            ClientUDP.sendEndConnection();
             List<User> Users = DatabaseController.getUsers();
             // Verify that the contact list is empty and user state is false after disconnection
             assertTrue(Users.isEmpty());
-            assertFalse(user.getState());
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());
         }
