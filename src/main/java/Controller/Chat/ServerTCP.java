@@ -38,8 +38,7 @@ public class ServerTCP {
 
                         System.out.println("id sender from server TCP : " +idsender);
 
-                        List<Message> messages = DatabaseController.getMessages(idsender);
-                        ChatApp.PrintHistory(messages);
+                        ChatApp.PrintHistory();
 
 
                     }

@@ -18,11 +18,12 @@ import java.util.Objects;
 import java.util.List;
 
 public class ChatApp extends JFrame {
-    private static JTextPane chatArea = null;
+    private static JTextPane chatArea = new JTextPane();
     private final JTextField messageField;
 
     private static User partner = null;
     private static User me =null;
+
 
     public ChatApp(User partner, User me) {
         ChatApp.partner=partner;
@@ -34,7 +35,6 @@ public class ChatApp extends JFrame {
         // Components
         JLabel userLabel = new JLabel("Me: " + me.getUsername() + " chat with: " + partner.getUsername());
         JButton backButton = new JButton("Back");
-        chatArea = new JTextPane();
         messageField = new JTextField();
         JButton sendButton = new JButton("Send");
 
@@ -90,7 +90,7 @@ public class ChatApp extends JFrame {
         messageField.requestFocusInWindow();
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory(messages);
+        PrintHistory();
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -114,15 +114,16 @@ public class ChatApp extends JFrame {
             messageField.setText("");
         }
 
-        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory(messages);
+        PrintHistory();
     }
 
 
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public static void PrintHistory(List<Message> messages) {
+    public static void PrintHistory() {
         chatArea.setText("");
+        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
+
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
