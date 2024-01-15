@@ -54,6 +54,15 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             }
         });
 
+        // Add ActionListener to usernameField to listen for Enter key
+        usernameField.addActionListener(e -> {
+            try {
+                onLoginButtonClick();
+            } catch (IOException | InterruptedException ioException) {
+                ioException.printStackTrace();
+            }
+        });
+
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(new JLabel());
