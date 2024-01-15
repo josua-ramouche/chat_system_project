@@ -25,12 +25,12 @@ public final class ContactListApp extends JFrame implements CustomListener2{
 
     private static User me;
 
-    private static ContactListApp contactListApp;
+    private static ContactListApp CONTACTLISTAPP;
 
-    public static ContactListApp getInstance() throws InterruptedException {
-        if (contactListApp==null)
-            {contactListApp=new ContactListApp(me);}
-        return contactListApp;
+    public static ContactListApp getInstance(User u) throws InterruptedException {
+        if (CONTACTLISTAPP==null)
+            {CONTACTLISTAPP=new ContactListApp(u);}
+        return CONTACTLISTAPP;
     }
 
     private  ContactListApp(User me) throws InterruptedException {
@@ -96,7 +96,7 @@ public final class ContactListApp extends JFrame implements CustomListener2{
         });
         contactListView.setVisibleRowCount(5);
 
-        JLabel nameLabel = new JLabel("Contact List");
+        JLabel nameLabel = new JLabel("Contact List of "  + me.getUsername());
         nameLabel.setFont(new Font("Arial", Font.BOLD, 15));
 
         JPanel namePanel = new JPanel();
