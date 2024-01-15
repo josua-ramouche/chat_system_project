@@ -131,13 +131,12 @@ public class ClientUDP {
         try (DatagramSocket socket = new DatagramSocket()) {
             // Notify other users about the new username
             Users.forEach(u -> {
-
                 if (!u.getIPAddress().equals(client.getIPAddress())) {
                     ServerUDP.EchoServer.sendIP("end", u.getIPAddress(), socket );
                 }
-                client.setState(false);
-                System.out.println("You are now disconnected\n");
             });
+            client.setState(false);
+            System.out.println("You are now disconnected\n");
         } catch (IOException e) {
             e.printStackTrace();
         }}
