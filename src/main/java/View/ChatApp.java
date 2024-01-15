@@ -21,13 +21,20 @@ import java.util.List;
 public class ChatApp extends JFrame {
     private static JTextPane chatArea = new JTextPane();
     private final JTextField messageField;
-    private static User partner;
+    private static User partner=null;
 
     private static User me =null;
 
 
+    public static User setpartner(User partner1) {
+        if (partner==null)
+    {partner=partner1;
+        return partner;}
+    else
+    {return partner;}}
+
     public ChatApp(User partner, User me) {
-        this.partner=partner;
+        setpartner(partner);
         ChatApp.me=me;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
@@ -125,6 +132,7 @@ public class ChatApp extends JFrame {
         chatArea.setText("");
         int clientid = DatabaseController.getUserID2(clientIP);
         List<Message> messages = DatabaseController.getMessages(clientid);
+        setpartner(DatabaseController.getUser(clientid));
 
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
