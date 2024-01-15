@@ -25,6 +25,15 @@ public class ClientTCPTest {
         }
     }
 
+    @AfterAll
+    public static void cleanup() {
+        try {
+            serverSocket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Test
     public void testStartConnection() {
         // Arrange
@@ -65,14 +74,5 @@ public class ClientTCPTest {
 
         // Assert
         assertEquals(true, ClientTCP.socket.isClosed());
-    }
-
-    @AfterAll
-    public static void cleanup() {
-        try {
-            serverSocket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 }
