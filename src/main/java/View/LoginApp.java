@@ -101,9 +101,10 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
 
-            ContactListApp.getInstance().setVisible(true);
-            this.addActionListener2(ContactListApp.getInstance());
+            ContactListApp mainAppInterface = new ContactListApp(me);
+            this.addActionListener2(mainAppInterface);
 
+            mainAppInterface.setVisible(true);
             this.setVisible(false);
         }
 

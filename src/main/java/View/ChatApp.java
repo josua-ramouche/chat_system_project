@@ -32,7 +32,7 @@ public class ChatApp extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Components
-        JLabel userLabel = new JLabel("Chat with: " + partner.getUsername());
+        JLabel userLabel = new JLabel("Me: " + me.getUsername() + "chat with: " + partner.getUsername());
         JButton backButton = new JButton("Back");
         chatArea = new JTextPane();
         messageField = new JTextField();
@@ -57,11 +57,13 @@ public class ChatApp extends JFrame {
 
         // back button action
         backButton.addActionListener(e -> {
+            ContactListApp contactListApp;
             try {
-                ContactListApp.getInstance().setVisible(true);
+                contactListApp = new ContactListApp(me);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
+            contactListApp.setVisible(true);
             this.setVisible(false);
         });
 
@@ -98,7 +100,7 @@ public class ChatApp extends JFrame {
     private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
-        ClientUDP.sendEndConnection(me);
+        ClientUDP.sendEndConnection();
         System.exit(0);
     }
 
@@ -126,11 +128,17 @@ public class ChatApp extends JFrame {
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
 
+
+            Style leftAlignStyle = doc.addStyle("LeftAlignStyle", style);
+            StyleConstants.setAlignment(leftAlignStyle, StyleConstants.ALIGN_LEFT);
             Style rightAlignStyle = doc.addStyle("RightAlignStyle", style);
             StyleConstants.setAlignment(rightAlignStyle, StyleConstants.ALIGN_RIGHT);
 
             if (senderip == null) { //me
                 StyleConstants.setForeground(style, Color.RED);
+                int length = doc.getLength();
+                doc.setParagraphAttributes(length - msg.getContent().length(), length,
+                        leftAlignStyle, false);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
                     doc.insertString(doc.getLength(), "Me" + ": ", style);

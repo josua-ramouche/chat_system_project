@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static Controller.Database.DatabaseController.printContactList;
 
 
-public final class ContactListApp extends JFrame implements CustomListener2{
+public class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
@@ -25,15 +25,9 @@ public final class ContactListApp extends JFrame implements CustomListener2{
 
     private static User me;
 
-    private static ContactListApp contactListApp;
 
-    public static ContactListApp getInstance() throws InterruptedException {
-        if (contactListApp==null)
-            {contactListApp=new ContactListApp(me);}
-        return contactListApp;
-    }
 
-    private  ContactListApp(User me) throws InterruptedException {
+    public ContactListApp(User me) throws InterruptedException {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
@@ -65,13 +59,13 @@ public final class ContactListApp extends JFrame implements CustomListener2{
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
             try {
-                ClientUDP.sendEndConnection(me);
+                ClientUDP.sendEndConnection();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
-            System.out.println("Back button clicked");
+            System.out.println("Disconnect button clicked");
             frame.dispose();
         });
         addWindowListener(new WindowAdapter() {
@@ -96,7 +90,7 @@ public final class ContactListApp extends JFrame implements CustomListener2{
         });
         contactListView.setVisibleRowCount(5);
 
-        JLabel nameLabel = new JLabel("Contact List");
+        JLabel nameLabel = new JLabel("Contact List of "  + me.getUsername());
         nameLabel.setFont(new Font("Arial", Font.BOLD, 15));
 
         JPanel namePanel = new JPanel();
@@ -122,7 +116,7 @@ public final class ContactListApp extends JFrame implements CustomListener2{
     private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
-        ClientUDP.sendEndConnection(me);
+        ClientUDP.sendEndConnection();
         System.exit(0);
     }
 
