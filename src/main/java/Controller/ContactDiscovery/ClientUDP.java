@@ -126,15 +126,23 @@ public class ClientUDP {
 
     // Send a message in broadcast so other users can change his status to disconnected (false)
     public static void sendEndConnection(User client) throws IOException {
+        List<User> Users = DatabaseController.getUsers();
         System.out.println("Disconnection...");
-        List<InetAddress> broadcastList = listAllBroadcastAddresses();
-        for (InetAddress inetAddress : broadcastList) {
-            broadcast("end", inetAddress);
-        }
+        try (DatagramSocket socket = new DatagramSocket()) {
+            // Notify other users about the new username
+            Users.forEach(u -> {
 
-        client.setState(false);
-        System.out.println("You are now disconnected\n");
+                if (!u.getIPAddress().equals(client.getIPAddress())) {
+                    ServerUDP.EchoServer.sendIP("end", u.getIPAddress(), socket );
+                }
+                client.setState(false);
+                System.out.println("You are now disconnected\n");
+            });
+        } catch (IOException e) {
+            e.printStackTrace();
+        }}
+
+
     }
 
 
-}

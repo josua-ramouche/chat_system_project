@@ -169,14 +169,16 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
         contactListModel.clear();
 
-        System.out.println("users2222222 !!!!!!!!: ");
+        System.out.println("before add element: ");
         printContactList();
-        TimeUnit.SECONDS.sleep(1);
+        //TimeUnit.SECONDS.sleep(1);
         SwingUtilities.invokeLater(() -> {
             for (User user : users) {
                 contactListModel.addElement(user.getUsername() + " Online");
             }
         });
+        System.out.println("after add element: ");
+        printContactList();
     }
 
 }

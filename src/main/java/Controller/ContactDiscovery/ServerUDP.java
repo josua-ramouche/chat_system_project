@@ -151,7 +151,7 @@ public class ServerUDP {
             String[] parts = message.split(":");
             String username = parts[0];
 
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.SECONDS.sleep(2);
             System.out.println("handle broadcast message : ");
 
 
