@@ -77,7 +77,7 @@ public class ServerUDP {
                         System.out.println("Broadcast:");
                         try {
                             handleBroadcastMessage(received.substring("BROADCAST:".length()), address);
-                        } catch (InterruptedException e) {
+                        } catch (InterruptedException | SocketException e) {
                             throw new RuntimeException(e);
                         }
                         System.out.println("-----------------------------");
@@ -99,7 +99,11 @@ public class ServerUDP {
                         handleChangeOfUsername(received.substring("USERNAME_UPDATED:".length()));
                     } else if (received.startsWith("HANDLE_RESPONSE_MESSAGE")) {
                         // if a response to a broadcast message is received
-                        handleResponseMessage(received.substring("HANDLE_RESPONSE_MESSAGE:".length()), address);
+                        try {
+                            handleResponseMessage(received.substring("HANDLE_RESPONSE_MESSAGE:".length()), address);
+                        } catch (SocketException e) {
+                            throw new RuntimeException(e);
+                        }
                         System.out.println("-----------------------------");
                     } else if (received.startsWith("HANDLE_RESPONSE_END")) {
                         System.out.println("End message received by distant server");
@@ -153,7 +157,9 @@ public class ServerUDP {
         }
 
         // Reception of a broadcast message
-        public void handleBroadcastMessage(String message, InetAddress address) throws InterruptedException {
+        public void handleBroadcastMessage(String message, InetAddress address) throws InterruptedException, SocketException {
+            List <InetAddress> interfaces = ClientUDP.getInterfacesIP();
+
             String[] parts = message.split(":");
             String username = parts[0];
 
@@ -162,7 +168,7 @@ public class ServerUDP {
 
 
             // checks if the user who sends the broadcast message has a unique username
-            if (isUsernameUnique(username) && !interfacesIP.contains(address) && !username.equals(server.getUsername())) {
+            if (isUsernameUnique(username)) {
                 User contact = new User();
                 contact.setUsername(username);
                 contact.setIPAddress(address);
@@ -172,7 +178,7 @@ public class ServerUDP {
 
 
                 // if the sender is not already in the contact list, he is added to the contact list
-                if (!server.containsContact(Users, contact)) {
+                if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
                     System.out.println("estce quon passe ici 1?");
                     System.out.println("IPADDRESS : " + address.getHostAddress());
                     //ContactList.addContact(contact); contact list retirée
@@ -210,7 +216,9 @@ public class ServerUDP {
         }
 
         // Reception of the response to the broadcast message
-        public void handleResponseMessage(String message, InetAddress address) {
+        public void handleResponseMessage(String message, InetAddress address) throws SocketException {
+            List <InetAddress> interfaces = ClientUDP.getInterfacesIP();
+
             String[] parts = message.split(":");
             String username = parts[0];
 
@@ -228,7 +236,7 @@ public class ServerUDP {
 
             List<User> Users = DatabaseController.getUsers();
 
-            if (!server.containsContact(Users, contact)&& !interfacesIP.contains(address) && !username.equals(server.getUsername())) {
+            if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
                 System.out.println("estce quon passe ici 2 ?");
                 System.out.println("IPADDRESS : " + address.getHostAddress());
                 //ContactList.addContact(contact); retirée contact list
