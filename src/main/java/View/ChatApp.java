@@ -32,7 +32,7 @@ public class ChatApp extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         // Components
-        JLabel userLabel = new JLabel("Chat with: " + partner.getUsername());
+        JLabel userLabel = new JLabel("Me: " + me.getUsername() + "chat with: " + partner.getUsername());
         JButton backButton = new JButton("Back");
         chatArea = new JTextPane();
         messageField = new JTextField();
@@ -58,7 +58,7 @@ public class ChatApp extends JFrame {
         // back button action
         backButton.addActionListener(e -> {
             try {
-                ContactListApp.getInstance().setVisible(true);
+                ContactListApp.getInstance(me).setVisible(true);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
             }
