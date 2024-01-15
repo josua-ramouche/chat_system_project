@@ -169,11 +169,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
 
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
-        List<User> Users = DatabaseController.getUsers();
-        for (User u : Users) {
-            ChatApp chat = new ChatApp(u,me);
-            chat.setVisible(false);
-        }
 
         contactListModel.clear();
 

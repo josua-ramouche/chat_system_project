@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class ServerTCP {
 
                         System.out.println("id sender from server TCP : " +idsender);
 
-                        ChatApp.PrintHistory();
+                        ChatApp.PrintHistory(InetAddress.getByName(clientSocket.getInetAddress().getHostAddress()));
 
 
                     }

@@ -9,6 +9,7 @@ import Model.User;
 
 import javax.swing.*;
 import javax.swing.text.*;
+import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -90,7 +91,7 @@ public class ChatApp extends JFrame {
         messageField.requestFocusInWindow();
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory();
+        PrintHistory(partner.getIPAddress());
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -114,15 +115,17 @@ public class ChatApp extends JFrame {
             messageField.setText("");
         }
 
-        PrintHistory();
+        PrintHistory(partner.getIPAddress());
     }
 
 
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public static void PrintHistory() {
+    public static void PrintHistory(InetAddress cientIP) {
         chatArea.setText("");
-        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
+        int clientid = DatabaseController.getUserID2(cientIP);
+        List<Message> messages = DatabaseController.getMessages(clientid);
+        partner = DatabaseController.getUser(clientid);
 
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
