@@ -15,7 +15,7 @@ public class DatabaseController {
     public static Connection connect() {
         Connection conn = null;
         try {
-            String ad = InetAddress.getLocalHost().toString();
+            String ad = InetAddress.getLocalHost().getHostName();
             //Database parameters
             String url = "jdbc:sqlite:chatsystem" + ad +".db";
             //Create a connection to the database
