@@ -1,11 +1,16 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,6 +20,11 @@ class ClientUDPTest {
     static void ensure_database_is_created() {
         DatabaseController.createUserTable();
         DatabaseController.createChatTable(0);
+    }
+
+    @AfterEach
+    void cleanDatabase() {
+        deleteTestChatTable();
     }
 
     @Test
@@ -82,6 +92,31 @@ class ClientUDPTest {
             assertFalse(user.getState());
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());
+        }
+    }
+
+    private static void deleteTestChatTable() {
+        Connection conn = DatabaseController.connect();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table';");
+
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("name");
+                if (tableName.startsWith("Chat")) {
+                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }
