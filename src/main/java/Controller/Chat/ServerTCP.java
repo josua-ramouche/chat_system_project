@@ -36,14 +36,12 @@ public class ServerTCP {
                         System.out.println("CONTENT :" + inputLine);
                         DatabaseController.saveReceivedMessage(idsender, inputLine);
 
+                        System.out.println("id sender from server TCP : " +idsender);
+
                         List<Message> messages = DatabaseController.getMessages(idsender);
                         ChatApp.PrintHistory(messages);
 
-                        // If end connection message received from client
-                        if ("END".equals(inputLine)) {
-                            out.println("END");
-                            break;
-                        }
+
                     }
                 }
 

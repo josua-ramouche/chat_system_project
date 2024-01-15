@@ -128,9 +128,6 @@ public class ChatApp extends JFrame {
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
 
-
-
-
             if (senderip == null) { //me
 
                 StyleConstants.setForeground(style, Color.RED);
