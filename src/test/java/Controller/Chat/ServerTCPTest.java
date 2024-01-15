@@ -45,8 +45,6 @@ public class ServerTCPTest {
     void clientHandlerRunTest() {
         User mockMe = Mockito.mock(User.class);
 
-
-
         // Redirect System.out to capture the output
         ByteArrayOutputStream capturedOutput = new ByteArrayOutputStream();
         System.setOut(new PrintStream(capturedOutput));
@@ -55,7 +53,7 @@ public class ServerTCPTest {
 
         serverTCP.start();
 
-        // Attendre un certain temps pour que le serveur puisse démarrer (ajuster selon les besoins)
+        // Attendre un certain temps pour que le serveur puisse démarrer
         try {
             Thread.sleep(1000);
         } catch (InterruptedException e) {
@@ -68,7 +66,7 @@ public class ServerTCPTest {
             User testUser = new User("TestUser",clientSocket.getInetAddress(),true);
             DatabaseController.addUser(testUser);
             createChatTable(getUserID2(clientSocket.getInetAddress()));
-            ChatApp chatApp = new ChatApp(testUser,mockMe);
+            //ChatApp chatApp = new ChatApp(testUser,mockMe);
 
             PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
             out.println("Test Message\n");
