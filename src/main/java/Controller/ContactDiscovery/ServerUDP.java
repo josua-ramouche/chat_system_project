@@ -162,7 +162,7 @@ public class ServerUDP {
 
 
             // checks if the user who sends the broadcast message has a unique username
-            if (isUsernameUnique(username)) {
+            if (isUsernameUnique(username) && !interfacesIP.contains(address)) {
                 User contact = new User();
                 contact.setUsername(username);
                 contact.setIPAddress(address);
@@ -228,7 +228,7 @@ public class ServerUDP {
 
             List<User> Users = DatabaseController.getUsers();
 
-            if (!server.containsContact(Users, contact)) {
+            if (!server.containsContact(Users, contact)&& !interfacesIP.contains(address)) {
                 System.out.println("estce quon passe ici 2 ?");
                 System.out.println("IPADDRESS : " + address.getHostAddress());
                 //ContactList.addContact(contact); retirée contact list
