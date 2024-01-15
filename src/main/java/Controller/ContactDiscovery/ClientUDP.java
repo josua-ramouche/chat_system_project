@@ -102,16 +102,12 @@ public class ClientUDP {
     public static void sendChangeUsername(User client, String newUsername) {
         List<User> Users = DatabaseController.getUsers();
         if (isUsernameUnique(newUsername)) {
-            try (DatagramSocket ignored = new DatagramSocket()) {
+            try (DatagramSocket socket = new DatagramSocket()) {
                 // Notify other users about the new username
                 Users.forEach(u -> {
-                    try {
 
-                        if (!u.getIPAddress().equals(client.getIPAddress())) {
-                            broadcast("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress() );
-                        }
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
+                    if (!u.getIPAddress().equals(client.getIPAddress())) {
+                        ServerUDP.EchoServer.sendIP("CHANGE_USERNAME:" + client.getUsername() + ":" + newUsername, u.getIPAddress(), socket );
                     }
                 });
                 // Update the client's username
