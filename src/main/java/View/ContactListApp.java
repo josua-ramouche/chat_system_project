@@ -65,13 +65,13 @@ public final class ContactListApp extends JFrame implements CustomListener2{
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
             try {
-                ClientUDP.sendEndConnection(me);
+                ClientUDP.sendEndConnection();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
-            System.out.println("Back button clicked");
+            System.out.println("Disconnect button clicked");
             frame.dispose();
         });
         addWindowListener(new WindowAdapter() {
@@ -122,7 +122,7 @@ public final class ContactListApp extends JFrame implements CustomListener2{
     private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
-        ClientUDP.sendEndConnection(me);
+        ClientUDP.sendEndConnection();
         System.exit(0);
     }
 
