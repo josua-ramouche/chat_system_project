@@ -126,11 +126,17 @@ public class ChatApp extends JFrame {
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
 
+
+            Style leftAlignStyle = doc.addStyle("LeftAlignStyle", style);
+            StyleConstants.setAlignment(leftAlignStyle, StyleConstants.ALIGN_LEFT);
             Style rightAlignStyle = doc.addStyle("RightAlignStyle", style);
             StyleConstants.setAlignment(rightAlignStyle, StyleConstants.ALIGN_RIGHT);
 
             if (senderip == null) { //me
                 StyleConstants.setForeground(style, Color.RED);
+                int length = doc.getLength();
+                doc.setParagraphAttributes(length - msg.getContent().length(), length,
+                        leftAlignStyle, false);
                 try {
                     doc.insertString(doc.getLength(), msg.getDate() + " ", style);
                     doc.insertString(doc.getLength(), "Me" + ": ", style);
