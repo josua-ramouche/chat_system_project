@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import static Controller.Database.DatabaseController.getUserID;
 import static Controller.Database.DatabaseController.printContactList;
 
@@ -67,7 +69,11 @@ public class ServerUDP {
                     if (received.startsWith("BROADCAST:")) {
                         // if a broadcast message is received
                         System.out.println("Broadcast:");
-                        handleBroadcastMessage(received.substring("BROADCAST:".length()), address);
+                        try {
+                            handleBroadcastMessage(received.substring("BROADCAST:".length()), address);
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         System.out.println("-----------------------------");
                     } else if (received.equals("end")) {
                         // if an end connection message is received
@@ -141,10 +147,11 @@ public class ServerUDP {
         }
 
         // Reception of a broadcast message
-        public void handleBroadcastMessage(String message, InetAddress address) {
+        public void handleBroadcastMessage(String message, InetAddress address) throws InterruptedException {
             String[] parts = message.split(":");
             String username = parts[0];
 
+            TimeUnit.SECONDS.sleep(1);
             System.out.println("handle broadcast message : ");
 
 

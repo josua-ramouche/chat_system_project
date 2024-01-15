@@ -57,7 +57,7 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleBroadcastMessage() throws IOException {
+    void testEchoServer_HandleBroadcastMessage() throws IOException, InterruptedException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
         DatagramSocket datagramSocket = mock(DatagramSocket.class);
 
@@ -101,7 +101,7 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleResponseMessage() throws IOException {
+    void testEchoServer_HandleResponseMessage() throws IOException, InterruptedException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
@@ -144,7 +144,7 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleEndMessage() throws IOException {
+    void testEchoServer_HandleEndMessage() throws IOException, InterruptedException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
@@ -197,7 +197,7 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleChangeUsernameMessage() throws IOException {
+    void testEchoServer_HandleChangeUsernameMessage() throws IOException, InterruptedException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
