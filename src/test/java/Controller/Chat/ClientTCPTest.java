@@ -56,12 +56,6 @@ public class ClientTCPTest {
         InetAddress ip = InetAddress.getByName(TEST_IP);
         ClientTCP.startConnection(ip, TEST_PORT);
 
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
         Socket testSocket = serverSocket.accept();
         BufferedReader socketIn = new BufferedReader(new InputStreamReader(testSocket.getInputStream()));
 
