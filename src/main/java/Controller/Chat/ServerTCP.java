@@ -21,8 +21,7 @@ public class ServerTCP {
 
 
         public void run() {
-            try (PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                 BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
 
                 String inputLine;
                 while (!clientSocket.isClosed()) {
@@ -37,13 +36,10 @@ public class ServerTCP {
                         DatabaseController.saveReceivedMessage(idsender, inputLine);
 
                         List<Message> messages = DatabaseController.getMessages(idsender);
-                        ChatApp.PrintHistory(messages);
 
-                        // If end connection message received from client
-                        if ("END".equals(inputLine)) {
-                            out.println("END");
-                            break;
-                        }
+
+                        ChatApp.PrintHistory(messages,idsender);
+
                     }
                 }
 
