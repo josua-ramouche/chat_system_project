@@ -21,18 +21,24 @@ public class ClientTCP {
     public static void startConnection(InetAddress ip, int port) {
         try {
             Socket socket = new Socket(ip, port);
-            socketMap.put(ip,socket);
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            socketMap.put(ip, socket); // Store the socket in the map
-            System.out.println("Welcome to the ChatSystem client\n");
+            if (socketMap.containsKey(ip)) {
+                out = new PrintWriter(socketMap.get(ip).getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(socketMap.get(ip).getInputStream()));
+                System.out.println("Welcome to the ChatSystem client already in\n");
+            }
+            else {
+                out = new PrintWriter(socket.getOutputStream(), true);
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                socketMap.put(ip, socket); // Store the socket in the map
+                System.out.println("Welcome to the ChatSystem client add to map\n");
+
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void sendMessage(String message) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         out.println(message);
     }
 
