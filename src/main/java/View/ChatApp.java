@@ -90,7 +90,7 @@ public class ChatApp extends JFrame {
         messageField.requestFocusInWindow();
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory(messages,DatabaseController.getUserID(partner));
+        PrintHistory(messages);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -115,57 +115,52 @@ public class ChatApp extends JFrame {
         }
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory(messages,DatabaseController.getUserID(partner));
+        PrintHistory(messages);
     }
 
 
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public static void PrintHistory(List<Message> messages,int id) {
-        if(id == DatabaseController.getUserID(partner)) {
-            chatArea.setText("");
-            messages.forEach(msg -> {
-                StyledDocument doc = chatArea.getStyledDocument();
-                Style style = doc.addStyle("Style", null);
-                InetAddress senderip = msg.getSender().getIPAddress();
+    public static void PrintHistory(List<Message> messages) {
+        chatArea.setText("");
+        messages.forEach(msg -> {
+            StyledDocument doc = chatArea.getStyledDocument();
+            Style style = doc.addStyle("Style", null);
+            InetAddress senderip = msg.getSender().getIPAddress();
 
 
-                if (senderip == null) { //me
-                    Style leftAlignStyle = doc.addStyle("LeftAlignStyle", style);
-                    StyleConstants.setAlignment(leftAlignStyle, StyleConstants.ALIGN_LEFT);
-                    StyleConstants.setForeground(style, Color.RED);
-                    int length = doc.getLength();
-                    doc.setParagraphAttributes(length - msg.getContent().length(), length,
-                            leftAlignStyle, false);
-                    try {
-                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                        doc.insertString(doc.getLength(), "Me" + ": ", style);
-                        StyleConstants.setForeground(style, Color.BLACK);
-                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                    } catch (BadLocationException e) {
-                        e.printStackTrace();
-                    }
-                } else if (partner.getUsername().equals(msg.getSender().getUsername())) { //partner
-                    Style rightAlignStyle = doc.addStyle("RightAlignStyle", style);
-                    StyleConstants.setAlignment(rightAlignStyle, StyleConstants.ALIGN_RIGHT);
-                    StyleConstants.setForeground(style, Color.BLUE);
-                    int length = doc.getLength();
-                    doc.setParagraphAttributes(length - msg.getContent().length(), length,
-                            rightAlignStyle, false);
-                    try {
-                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                        doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
-                        StyleConstants.setForeground(style, Color.BLACK);
-                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                    } catch (BadLocationException e) {
-                        e.printStackTrace();
-                    }
+
+
+            if (senderip == null) { //me
+
+                StyleConstants.setForeground(style, Color.RED);
+
+                try {
+                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                    doc.insertString(doc.getLength(), "Me" + ": ", style);
+                    StyleConstants.setForeground(style, Color.BLACK);
+                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
                 }
-            });
+            } else if (partner.getUsername().equals(msg.getSender().getUsername())){ //partner
 
-            // Set the scroll position to the bottom
-            chatArea.setCaretPosition(chatArea.getDocument().getLength());
-        }
+                System.out.println("Partner :" + partner.getUsername() + " Sender :" + msg.getSender().getUsername());
+                StyleConstants.setForeground(style, Color.BLUE);
+
+                try {
+                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                    StyleConstants.setForeground(style, Color.BLACK);
+                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                } catch (BadLocationException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // Set the scroll position to the bottom
+        chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
 
 }

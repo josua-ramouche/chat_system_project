@@ -38,7 +38,7 @@ public class ServerTCP {
                         List<Message> messages = DatabaseController.getMessages(idsender);
 
 
-                        ChatApp.PrintHistory(messages,idsender);
+                        ChatApp.PrintHistory(messages);
 
                     }
                 }
