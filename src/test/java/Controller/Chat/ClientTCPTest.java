@@ -14,15 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class ClientTCPTest {
     private static final int TEST_PORT = 12345;
     private static final String TEST_IP = "127.0.0.1";
-    private static final ServerSocket serverSocket;
-
-    static {
-        try {
-            serverSocket = new ServerSocket(TEST_PORT);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+    private static ServerSocket serverSocket;
 
     @AfterAll
     public static void cleanup() {
@@ -52,6 +44,11 @@ public class ClientTCPTest {
 
     @Test
     public void testSendMessage() throws IOException {
+        try {
+            serverSocket = new ServerSocket(TEST_PORT);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // Arrange
         InetAddress ip = InetAddress.getByName(TEST_IP);
         ClientTCP.startConnection(ip, TEST_PORT);
@@ -74,4 +71,6 @@ public class ClientTCPTest {
         // Assert
         assertTrue(ClientTCP.socket.isClosed());
     }
+
+
 }
