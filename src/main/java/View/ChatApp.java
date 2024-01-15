@@ -145,6 +145,7 @@ public class ChatApp extends JFrame {
                 }
             } else if (partner.getUsername().equals(msg.getSender().getUsername())){ //partner
 
+                System.out.println("Partner :" + partner.getUsername() + " Sender :" + msg.getSender().getUsername());
                 StyleConstants.setForeground(style, Color.BLUE);
 
                 try {
