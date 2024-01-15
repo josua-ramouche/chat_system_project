@@ -21,13 +21,13 @@ import java.util.List;
 public class ChatApp extends JFrame {
     private static JTextPane chatArea = new JTextPane();
     private final JTextField messageField;
+    private static User partner;
 
-    private static User partner = null;
     private static User me =null;
 
 
     public ChatApp(User partner, User me) {
-        ChatApp.partner=partner;
+        this.partner=partner;
         ChatApp.me=me;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
@@ -121,11 +121,10 @@ public class ChatApp extends JFrame {
 
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public static void PrintHistory(InetAddress cientIP) {
+    public static void PrintHistory(InetAddress clientIP) {
         chatArea.setText("");
-        int clientid = DatabaseController.getUserID2(cientIP);
+        int clientid = DatabaseController.getUserID2(clientIP);
         List<Message> messages = DatabaseController.getMessages(clientid);
-        partner = DatabaseController.getUser(clientid);
 
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
