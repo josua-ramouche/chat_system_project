@@ -63,9 +63,15 @@ public class ServerUDP {
                 InetAddress address = packet.getAddress();
                 String received = new String(packet.getData(), 0, packet.getLength());
 
+
+                for (InetAddress a : interfacesIP) {
+                    System.out.println("addresses in interfacesip : " + a);
+                }
+
                 // Allows to handle all the different received messages
                 if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
 
+                    System.out.println("address received : " + address);
                     if (received.startsWith("BROADCAST:")) {
                         // if a broadcast message is received
                         System.out.println("Broadcast:");
