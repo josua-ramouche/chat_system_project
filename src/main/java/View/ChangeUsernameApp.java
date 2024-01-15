@@ -17,7 +17,6 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     //TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
-    private ContactListApp mainAppInterface;
 
     private final User oldme;
 
@@ -95,11 +94,10 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             oldme.setUsername(usernameField.getText());
             oldme.setState(true);
 
-            mainAppInterface = new ContactListApp(oldme);
-            this.addActionListener2(mainAppInterface);
-            launchTest();
+            ContactListApp.getInstance().setVisible(true);
+            this.addActionListener2(ContactListApp.getInstance());
 
-            mainAppInterface.setVisible(true);
+            launchTest();
             this.setVisible(false);
         }
 
@@ -124,8 +122,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     private void goBack() throws UnknownHostException, InterruptedException {
-        mainAppInterface = new ContactListApp(oldme);
-        mainAppInterface.setVisible(true);
+        ContactListApp.getInstance().setVisible(true);
         this.dispose(); // Close the current window
     }
 

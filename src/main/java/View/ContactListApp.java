@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
 import static Controller.Database.DatabaseController.printContactList;
 
 
-public class ContactListApp extends JFrame implements CustomListener2{
+public final class ContactListApp extends JFrame implements CustomListener2{
 
     private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
@@ -25,7 +25,15 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     private static User me;
 
-    public ContactListApp(User me) throws InterruptedException {
+    private static ContactListApp contactListApp;
+
+    public static ContactListApp getInstance() throws InterruptedException {
+        if (contactListApp==null)
+            {contactListApp=new ContactListApp(me);}
+        return contactListApp;
+    }
+
+    private  ContactListApp(User me) throws InterruptedException {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
