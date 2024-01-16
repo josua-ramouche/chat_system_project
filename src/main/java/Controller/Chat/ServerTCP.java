@@ -39,7 +39,7 @@ public class ServerTCP {
                     //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
                     System.out.println("SERVER: Client connection accepted");
                     // Create a new thread to handle a client
-                    Thread clientThread = new ServerTCP.ClientHandler(clientSocket,i);
+                    Thread clientThread = new ServerTCP.ClientHandler(clientSocket,clientSocket.getInetAddress());
                     clientThread.start();
                 }
             } catch (IOException e) {
