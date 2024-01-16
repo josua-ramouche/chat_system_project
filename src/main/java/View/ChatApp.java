@@ -126,9 +126,12 @@ public class ChatApp extends JFrame {
     }
 
 
+    public static User getPartner() {
+        return partner;
+    }
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public static void PrintHistory(InetAddress clientIP) {
+    public synchronized static void PrintHistory(InetAddress clientIP) {
         chatArea.setText("");
         int clientid = DatabaseController.getUserID2(clientIP);
         List<Message> messages = DatabaseController.getMessages(clientid);

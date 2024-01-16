@@ -2,6 +2,7 @@ package Controller.Chat;
 
 import Controller.Database.DatabaseController;
 import Model.Message;
+import Model.User;
 import View.ChatApp;
 
 import java.io.BufferedReader;
@@ -23,7 +24,7 @@ public class ServerTCP {
         }
 
 
-        public void run() {
+        public synchronized void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
                 System.out.println("THREAD NUMERO : " + i);
 
@@ -42,8 +43,11 @@ public class ServerTCP {
 
                         System.out.println("id sender from server TCP : " +idsender);
 
-                        ChatApp.PrintHistory(InetAddress.getByName(clientSocket.getInetAddress().getHostAddress()));
 
+                        User partner = ChatApp.getPartner();
+                        if (partner.getIPAddress().equals(clientSocket.getInetAddress())) {
+                            ChatApp.PrintHistory(InetAddress.getByName(clientSocket.getInetAddress().getHostAddress()));
+                        }
 
                     }
                 }
