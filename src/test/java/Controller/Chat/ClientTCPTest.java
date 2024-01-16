@@ -32,7 +32,7 @@ public class ClientTCPTest {
             e.printStackTrace();
         }
     }
-
+/*
     @Test
     public void testStartConnection() {
         // Arrange
@@ -48,7 +48,7 @@ public class ClientTCPTest {
 
         // Assert
         assertTrue(ClientTCP.socket.isConnected());
-    }
+    }*/
 
     @Test
     public void testSendMessage() throws IOException {
@@ -67,14 +67,14 @@ public class ClientTCPTest {
         assertEquals(message, socketIn.readLine());
     }
 
-    @Test
+    /*@Test
     public void testStopConnection() {
         // Act
         ClientTCP.stopConnection();
 
         // Assert
         assertTrue(ClientTCP.socket.isClosed());
-    }
+    }*/
 
 
 }

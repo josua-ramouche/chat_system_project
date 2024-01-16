@@ -15,6 +15,7 @@ public class ChatController {
                 while (true) {
                     System.out.println("SERVER: Waiting for a client connection");
                     final Socket clientSocket = serverSocket.accept();
+                    ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
                     System.out.println("SERVER: Client connection accepted");
                     // Create a new thread to handle a client
                     Thread clientThread = new ServerTCP.ClientHandler(clientSocket);

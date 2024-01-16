@@ -64,9 +64,6 @@ public class ServerUDP {
                 String received = new String(packet.getData(), 0, packet.getLength());
 
 
-                for (InetAddress a : interfacesIP) {
-                    System.out.println("addresses in interfacesip : " + a);
-                }
 
                 // Allows to handle all the different received messages
                 if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
@@ -120,7 +117,6 @@ public class ServerUDP {
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
             for (CustomListener listener : listeners) {
-                System.out.println("check launchtest");
                 listener.launchTest();
                 System.out.println("check launchtest");
             }
@@ -204,7 +200,6 @@ public class ServerUDP {
 
                 //new listener vers interface contact list pour update
                 for (CustomListener listener : listeners) {
-                    System.out.println("check launchtest");
                     listener.launchTest();
                     System.out.println("check launchtest");
                 }
@@ -222,7 +217,7 @@ public class ServerUDP {
             String[] parts = message.split(":");
             String username = parts[0];
 
-            System.out.println("HANDLE RESPONSE MESSAGE!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            System.out.println("HANDLE RESPONSE MESSAGE");
             if (address.equals(lastResponseSender)) {
                 return;
             }
@@ -237,7 +232,6 @@ public class ServerUDP {
             List<User> Users = DatabaseController.getUsers();
 
             if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
-                System.out.println("estce quon passe ici 2 ?");
                 System.out.println("IPADDRESS : " + address.getHostAddress());
                 //ContactList.addContact(contact); retirée contact list
                 if(DatabaseController.containsUser(contact) && isUsernameUnique(contact.getUsername())) {
@@ -256,7 +250,6 @@ public class ServerUDP {
             System.out.println("Contact List (connected):");
             printContactList();
             for (CustomListener listener : listeners) {
-                System.out.println("check launchtest");
                 listener.launchTest();
                 System.out.println("check launchtest");
             }
@@ -265,7 +258,7 @@ public class ServerUDP {
         // Reception of an end message
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
-            System.out.println("ON EST DANS HANDLEENDMESSAGE");
+            System.out.println("ON EST DANS HANDLE END MESSAGE");
             for (User u : DatabaseController.getUsers()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
@@ -285,7 +278,6 @@ public class ServerUDP {
             System.out.println("Contact List (connected) after disconnection:");
             //ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
             for (CustomListener listener : listeners) {
-                System.out.println("check launchtest");
                 listener.launchTest();
                 System.out.println("check launchtest");
             }
@@ -326,7 +318,6 @@ public class ServerUDP {
                 System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
             }
             for (CustomListener listener : listeners) {
-                System.out.println("check launchtest");
                 listener.launchTest();
                 System.out.println("check launchtest");
             }

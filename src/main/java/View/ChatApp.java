@@ -133,6 +133,7 @@ public class ChatApp extends JFrame {
         int clientid = DatabaseController.getUserID2(clientIP);
         List<Message> messages = DatabaseController.getMessages(clientid);
         setpartner(DatabaseController.getUser(clientid));
+        System.out.println("Partner :" + partner.getUsername());
 
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
@@ -153,7 +154,6 @@ public class ChatApp extends JFrame {
                 }
             } else if (partner.getUsername().equals(msg.getSender().getUsername())){ //partner
 
-                System.out.println("Partner :" + partner.getUsername() + " Sender :" + msg.getSender().getUsername());
                 StyleConstants.setForeground(style, Color.BLUE);
 
                 try {
