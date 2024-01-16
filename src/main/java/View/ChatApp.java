@@ -21,20 +21,27 @@ import java.util.List;
 public class ChatApp extends JFrame {
     private static JTextPane chatArea = new JTextPane();
     private final JTextField messageField;
-    private static User partner=null;
+    private User partner=null;
 
     private static User me =null;
 
 
-    public static User setpartner(User partner1) {
-        if (partner==null)
-    {partner=partner1;
-        return partner;}
-    else
-    {return partner;}}
+    public void setPartner(User partner1) {
+        //if (partner==null)
+    //{
+        partner=partner1;
+        //return partner;
+    //}
+    /*else
+    {return partner;}*/
+    }
+
+    public User getPartner() {
+        return partner;
+    }
 
     public ChatApp(User partner, User me) {
-        setpartner(partner);
+        setPartner(partner);
         ChatApp.me=me;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
@@ -126,22 +133,27 @@ public class ChatApp extends JFrame {
     }
 
 
-    public static User getPartner() {
-        return partner;
-    }
+
 
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public synchronized static void PrintHistory(InetAddress clientIP) {
+    public synchronized static void PrintHistory() {
         chatArea.setText("");
-        int clientid = DatabaseController.getUserID2(clientIP);
+        if(getPartner() == null) {
+
+        }
+
+
         List<Message> messages = DatabaseController.getMessages(clientid);
-        setpartner(DatabaseController.getUser(clientid));
+        //setPartner(DatabaseController.getUser(clientid));
         System.out.println("Partner :" + partner.getUsername());
 
         messages.forEach(msg -> {
             StyledDocument doc = chatArea.getStyledDocument();
             Style style = doc.addStyle("Style", null);
             InetAddress senderip = msg.getSender().getIPAddress();
+
+
+
 
             if (senderip == null) { //me
 
