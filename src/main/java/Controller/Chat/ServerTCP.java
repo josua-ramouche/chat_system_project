@@ -86,7 +86,7 @@ public class ServerTCP {
                     //System.out.println("NAME PARTNER: " + partner.getUsername());
                     //System.out.println("IP PARTNER: " + partner.getIPAddress().getHostAddress());
                     //if (partner.getIPAddress().equals(clientSocket.getInetAddress())) {
-                    ChatApp.PrintHistory(InetAddress.getByName(clientSocket.getInetAddress().getHostAddress()));
+                    ChatApp.PrintHistory();
                     //}
 
                    // }

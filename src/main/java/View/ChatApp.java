@@ -21,27 +21,27 @@ import java.util.List;
 public class ChatApp extends JFrame {
     private static JTextPane chatArea = new JTextPane();
     private final JTextField messageField;
-    private User partner=null;
+    private static User partner;
 
     private static User me =null;
 
 
-    public void setPartner(User partner1) {
+    /*public void setPartner(User partner1) {
         //if (partner==null)
     //{
         partner=partner1;
         //return partner;
     //}
     /*else
-    {return partner;}*/
-    }
+    {return partner;}
+    }*/
 
     public User getPartner() {
         return partner;
     }
 
     public ChatApp(User partner, User me) {
-        setPartner(partner);
+        this.partner = partner;
         ChatApp.me=me;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
@@ -105,7 +105,7 @@ public class ChatApp extends JFrame {
         messageField.requestFocusInWindow();
 
         List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory(partner.getIPAddress());
+        PrintHistory();
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -129,7 +129,7 @@ public class ChatApp extends JFrame {
             messageField.setText("");
         }
 
-        PrintHistory(partner.getIPAddress());
+        PrintHistory();
     }
 
 
@@ -137,53 +137,50 @@ public class ChatApp extends JFrame {
 
     //print all the messsages when i send a message or when i receive a message (tcp)
     public synchronized static void PrintHistory() {
-        chatArea.setText("");
-        if(getPartner() == null) {
+        if (partner != null) {
+            chatArea.setText("");
 
+            int clientid = DatabaseController.getUserID(partner);
+            List<Message> messages = DatabaseController.getMessages(clientid);
+
+            System.out.println("Partner :" + partner.getUsername());
+
+            messages.forEach(msg -> {
+                StyledDocument doc = chatArea.getStyledDocument();
+                Style style = doc.addStyle("Style", null);
+                InetAddress senderip = msg.getSender().getIPAddress();
+
+
+                if (senderip == null) { //me
+
+                    StyleConstants.setForeground(style, Color.RED);
+
+                    try {
+                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                        doc.insertString(doc.getLength(), "Me" + ": ", style);
+                        StyleConstants.setForeground(style, Color.BLACK);
+                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
+                } else if (partner.getUsername().equals(msg.getSender().getUsername())) { //partner
+
+                    StyleConstants.setForeground(style, Color.BLUE);
+
+                    try {
+                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                        doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                        StyleConstants.setForeground(style, Color.BLACK);
+                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                    } catch (BadLocationException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+
+            // Set the scroll position to the bottom
+            chatArea.setCaretPosition(chatArea.getDocument().getLength());
         }
-
-
-        List<Message> messages = DatabaseController.getMessages(clientid);
-        //setPartner(DatabaseController.getUser(clientid));
-        System.out.println("Partner :" + partner.getUsername());
-
-        messages.forEach(msg -> {
-            StyledDocument doc = chatArea.getStyledDocument();
-            Style style = doc.addStyle("Style", null);
-            InetAddress senderip = msg.getSender().getIPAddress();
-
-
-
-
-            if (senderip == null) { //me
-
-                StyleConstants.setForeground(style, Color.RED);
-
-                try {
-                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                    doc.insertString(doc.getLength(), "Me" + ": ", style);
-                    StyleConstants.setForeground(style, Color.BLACK);
-                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
-            } else if (partner.getUsername().equals(msg.getSender().getUsername())){ //partner
-
-                StyleConstants.setForeground(style, Color.BLUE);
-
-                try {
-                    doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                    doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
-                    StyleConstants.setForeground(style, Color.BLACK);
-                    doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                } catch (BadLocationException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        // Set the scroll position to the bottom
-        chatArea.setCaretPosition(chatArea.getDocument().getLength());
     }
 
 }
