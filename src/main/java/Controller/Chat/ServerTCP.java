@@ -99,13 +99,7 @@ public class ServerTCP {
             }
         }
 
-        /*public static void endConnection() {
-            try {
-                clientSocket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }*/
+
 
     }
 }
