@@ -15,9 +15,11 @@ import java.util.List;
 public class ServerTCP {
     public static class ClientHandler extends Thread {
         private final Socket clientSocket;
+        private final int i;
 
-        public ClientHandler(Socket socket) {
+        public ClientHandler(Socket socket, int i) {
             clientSocket = socket;
+            this.i=i;
         }
 
 
@@ -26,6 +28,8 @@ public class ServerTCP {
 
                 String inputLine;
                 while (!clientSocket.isClosed()) {
+                    System.out.println("THREAD NUMERO : " + i);
+
                     inputLine = in.readLine();
                     if (inputLine!=null) {
                         System.out.println("Received: " + inputLine);

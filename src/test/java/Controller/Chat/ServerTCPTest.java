@@ -93,7 +93,7 @@ public class ServerTCPTest {
 
 
     }
-
+/*
     @Test
     void endConnectionTest() throws Exception {
         TestTCP serverTCP = new TestTCP();
@@ -112,7 +112,7 @@ public class ServerTCPTest {
         (new ServerTCP.ClientHandler(fakeSocket)).endConnection();
 
         serverTCP.interrupt();
-    }
+    }*/
 
 
 

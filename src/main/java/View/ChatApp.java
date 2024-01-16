@@ -117,7 +117,7 @@ public class ChatApp extends JFrame {
         String message = messageField.getText();
         if (!Objects.equals(message, "")) {
             ClientTCP.sendMessage(message);
-            System.out.println("Message send");
+            System.out.println("Message send: " + message);
             DatabaseController.saveSentMessage(DatabaseController.getUserID(partner),message);
             messageField.setText("");
         }
