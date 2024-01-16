@@ -43,7 +43,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         addContactsToDisplayedList(users);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 680);
+        frame.setSize(400, 300);
         frame.setLocationRelativeTo(null);
 
 
