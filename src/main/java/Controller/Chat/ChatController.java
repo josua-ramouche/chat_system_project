@@ -23,6 +23,9 @@ public class ChatController {
 
                     System.out.println("clientSocket : " + clientSocket.getInetAddress().getHostAddress());
 
+                    System.out.println("port clientSocket : " + clientSocket.getPort());
+
+
                     ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
                     System.out.println("SERVER: Client connection accepted");
                     // Create a new thread to handle a client

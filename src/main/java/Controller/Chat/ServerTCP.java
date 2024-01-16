@@ -19,6 +19,7 @@ public class ServerTCP {
 
         public ClientHandler(Socket socket, int i) {
             clientSocket = socket;
+            clientSocket.bind();
             this.i=i;
         }
 
