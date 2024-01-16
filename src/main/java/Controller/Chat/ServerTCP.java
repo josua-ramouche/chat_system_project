@@ -18,7 +18,7 @@ public class ServerTCP {
 
     public static class listenTCP extends Thread {
         public void run()
-        {
+        { //victoire
             int port = 1556;
             try (ServerSocket serverSocket = new ServerSocket(port)) {
                 System.out.println("Server is listening on port " + port);
