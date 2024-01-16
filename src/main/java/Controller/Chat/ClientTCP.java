@@ -10,29 +10,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ClientTCP {
-    private static Map<InetAddress, Socket> socketMap = new HashMap<>();
+    //private  Map<InetAddress, Socket> socketMap = new HashMap<>();
     private static PrintWriter out;
     private static BufferedReader in;
 
-    public static Map<InetAddress, Socket> getMap() {
+    /*public static Map<InetAddress, Socket> getMap() {
         return socketMap;
-    }
+    }*/
 
     public static void startConnection(InetAddress ip, int port) {
         try {
             Socket socket = new Socket(ip, port);
-            if (socketMap.containsKey(ip)) {
-                out = new PrintWriter(socketMap.get(ip).getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socketMap.get(ip).getInputStream()));
-                System.out.println("Welcome to the ChatSystem client already in\n");
-            }
+            ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(socket,ip);
+            //if (socketMap.containsKey(ip)) {
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            System.out.println("Welcome to the ChatSystem client\n");
+            clientHandler.start();
+            /*}
             else {
                 out = new PrintWriter(socket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // PEUT ETRE SUSPECT
                 socketMap.put(ip, socket); // Store the socket in the map
                 System.out.println("Welcome to the ChatSystem client add to map\n");
 
-            }
+            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -42,7 +44,7 @@ public class ClientTCP {
         out.println(message);
     }
 
-    public static void stopConnection() {
+    /*public static void stopConnection() {
         try {
             in.close();
             out.close();
@@ -52,5 +54,5 @@ public class ClientTCP {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }

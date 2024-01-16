@@ -1,4 +1,5 @@
 import Controller.Chat.ChatController;
+import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.ContactDiscovery.ServerUDP;
 import Controller.ContactDiscovery.UserContactDiscovery;
@@ -27,8 +28,8 @@ public class Main {
 
                 ClientUDP.addActionListener(loginApp);
 
-                ChatController.listenTCP serverTCP = new ChatController.listenTCP();
-                serverTCP.start();
+                ServerTCP.listenTCP listenTCP = new ServerTCP.listenTCP();
+                listenTCP.start();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
