@@ -17,7 +17,6 @@ import java.util.List;
 public class ServerTCP {
 
     public static class listenTCP extends Thread {
-        int i =0;
         public void run()
         {
             int port = 1556;
@@ -25,7 +24,6 @@ public class ServerTCP {
                 System.out.println("Server is listening on port " + port);
 
                 while (true) {
-                    i=i+1;
                     System.out.println("SERVER: Waiting for a client connection");
                     System.out.println("serversocket : " + serverSocket.getInetAddress().getHostAddress());
 
@@ -85,6 +83,8 @@ public class ServerTCP {
 
 
                     User partner = ChatApp.getPartner();
+                    System.out.println("NAME PARTNER: " + partner.getUsername());
+                    System.out.println("IP PARTNER: " + partner.getIPAddress().getHostAddress());
                     if (partner.getIPAddress().equals(clientSocket.getInetAddress())) {
                         ChatApp.PrintHistory(InetAddress.getByName(clientSocket.getInetAddress().getHostAddress()));
                     }
