@@ -25,10 +25,10 @@ public class ServerTCP {
 
         public void run() {
             try (BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()))) {
+                System.out.println("THREAD NUMERO : " + i);
 
                 String inputLine;
                 while (!clientSocket.isClosed()) {
-                    System.out.println("THREAD NUMERO : " + i);
 
                     inputLine = in.readLine();
                     if (inputLine!=null) {
