@@ -36,7 +36,7 @@ public class ServerTCP {
 
                     System.out.println("port clientSocket : " + clientSocket.getPort());
 
-                    if(!ClientTCP.getIPList().contains(clientSocket.getInetAddress()) && !listIP.contains(clientSocket.getInetAddress())) {
+                    if(!ClientTCP.getIPList().contains(clientSocket.getInetAddress()) || !listIP.contains(clientSocket.getInetAddress())) {
                         //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
                         System.out.println("SERVER: Client connection accepted");
                         // Create a new thread to handle a client
