@@ -26,15 +26,6 @@ public class ChatApp extends JFrame {
     private static User me =null;
 
 
-    /*public void setPartner(User partner1) {
-        //if (partner==null)
-    //{
-        partner=partner1;
-        //return partner;
-    //}
-    /*else
-    {return partner;}
-    }*/
 
     public User getPartner() {
         return partner;
@@ -43,6 +34,8 @@ public class ChatApp extends JFrame {
     public ChatApp(User partner, User me) {
         this.partner = partner;
         ChatApp.me=me;
+        chatArea.setEditable(false);
+
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
