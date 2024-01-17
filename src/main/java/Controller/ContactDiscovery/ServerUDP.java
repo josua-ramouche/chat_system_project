@@ -106,6 +106,10 @@ public class ServerUDP {
                         System.out.println("End message received by distant server");
                         handleResponseEnd();
                     }
+                    for (CustomListener listener : listeners) {
+                        listener.launchTest();
+                        System.out.println("check launchtest");
+                    }
                 }
             }
         }
@@ -116,10 +120,7 @@ public class ServerUDP {
 
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
-            for (CustomListener listener : listeners) {
-                listener.launchTest();
-                System.out.println("check launchtest");
-            }
+
         }
 
         //signals and slots for unicity with GUI
@@ -199,10 +200,7 @@ public class ServerUDP {
                 System.out.println("Socket : "+socket.getPort());
 
                 //new listener vers interface contact list pour update
-                for (CustomListener listener : listeners) {
-                    listener.launchTest();
-                    System.out.println("check launchtest");
-                }
+
             } else {
                 // Notify the client that the username is not unique
                 sendIP("USERNAME_NOT_UNIQUE:", address, socket);
@@ -249,10 +247,7 @@ public class ServerUDP {
 
             System.out.println("Contact List (connected):");
             printContactList();
-            for (CustomListener listener : listeners) {
-                listener.launchTest();
-                System.out.println("check launchtest");
-            }
+
         }
 
         // Reception of an end message
@@ -277,10 +272,7 @@ public class ServerUDP {
             }
             System.out.println("Contact List (connected) after disconnection:");
             //ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
-            for (CustomListener listener : listeners) {
-                listener.launchTest();
-                System.out.println("check launchtest");
-            }
+
             sendIP("HANDLE_RESPONSE_END", address, socket);
         }
 
@@ -317,10 +309,7 @@ public class ServerUDP {
                 sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
                 System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
             }
-            for (CustomListener listener : listeners) {
-                listener.launchTest();
-                System.out.println("check launchtest");
-            }
+
         }
 
         // Check among the connected users in the contact list that a username is unique (except himself)
