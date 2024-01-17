@@ -109,7 +109,11 @@ public class ServerUDP {
                         handleResponseEnd();
                     }
                     for (CustomListener listener : listeners) {
-                        listener.launchTest();
+                        try {
+                            listener.launchTest();
+                        } catch (InterruptedException e) {
+                            throw new RuntimeException(e);
+                        }
                         System.out.println("check launchtest");
                     }
                 }
