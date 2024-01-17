@@ -1,10 +1,9 @@
 package Controller.Chat;
 
 import Controller.Database.DatabaseController;
-import Model.Message;
-import Model.User;
 import View.ChatApp;
 
+import javax.swing.text.BadLocationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -12,7 +11,7 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerTCP {
 
@@ -63,6 +62,7 @@ public class ServerTCP {
         }
 
 
+
         public synchronized void run() {
             try {
                 System.out.println("THREAD NUMERO : ");
@@ -86,15 +86,19 @@ public class ServerTCP {
                     //System.out.println("NAME PARTNER: " + partner.getUsername());
                     //System.out.println("IP PARTNER: " + partner.getIPAddress().getHostAddress());
                     //if (partner.getIPAddress().equals(clientSocket.getInetAddress())) {
-                    ChatApp.PrintHistory();
+                    ChatApp.PrintHistory(idsender);
                     //}
 
                    // }
+
                 }
 
 
                 System.out.println("CONVERSATION: Connection ended with client");
-            } catch (IOException e) {
+
+                ChatApp.PrintHistory(-1);
+
+            } catch (IOException | BadLocationException e) {
                 e.printStackTrace();
             }
         }

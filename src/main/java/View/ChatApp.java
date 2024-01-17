@@ -1,7 +1,6 @@
 package View;
 
 import Controller.Chat.ClientTCP;
-import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.Message;
@@ -25,14 +24,16 @@ public class ChatApp extends JFrame {
 
     private static User me =null;
 
+    private static int clientDisconnected=1;
 
 
 
-    public ChatApp(User partner, User me) {
+    public ChatApp(User partner, User me) throws BadLocationException {
         this.partner = partner;
         ChatApp.me=me;
         chatArea.setEditable(false);
 
+        clientDisconnected=1;
         setTitle("Chat with " + partner.getUsername());
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -40,7 +41,6 @@ public class ChatApp extends JFrame {
         // Components
         JLabel userLabel = new JLabel("Me: " + me.getUsername() + " chat with: " + partner.getUsername());
         JButton backButton = new JButton("Back");
-        messageField = new JTextField();
         JButton sendButton = new JButton("Send");
 
         setLayout(new BorderLayout());
@@ -52,10 +52,13 @@ public class ChatApp extends JFrame {
         JScrollPane scrollPane = new JScrollPane(chatArea);
         add(scrollPane, BorderLayout.CENTER);
 
+        messageField = new JTextField();
+
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.add(messageField, BorderLayout.CENTER);
         bottomPanel.add(sendButton, BorderLayout.EAST);
         add(bottomPanel, BorderLayout.SOUTH);
+
 
 
 
@@ -87,16 +90,27 @@ public class ChatApp extends JFrame {
 
 
         // send button action
-        sendButton.addActionListener(e -> sendMessageTCP());
+        sendButton.addActionListener(e -> {
+            try {
+                sendMessageTCP();
+            } catch (BadLocationException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         // Add an action listener for the Enter key
-        messageField.addActionListener(e -> sendMessageTCP());
+        messageField.addActionListener(e -> {
+            try {
+                sendMessageTCP();
+            } catch (BadLocationException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         // Set focus to the messageField
         messageField.requestFocusInWindow();
 
-        List<Message> messages = DatabaseController.getMessages(DatabaseController.getUserID(partner));
-        PrintHistory();
+        PrintHistory(1);
 
         setLocationRelativeTo(null);
         setVisible(true);
@@ -111,66 +125,88 @@ public class ChatApp extends JFrame {
     }
 
 
-    private void sendMessageTCP() {
-        String message = messageField.getText();
-        if (!Objects.equals(message, "")) {
-            ClientTCP.sendMessage(message);
-            System.out.println("Message send: " + message);
-            DatabaseController.saveSentMessage(DatabaseController.getUserID(partner),message);
-            messageField.setText("");
+    private void sendMessageTCP() throws BadLocationException {
+        if (clientDisconnected!=-1) {
+            String message = messageField.getText();
+            if (!Objects.equals(message, "")) {
+                ClientTCP.sendMessage(message);
+                System.out.println("Message send: " + message);
+                DatabaseController.saveSentMessage(DatabaseController.getUserID(partner), message);
+                messageField.setText("");
+            }
+            PrintHistory(DatabaseController.getUserID(partner));
         }
-
-        PrintHistory();
     }
 
 
 
-
     //print all the messsages when i send a message or when i receive a message (tcp)
-    public synchronized static void PrintHistory() {
-        if (partner != null) {
-            chatArea.setText("");
+    public synchronized static void PrintHistory(int iddisconnected) throws BadLocationException {
+        //id disconected=-1 id client connected
+        //if client disconnected then return its id
 
-            int clientid = DatabaseController.getUserID(partner);
-            List<Message> messages = DatabaseController.getMessages(clientid);
+        if (iddisconnected!=-1 ) {
+            if (partner != null) {
+                chatArea.setText("");
 
-            System.out.println("Partner :" + partner.getUsername());
+                int clientid = DatabaseController.getUserID(partner);
+                List<Message> messages = DatabaseController.getMessages(clientid);
 
-            messages.forEach(msg -> {
+                System.out.println("Partner :" + partner.getUsername());
+
+                messages.forEach(msg -> {
+                    StyledDocument doc = chatArea.getStyledDocument();
+                    Style style = doc.addStyle("Style", null);
+                    InetAddress senderip = msg.getSender().getIPAddress();
+
+
+                    if (senderip == null) { //me
+
+                        StyleConstants.setForeground(style, Color.RED);
+
+                        try {
+                            doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                            doc.insertString(doc.getLength(), "Me" + ": ", style);
+                            StyleConstants.setForeground(style, Color.BLACK);
+                            doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    } else if (partner.getUsername().equals(msg.getSender().getUsername())) { //partner
+
+                        StyleConstants.setForeground(style, Color.BLUE);
+
+                        try {
+                            doc.insertString(doc.getLength(), msg.getDate() + " ", style);
+                            doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
+                            StyleConstants.setForeground(style, Color.BLACK);
+                            doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
+                        } catch (BadLocationException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                // Set the scroll position to the bottom
+                chatArea.setCaretPosition(chatArea.getDocument().getLength());
+            }
+            if (clientDisconnected==-1) {
                 StyledDocument doc = chatArea.getStyledDocument();
                 Style style = doc.addStyle("Style", null);
-                InetAddress senderip = msg.getSender().getIPAddress();
-
-
-                if (senderip == null) { //me
-
-                    StyleConstants.setForeground(style, Color.RED);
-
-                    try {
-                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                        doc.insertString(doc.getLength(), "Me" + ": ", style);
-                        StyleConstants.setForeground(style, Color.BLACK);
-                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                    } catch (BadLocationException e) {
-                        e.printStackTrace();
-                    }
-                } else if (partner.getUsername().equals(msg.getSender().getUsername())) { //partner
-
-                    StyleConstants.setForeground(style, Color.BLUE);
-
-                    try {
-                        doc.insertString(doc.getLength(), msg.getDate() + " ", style);
-                        doc.insertString(doc.getLength(), msg.getSender().getUsername() + ": ", style);
-                        StyleConstants.setForeground(style, Color.BLACK);
-                        doc.insertString(doc.getLength(), msg.getContent() + "\n", style);
-                    } catch (BadLocationException e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-
-            // Set the scroll position to the bottom
+                StyleConstants.setForeground(style, Color.GREEN);
+                doc.insertString(doc.getLength(), "USER DISCONNECTED" + "\n", style);
+                doc.insertString(doc.getLength(), "You can't send another message" + "\n", style);
+            }
             chatArea.setCaretPosition(chatArea.getDocument().getLength());
+        }
+        else {
+            clientDisconnected=-1;
+
+            StyledDocument doc = chatArea.getStyledDocument();
+            Style style = doc.addStyle("Style", null);
+            StyleConstants.setForeground(style, Color.GREEN);
+            doc.insertString(doc.getLength(), "USER DISCONNECTED" + "\n", style);
+            doc.insertString(doc.getLength(), "You can't send another message" + "\n", style);
         }
     }
 
