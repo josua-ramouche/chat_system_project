@@ -2,5 +2,5 @@ package View;
 
 
 public interface CustomListener2 {
-    void updateContactList();
+    void updateContactList() throws InterruptedException;
 }

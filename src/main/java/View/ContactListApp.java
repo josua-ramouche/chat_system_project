@@ -144,8 +144,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     @Override
-    public void updateContactList() {
-        SwingUtilities.invokeLater(() -> {
+    public void updateContactList() throws InterruptedException {
             printContactList();
             System.out.println("dans le listener2 : updatecontactlist");
             contactList = DatabaseController.getUsers();
@@ -159,16 +158,11 @@ public class ContactListApp extends JFrame implements CustomListener2{
                     System.out.println("user : " + u.getUsername());
                 }
             });
-            try {
                 addContactsToDisplayedList(users);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
     }
 
 
-    private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
+    private void addContactsToDisplayedList(List<User> users) throws InterruptedException {
 
         contactListModel.clear();
 
