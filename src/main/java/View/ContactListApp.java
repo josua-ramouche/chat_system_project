@@ -18,7 +18,7 @@ import static Controller.Database.DatabaseController.printContactList;
 
 public class ContactListApp extends JFrame implements CustomListener2{
 
-    private final JFrame frame;
+    //private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
     private final JList<String> contactListView;
     private List<User> contactList;
@@ -32,7 +32,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
 
-        frame = new JFrame("Chat System");
+        //frame = new JFrame("Chat System");
         JButton changeButton = new JButton("Change Username");
         // Added back button
         JButton backButton = new JButton("Disconnect");
@@ -42,9 +42,9 @@ public class ContactListApp extends JFrame implements CustomListener2{
         List<User> users = DatabaseController.getUsers();
         addContactsToDisplayedList(users);
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(400, 300);
-        frame.setLocationRelativeTo(null);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setSize(400, 300);
+        this.setLocationRelativeTo(null);
 
 
         changeButton.setActionCommand("Change Username");
@@ -53,7 +53,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
             ChangeUsernameApp change = new ChangeUsernameApp(me);
             change.setVisible(true);
             System.out.println("Change username button clicked");
-            frame.dispose();
+            this.dispose();
         });
 
         backButton.setActionCommand("Disconnect");
@@ -66,9 +66,9 @@ public class ContactListApp extends JFrame implements CustomListener2{
             LoginApp disconnect = new LoginApp();
             disconnect.setVisible(true);
             System.out.println("Disconnect button clicked");
-            frame.dispose();
+            this.dispose();
         });
-        frame.addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 System.out.println("Window closing");
@@ -110,8 +110,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
         mainPanel.add(listScrollPane, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
-        frame.getContentPane().add(mainPanel);
-        frame.setVisible(true);
+        this.getContentPane().add(mainPanel);
+        this.setVisible(true);
     }
 
     private void disconnectAndExit() throws IOException, InterruptedException {
@@ -139,7 +139,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
             ChatApp chat = new ChatApp(selectedContact, me);
             chat.setVisible(true);
             //frame.dispose();
-            frame.setVisible(false);
+            this.setVisible(false);
             ClientTCP.startConnection(selectedContact.getIPAddress(), 1556);
         }
     }
