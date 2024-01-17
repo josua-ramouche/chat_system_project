@@ -6,6 +6,8 @@ import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -61,6 +63,18 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
                 onLoginButtonClick();
             } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
+            }
+        });
+
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    disconnectAndExit();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
             }
         });
 
@@ -135,6 +149,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         //mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
         this.dispose(); // Close the current window
+    }
+
+    private void disconnectAndExit() throws IOException {
+        // Disconnect and exit the application
+        //ServerTCP.ClientHandler.endConnection();
+        ClientUDP.sendEndConnection();
+        System.exit(0);
     }
 
 

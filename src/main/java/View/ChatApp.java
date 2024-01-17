@@ -72,7 +72,7 @@ public class ChatApp extends JFrame {
             this.setVisible(false);
         });
 
-        addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
