@@ -33,12 +33,13 @@ public class ServerTCP {
 
                     System.out.println("port clientSocket : " + clientSocket.getPort());
 
-
-                    //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
-                    System.out.println("SERVER: Client connection accepted");
-                    // Create a new thread to handle a client
-                    Thread clientThread = new ServerTCP.ClientHandler(clientSocket,clientSocket.getInetAddress());
-                    clientThread.start();
+                    if(!ClientTCP.getIPList().contains(clientSocket.getInetAddress())) {
+                        //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
+                        System.out.println("SERVER: Client connection accepted");
+                        // Create a new thread to handle a client
+                        Thread clientThread = new ServerTCP.ClientHandler(clientSocket, clientSocket.getInetAddress());
+                        clientThread.start();
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -91,15 +92,13 @@ public class ServerTCP {
 
                    // }
                 }
-
-
                 System.out.println("CONVERSATION: Connection ended with client");
             } catch (IOException e) {
+                System.out.println("FIN DE THREAD EN FACE");
+                ClientTCP.removeIP(ipReceived);
                 e.printStackTrace();
             }
         }
-
-
 
     }
 }

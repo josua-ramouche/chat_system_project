@@ -106,6 +106,7 @@ public class ChatApp extends JFrame {
     private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
+        //ClientTCP.stopConnection();
         ClientUDP.sendEndConnection();
         System.exit(0);
     }

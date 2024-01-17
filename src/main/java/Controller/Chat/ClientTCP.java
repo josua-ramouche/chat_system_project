@@ -6,7 +6,9 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ClientTCP {
@@ -14,27 +16,23 @@ public class ClientTCP {
     private static PrintWriter out;
     private static BufferedReader in;
 
-    /*public static Map<InetAddress, Socket> getMap() {
-        return socketMap;
-    }*/
+    private static List<Thread> clientList = new ArrayList<>();
+
+    private static List<InetAddress> ipList = new ArrayList<>();
 
     public static void startConnection(InetAddress ip, int port) {
         try {
-            Socket socket = new Socket(ip, port);
-            ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(socket,ip);
-            //if (socketMap.containsKey(ip)) {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            System.out.println("Welcome to the ChatSystem client\n");
-            clientHandler.start();
-            /*}
-            else {
+            if(!ipList.contains(ip)) {
+                Socket socket = new Socket(ip, port);
+                ipList.add(ip);
+                ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(socket, ip);
+                clientList.add(clientHandler);
                 out = new PrintWriter(socket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream())); // PEUT ETRE SUSPECT
-                socketMap.put(ip, socket); // Store the socket in the map
-                System.out.println("Welcome to the ChatSystem client add to map\n");
+                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                System.out.println("Welcome to the ChatSystem client\n");
+                clientHandler.start();
+            }
 
-            }*/
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -44,15 +42,21 @@ public class ClientTCP {
         out.println(message);
     }
 
-    /*public static void stopConnection() {
-        try {
-            in.close();
-            out.close();
-            for (Socket socket : socketMap.values()) {
-                socket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+    public static void removeIP(InetAddress ip) {
+        ipList.remove(ip);
+    }
+
+    public static List<InetAddress> getIPList() {
+        return ipList;
+    }
+
+    public static void stopConnection() throws IOException {
+        System.out.println("Tentative de déconnexion");
+        for (Thread clientHandler: clientList
+             ) {
+            clientHandler.interrupt();
         }
-    }*/
+        in.close();
+        out.close();
+    }
 }
