@@ -71,6 +71,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
+                System.out.println("window closing");
                 try {
                     disconnectAndExit();
                 } catch (IOException ex) {
@@ -144,7 +145,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     @Override
-    public void updateContactList() throws InterruptedException {
+    public void updateContactList() {
+        SwingUtilities.invokeLater(() -> {
             printContactList();
             System.out.println("dans le listener2 : updatecontactlist");
             contactList = DatabaseController.getUsers();
@@ -158,7 +160,12 @@ public class ContactListApp extends JFrame implements CustomListener2{
                     System.out.println("user : " + u.getUsername());
                 }
             });
+            try {
                 addContactsToDisplayedList(users);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
 

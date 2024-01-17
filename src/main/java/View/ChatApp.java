@@ -90,6 +90,7 @@ public class ChatApp extends JFrame {
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
                 }
+
             }
         });
 

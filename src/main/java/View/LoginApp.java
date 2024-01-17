@@ -85,7 +85,7 @@ public class LoginApp extends JFrame implements CustomListener{
         }
     }
 
-    private List<CustomListener2> listeners2 = new ArrayList<>();
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }
@@ -113,7 +113,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
     }
     @Override
-    public synchronized void launchTest() throws InterruptedException {
+    public synchronized void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
             listener2.updateContactList();
             System.out.println("check ok listener2");
