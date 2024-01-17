@@ -67,7 +67,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            LoginApp disconnect = new LoginApp();
+            LoginApp disconnect = new LoginApp(this);
             disconnect.setVisible(true);
             System.out.println("Disconnect button clicked");
             this.dispose();
@@ -180,13 +180,14 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
 
-        contactListModel.clear();
 
 
         System.out.println("before add element: ");
         printContactList();
         //TimeUnit.SECONDS.sleep(1);
         SwingUtilities.invokeLater(() -> {
+            contactListModel.clear();
+
             for (User user : users) {
                 contactListModel.addElement(user.getUsername() + " Online");
             }

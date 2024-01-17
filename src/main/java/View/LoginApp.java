@@ -21,6 +21,7 @@ public class LoginApp extends JFrame implements CustomListener{
 
     private final List<CustomListener2> listeners2 = new ArrayList<>();
 
+    private ContactListApp contactListApp =null;
 
     public LoginApp() {
         setTitle("Login");
@@ -28,6 +29,15 @@ public class LoginApp extends JFrame implements CustomListener{
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         initComponents();
+    }
+
+    public LoginApp(ContactListApp contactlistapp) {
+        setTitle("Login");
+        setSize(300, 150);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        initComponents();
+        contactListApp=contactlistapp;
     }
 
 
@@ -79,7 +89,7 @@ public class LoginApp extends JFrame implements CustomListener{
             not_unique.set(false);
             U.Action();
 
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(1500);
 
             // Check if the login is successful before calling unique
             if (!not_unique.get()) {
@@ -98,17 +108,23 @@ public class LoginApp extends JFrame implements CustomListener{
     public void unique() throws UnknownHostException, InterruptedException {
 
         // check if atomic bool not_unique if at false to continue
+
         if (!not_unique.get()) {
             User me = new User();
             me.setUsername(usernameField.getText());
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
 
-            ContactListApp mainAppInterface = new ContactListApp(me);
-            this.addActionListener2(mainAppInterface);
+            if (contactListApp==null) {
+                ContactListApp mainAppInterface = new ContactListApp(me);
+                this.addActionListener2(mainAppInterface);
+                mainAppInterface.setVisible(true);
+            }
+            else {
+                contactListApp.setMyUsername(me.getUsername());
+                contactListApp.setVisible(true);
+            }
 
-
-            mainAppInterface.setVisible(true);
             this.setVisible(false);
         }
 

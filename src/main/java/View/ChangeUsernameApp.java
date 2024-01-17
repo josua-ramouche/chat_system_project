@@ -119,7 +119,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             oldme.setState(true);
 
             this.addActionListener2(mainAppInterface);
-            mainAppInterface.setMyUsername(usernameField.getText());
+            mainAppInterface.setMyUsername(oldme.getUsername());
             mainAppInterface.setVisible(true);
 
             this.setVisible(false);
