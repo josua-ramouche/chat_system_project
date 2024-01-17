@@ -1,4 +1,3 @@
-import Controller.Chat.ChatController;
 import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.ContactDiscovery.ServerUDP;

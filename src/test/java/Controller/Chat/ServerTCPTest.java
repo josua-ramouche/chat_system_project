@@ -93,28 +93,43 @@ public class ServerTCPTest {
 
 
     }
-/*
+
+
     @Test
-    void endConnectionTest() throws Exception {
-        TestTCP serverTCP = new TestTCP();
+    public void testlistenTCP() {
+        // Créer une instance de la classe listenTCP
+        ServerTCP.listenTCP listenThread = new ServerTCP.listenTCP();
 
-        serverTCP.start();
+        // Lancer le thread d'écoute
+        listenThread.start();
 
-        // Mock the static method of Socket class
-        Socket fakeSocket = Mockito.mock(Socket.class);
+        // Attendre un certain temps pour que le serveur puisse démarrer (ajuster selon les besoins)
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
-        // Create a new client handler with the fake socket
-        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(new Socket(InetAddress.getLoopbackAddress(),12345));
-        PowerMockito.whenNew(ServerTCP.ClientHandler.class).withArguments(fakeSocket).thenReturn(clientHandler);
+        // Tester la connexion en créant un client (assurez-vous que le port est correct)
+        boolean clientConnected = simulateClientConnection("localhost", 1556);
 
-        Mockito.verifyNoMoreInteractions(fakeSocket);
-        // End the connection
-        (new ServerTCP.ClientHandler(fakeSocket)).endConnection();
+        // Arrêter le thread d'écoute
+        listenThread.interrupt();
 
-        serverTCP.interrupt();
-    }*/
+        // Vérifier que la connexion a réussi
+        assertTrue(clientConnected);
+    }
 
-
+    // Méthode pour simuler la connexion d'un client
+    private boolean simulateClientConnection(String host, int port) {
+        try (Socket socket = new Socket(host, port)) {
+            System.out.println("CLIENT: Connected to server on port " + port);
+            return true;
+        } catch (IOException e) {
+            System.out.println("CLIENT: Failed to connect to server");
+            return false;
+        }
+    }
 
     private void deleteTestChatTable() {
         Connection conn = DatabaseController.connect();
@@ -155,4 +170,26 @@ public class ServerTCPTest {
             }
         }
     }
+
+    /*
+    @Test
+    void endConnectionTest() throws Exception {
+        TestTCP serverTCP = new TestTCP();
+
+        serverTCP.start();
+
+        // Mock the static method of Socket class
+        Socket fakeSocket = Mockito.mock(Socket.class);
+
+        // Create a new client handler with the fake socket
+        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(new Socket(InetAddress.getLoopbackAddress(),12345));
+        PowerMockito.whenNew(ServerTCP.ClientHandler.class).withArguments(fakeSocket).thenReturn(clientHandler);
+
+        Mockito.verifyNoMoreInteractions(fakeSocket);
+        // End the connection
+        (new ServerTCP.ClientHandler(fakeSocket)).endConnection();
+
+        serverTCP.interrupt();
+    }*/
+
 }

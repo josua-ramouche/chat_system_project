@@ -19,6 +19,9 @@ public class LoginApp extends JFrame implements CustomListener{
     private final AtomicBoolean not_unique= new AtomicBoolean(false);
     private JTextField usernameField;
 
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
+
     public LoginApp() {
         setTitle("Login");
         setSize(300, 150);
@@ -85,7 +88,7 @@ public class LoginApp extends JFrame implements CustomListener{
         }
     }
 
-    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }

@@ -14,12 +14,14 @@ import static Controller.Database.DatabaseController.printContactList;
 
 
 public class ServerUDP {
-//TEST
 
     public static class EchoServer extends Thread {
         private final User server;
         private final DatagramSocket socket;
         private List<InetAddress> interfacesIP;
+
+        //signals and slots for unicity with GUI
+        private final List<CustomListener> listeners = new ArrayList<>();
 
         // Constructor
         public EchoServer(User server) throws SocketException {
@@ -43,6 +45,10 @@ public class ServerUDP {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        public void addActionListener(CustomListener listener) {
+            listeners.add(listener);
         }
 
         // Thread run
@@ -124,14 +130,6 @@ public class ServerUDP {
             System.out.println("Your username is now: " + message);
 
         }
-
-        //signals and slots for unicity with GUI
-        private final List<CustomListener> listeners = new ArrayList<>();
-
-        public void addActionListener(CustomListener listener) {
-            listeners.add(listener);
-        }
-
 
         // Change of username declined
         public void handleNotUnique(String message) {
@@ -234,7 +232,7 @@ public class ServerUDP {
             if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
                 System.out.println("IPADDRESS : " + address.getHostAddress());
                 //ContactList.addContact(contact); retirée contact list
-                if(DatabaseController.containsUser(contact) && isUsernameUnique(contact.getUsername())) {
+                if(DatabaseController.containsUser(contact)) {
                     System.out.println("User already in database, updating username in database");
                     DatabaseController.updateUsername(contact, contact.getUsername());
                     DatabaseController.updateConnectionState(contact,true);
@@ -329,6 +327,7 @@ public class ServerUDP {
         public boolean isUsernameUnique(String username) {
             List<User> Users = DatabaseController.getAllUsers();
             if (!username.equals(server.getUsername())) {
+                System.out.println("ON PASSE BIEN DANS IS USERNAME UNIQUE");
                 return Users.stream()
                         .noneMatch(u -> u.getUsername().equals(username));
             }

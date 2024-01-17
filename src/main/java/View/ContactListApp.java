@@ -68,13 +68,13 @@ public class ContactListApp extends JFrame implements CustomListener2{
             System.out.println("Disconnect button clicked");
             frame.dispose();
         });
-        addWindowListener(new WindowAdapter() {
+        frame.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
-                System.out.println("window closing");
+                System.out.println("Window closing");
                 try {
                     disconnectAndExit();
-                } catch (IOException ex) {
+                } catch (IOException | InterruptedException ex) {
                     throw new RuntimeException(ex);
                 }
             }
@@ -114,7 +114,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         frame.setVisible(true);
     }
 
-    private void disconnectAndExit() throws IOException {
+    private void disconnectAndExit() throws IOException, InterruptedException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection();
@@ -169,7 +169,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
 
-    private void addContactsToDisplayedList(List<User> users) throws InterruptedException {
+    private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
 
         contactListModel.clear();
 
