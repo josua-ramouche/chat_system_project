@@ -18,8 +18,6 @@ import java.util.List;
 public class ServerTCP {
 
     public static class listenTCP extends Thread {
-
-        private static List<InetAddress> listIP = new ArrayList<>();
         public void run()
         { //victoire
             int port = 1556;
@@ -36,26 +34,18 @@ public class ServerTCP {
 
                     System.out.println("port clientSocket : " + clientSocket.getPort());
 
-                    if(!ClientTCP.getIPList().contains(clientSocket.getInetAddress()) || !listIP.contains(clientSocket.getInetAddress())) {
-                        //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
-                        System.out.println("SERVER: Client connection accepted");
-                        // Create a new thread to handle a client
-                        Thread clientThread = new ServerTCP.ClientHandler(clientSocket, clientSocket.getInetAddress());
-                        clientThread.start();
-                        listIP.add(clientSocket.getInetAddress());
-                    }
+
+                    //ClientTCP.getMap().put(clientSocket.getInetAddress(),clientSocket);
+                    System.out.println("SERVER: Client connection accepted");
+                    // Create a new thread to handle a client
+                    Thread clientThread = new ServerTCP.ClientHandler(clientSocket,clientSocket.getInetAddress());
+                    clientThread.start();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        public static List<InetAddress> getListIP() {
-            return listIP;
-        }
-
-
     }
-
 
     public static class ClientHandler extends Thread {
         private Socket clientSocket;
