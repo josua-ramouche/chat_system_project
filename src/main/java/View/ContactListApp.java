@@ -6,6 +6,7 @@ import Controller.Database.DatabaseController;
 import Model.User;
 
 import javax.swing.*;
+import javax.swing.text.BadLocationException;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -89,7 +90,11 @@ public class ContactListApp extends JFrame implements CustomListener2{
         contactListView.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 // Handle the selection of a contact
-                onContactSelection();
+                try {
+                    onContactSelection();
+                } catch (BadLocationException ex) {
+                    throw new RuntimeException(ex);
+                }
             }
         });
         contactListView.setVisibleRowCount(5);
@@ -124,7 +129,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         System.exit(0);
     }
 
-    private void onContactSelection() {
+    private void onContactSelection() throws BadLocationException {
         // Index of the selected contact on the interface
         int index = contactListView.getSelectedIndex();
         System.out.println("INDEX: " + index);

@@ -99,7 +99,7 @@ public class ServerTCP {
                 ChatApp.PrintHistory(-1);
 
             } catch (IOException | BadLocationException e) {
-            } catch (IOException e) {
+
                 System.out.println("FIN DE THREAD EN FACE");
                 ClientTCP.removeIP(ipReceived);
                 e.printStackTrace();
