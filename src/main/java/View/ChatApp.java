@@ -1,6 +1,7 @@
 package View;
 
 import Controller.Chat.ClientTCP;
+import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.Message;
@@ -28,7 +29,7 @@ public class ChatApp extends JFrame {
 
 
 
-    public ChatApp(User partner, User me) throws BadLocationException {
+    public ChatApp(User partner, User me, ContactListApp contactListApp) throws BadLocationException {
         this.partner = partner;
         ChatApp.me=me;
         chatArea.setEditable(false);
@@ -62,20 +63,19 @@ public class ChatApp extends JFrame {
 
 
 
-
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contactListApp;
+            /*ContactListApp contactListApp;
             try {
                 contactListApp = new ContactListApp(me);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
-            }
+            }*/
             contactListApp.setVisible(true);
             this.setVisible(false);
         });
 
-        addWindowListener(new WindowAdapter() {
+        this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
                 try {
@@ -97,6 +97,7 @@ public class ChatApp extends JFrame {
                 throw new RuntimeException(ex);
             }
         });
+
 
         // Add an action listener for the Enter key
         messageField.addActionListener(e -> {
@@ -120,6 +121,7 @@ public class ChatApp extends JFrame {
     private void disconnectAndExit() throws IOException {
         // Disconnect and exit the application
         //ServerTCP.ClientHandler.endConnection();
+        //ClientTCP.stopConnection();
         ClientUDP.sendEndConnection();
         System.exit(0);
     }
@@ -136,7 +138,9 @@ public class ChatApp extends JFrame {
             }
             PrintHistory(DatabaseController.getUserID(partner));
         }
+
     }
+
 
 
 

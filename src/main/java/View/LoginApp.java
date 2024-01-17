@@ -109,7 +109,6 @@ public class LoginApp extends JFrame implements CustomListener{
 
 
             mainAppInterface.setVisible(true);
-            launchTest();
             this.setVisible(false);
         }
 

@@ -6,6 +6,8 @@ import Model.User;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
@@ -21,13 +23,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private ContactListApp mainAppInterface;
     private final User oldme;
 
-    public ChangeUsernameApp(User oldme) {
+    public ChangeUsernameApp(User oldme, ContactListApp contactListApp) {
         this.oldme=oldme;
         setTitle("Change username");
         setSize(300, 150);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-
+        mainAppInterface = contactListApp;
         initComponents();
     }
 
@@ -64,6 +66,18 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             }
         });
 
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                try {
+                    disconnectAndExit();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+
+            }
+        });
+
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(new JLabel());
@@ -97,18 +111,16 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     @Override
-    public void unique() throws InterruptedException {
+    public void unique() {
 
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
             oldme.setUsername(usernameField.getText());
             oldme.setState(true);
 
-            mainAppInterface = new ContactListApp(oldme);
             this.addActionListener2(mainAppInterface);
-
+            mainAppInterface.setMyUsername(usernameField.getText());
             mainAppInterface.setVisible(true);
-            launchTest();
 
             this.setVisible(false);
         }
@@ -134,9 +146,16 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
     private void goBack() throws UnknownHostException, InterruptedException {
-        mainAppInterface = new ContactListApp(oldme);
+        //mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
         this.dispose(); // Close the current window
+    }
+
+    private void disconnectAndExit() throws IOException {
+        // Disconnect and exit the application
+        //ServerTCP.ClientHandler.endConnection();
+        ClientUDP.sendEndConnection();
+        System.exit(0);
     }
 
 

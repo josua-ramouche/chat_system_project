@@ -11,6 +11,8 @@ import java.io.PrintWriter;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ServerTCP {
@@ -62,7 +64,6 @@ public class ServerTCP {
         }
 
 
-
         public synchronized void run() {
             try {
                 System.out.println("THREAD NUMERO : ");
@@ -90,7 +91,6 @@ public class ServerTCP {
                     //}
 
                    // }
-
                 }
 
 
@@ -99,6 +99,9 @@ public class ServerTCP {
                 ChatApp.PrintHistory(-1);
 
             } catch (IOException | BadLocationException e) {
+            } catch (IOException e) {
+                System.out.println("FIN DE THREAD EN FACE");
+                ClientTCP.removeIP(ipReceived);
                 e.printStackTrace();
             }
         }
