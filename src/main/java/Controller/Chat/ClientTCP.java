@@ -22,7 +22,7 @@ public class ClientTCP {
 
     public static void startConnection(InetAddress ip, int port) {
         try {
-            if(!ipList.contains(ip)) {
+            if(!ipList.contains(ip) && !ServerTCP.listenTCP.getListIP().contains(ip)) {
                 Socket socket = new Socket(ip, port);
                 ipList.add(ip);
                 ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(socket, ip);
