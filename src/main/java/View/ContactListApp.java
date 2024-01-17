@@ -18,14 +18,17 @@ import static Controller.Database.DatabaseController.printContactList;
 
 public class ContactListApp extends JFrame implements CustomListener2{
 
-    //private final JFrame frame;
     private final DefaultListModel<String> contactListModel;
     private final JList<String> contactListView;
     private List<User> contactList;
-
     private static User me;
 
+    private JLabel nameLabel;
 
+    public void setMyUsername(String username) {
+        me.setUsername(username);
+        nameLabel.setText("Contact List of "  + me.getUsername());
+    }
 
     public ContactListApp(User me) throws InterruptedException {
         this.me =me;
@@ -50,7 +53,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
             //ClientUDP.sendEndConnection(me);
-            ChangeUsernameApp change = new ChangeUsernameApp(me);
+            ChangeUsernameApp change = new ChangeUsernameApp(me,this);
             change.setVisible(true);
             System.out.println("Change username button clicked");
             this.dispose();
@@ -91,7 +94,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
         });
         contactListView.setVisibleRowCount(5);
 
-        JLabel nameLabel = new JLabel("Contact List of "  + me.getUsername());
+        nameLabel = new JLabel("Contact List of "  + me.getUsername());
         nameLabel.setFont(new Font("Arial", Font.BOLD, 15));
 
         JPanel namePanel = new JPanel();
@@ -136,11 +139,12 @@ public class ContactListApp extends JFrame implements CustomListener2{
             contactListView.ensureIndexIsVisible(index);
 
 
-            ChatApp chat = new ChatApp(selectedContact, me);
+            ChatApp chat = new ChatApp(selectedContact, me, this);
             chat.setVisible(true);
             //frame.dispose();
             this.setVisible(false);
             ClientTCP.startConnection(selectedContact.getIPAddress(), 1556);
+            contactListView.clearSelection();
         }
     }
 
@@ -172,6 +176,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
 
         contactListModel.clear();
+
 
         System.out.println("before add element: ");
         printContactList();

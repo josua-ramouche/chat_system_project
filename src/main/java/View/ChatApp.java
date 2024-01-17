@@ -28,7 +28,7 @@ public class ChatApp extends JFrame {
 
 
 
-    public ChatApp(User partner, User me) {
+    public ChatApp(User partner, User me, ContactListApp contactListApp) {
         this.partner = partner;
         ChatApp.me=me;
         chatArea.setEditable(false);
@@ -62,12 +62,12 @@ public class ChatApp extends JFrame {
 
         // back button action
         backButton.addActionListener(e -> {
-            ContactListApp contactListApp;
+            /*ContactListApp contactListApp;
             try {
                 contactListApp = new ContactListApp(me);
             } catch (InterruptedException ex) {
                 throw new RuntimeException(ex);
-            }
+            }*/
             contactListApp.setVisible(true);
             this.setVisible(false);
         });
