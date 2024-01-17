@@ -53,9 +53,17 @@ public class ServerUDP {
                 System.out.println("Le serveur tourne...");
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
+                    for (CustomListener listener : listeners) {
+                        listener.launchTest();
+                        System.out.println("check launchtest");
+                    }
                     System.out.println("Before Datagram reception");
                     socket.receive(packet);
                     System.out.println("After Datagram reception");
+                    for (CustomListener listener : listeners) {
+                        listener.launchTest();
+                        System.out.println("check launchtest");
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

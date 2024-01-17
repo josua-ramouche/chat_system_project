@@ -108,6 +108,8 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             this.addActionListener2(mainAppInterface);
 
             mainAppInterface.setVisible(true);
+            launchTest();
+
             this.setVisible(false);
         }
 

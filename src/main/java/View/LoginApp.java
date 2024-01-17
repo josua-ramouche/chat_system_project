@@ -85,7 +85,7 @@ public class LoginApp extends JFrame implements CustomListener{
         }
     }
 
-    private final List<CustomListener2> listeners2 = new ArrayList<>();
+    private List<CustomListener2> listeners2 = new ArrayList<>();
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }
@@ -104,7 +104,9 @@ public class LoginApp extends JFrame implements CustomListener{
             ContactListApp mainAppInterface = new ContactListApp(me);
             this.addActionListener2(mainAppInterface);
 
+
             mainAppInterface.setVisible(true);
+            launchTest();
             this.setVisible(false);
         }
 
