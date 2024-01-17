@@ -27,9 +27,6 @@ public class ChatApp extends JFrame {
 
 
 
-    public User getPartner() {
-        return partner;
-    }
 
     public ChatApp(User partner, User me) {
         this.partner = partner;
