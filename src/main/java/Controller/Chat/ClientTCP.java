@@ -22,16 +22,16 @@ public class ClientTCP {
 
     public static void startConnection(InetAddress ip, int port) {
         try {
+            Socket socket = new Socket(ip, port);
             if(!ipList.contains(ip) && !ServerTCP.listenTCP.getListIP().contains(ip)) {
-                Socket socket = new Socket(ip, port);
                 ipList.add(ip);
                 ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(socket, ip);
                 clientList.add(clientHandler);
-                out = new PrintWriter(socket.getOutputStream(), true);
-                in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
                 System.out.println("Welcome to the ChatSystem client\n");
                 clientHandler.start();
             }
+            out = new PrintWriter(socket.getOutputStream(), true);
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
         } catch (IOException e) {
             e.printStackTrace();
