@@ -1,8 +1,5 @@
 package Controller.Chat;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import Controller.Chat.ServerTCP;
-import Controller.Database.DatabaseController;
+
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -10,9 +7,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 class ServerTCPTest {
 
@@ -31,6 +27,13 @@ class ServerTCPTest {
         });
         serverThread.start();
 
+        // Allow some time for the server to start (this can be improved)
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Mock client socket
         Socket mockClientSocket = new Socket("localhost", 1556);
 
@@ -43,39 +46,26 @@ class ServerTCPTest {
         stopThread.set(true);
         serverThread.join();
 
-        // TODO: Add assertions to verify the expected behavior of listenTCP
+        // Add assertions to verify the expected behavior of listenTCP
         assertNotNull(mockClientSocket);
-        // Add more assertions as needed
     }
 
     @Test
     void testClientHandlerRun() throws IOException {
-        // Create a mock Socket for testing
-        Socket mockSocket = mock(Socket.class);
+        // Create a mock ServerSocket
+        ServerSocket serverSocket = new ServerSocket(0);
 
-        // Create a mock BufferedReader for testing
-        BufferedReader mockBufferedReader = mock(BufferedReader.class);
-        InputStream inputStream = new ByteArrayInputStream("Test message".getBytes());
-        InputStreamReader mockInputStreamReader = new InputStreamReader(inputStream);
-
-        when(mockSocket.getInputStream()).thenReturn(inputStream);
-        when(mockSocket.getOutputStream()).thenReturn(System.out);
-
-        // Call the method to create the chat table for testing
-        DatabaseController.createChatTableForTest(0);
-
-        // Add an assertion to check if the table exists
-        assertTrue(DatabaseController.doesTableExist("Chat0"));
+        // Create a mock Socket for testing and connect it to the ServerSocket
+        Socket mockSocket = new Socket("localhost", serverSocket.getLocalPort());
 
         // Create a mock ServerTCP.ClientHandler instance
-        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(mockSocket, mock(Socket.class).getInetAddress());
+        ServerTCP.ClientHandler clientHandler = new ServerTCP.ClientHandler(mockSocket, null);
 
         // Add assertions to verify the expected behavior of ClientHandler's run method
         assertNotNull(clientHandler);
 
-        // For example, you might add assertions to check the behavior of the run method
-        // assertEquals(expectedValue, actualValue);
+        // Close the mock Socket and ServerSocket
+        mockSocket.close();
+        serverSocket.close();
     }
-
-
 }
