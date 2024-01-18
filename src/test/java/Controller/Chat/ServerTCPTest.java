@@ -119,6 +119,7 @@ public class ServerTCPTest {
         // Vérifier que la connexion a réussi
         assertTrue(clientConnected);
     }
+    //test
 
     // Méthode pour simuler la connexion d'un client
     private boolean simulateClientConnection(String host, int port) {
