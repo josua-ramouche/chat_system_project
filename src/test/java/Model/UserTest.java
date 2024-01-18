@@ -38,5 +38,40 @@ class UserTest {
         assertTrue(user.getState());
     }
 
+    @Test
+    void testDefaultConstructor() {
+        User user = new User();
+        assertNull(user.getUsername());
+        assertNull(user.getIPAddress());
+        assertNull(user.getState());
+    }
+
+    @Test
+    void testParameterizedConstructor() throws UnknownHostException {
+        User user = new User("TestUser", InetAddress.getByName("192.168.0.1"), true);
+        assertEquals("TestUser", user.getUsername());
+        assertEquals(InetAddress.getByName("192.168.0.1"), user.getIPAddress());
+        assertTrue(user.getState());
+    }
+
+    @Test
+    void testContainsContact() throws UnknownHostException {
+        User user1 = new User("User1", InetAddress.getByName("192.168.0.1"), true);
+        User user3 = new User("User1", InetAddress.getByName("192.168.0.1"), true);
+
+        List<User> contactList = new ArrayList<>();
+        contactList.add(user1);
+
+        assertTrue(user1.containsContact(contactList, user3));
+    }
+
+
+    @Test
+    void testHashCode() throws UnknownHostException {
+        User user1 = new User("User1", InetAddress.getByName("192.168.0.1"), true);
+        User user2 = new User("User1", InetAddress.getByName("192.168.0.1"), true);
+
+        assertEquals(user1.hashCode(), user2.hashCode());
+    }
 
 }

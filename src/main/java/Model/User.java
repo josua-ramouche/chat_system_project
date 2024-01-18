@@ -51,17 +51,18 @@ public class User {
 
     // Checks if a user is in the contact list
     public Boolean containsContact(List<User> contactList, User u) {
-        boolean contained = false;
-
-        for (User v : contactList) {
-            if (u.username.equals(v.username) && u.ipaddress.equals(v.ipaddress) && u.state.equals(v.state)) {
-                contained = true;
-                break;
-            }
-        }
-        return contained;
+        return contactList.stream().anyMatch(v -> v.equals(u));
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        User user = (User) obj;
+        return Objects.equals(username, user.username) &&
+                Objects.equals(ipaddress, user.ipaddress) &&
+                Objects.equals(state, user.state);
+    }
 
 
     @Override
