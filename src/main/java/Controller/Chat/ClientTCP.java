@@ -38,6 +38,14 @@ public class ClientTCP {
         }
     }
 
+    public static PrintWriter getOut() {
+        return out;
+    }
+
+    public static BufferedReader getIn() {
+        return in;
+    }
+
     public static void sendMessage(String message) {
         out.println(message);
     }
@@ -46,10 +54,12 @@ public class ClientTCP {
         ipList.remove(ip);
     }
 
+    /*
     public static List<InetAddress> getIPList() {
         return ipList;
-    }
+    }*/
 
+    /*
     public static void stopConnection() throws IOException {
         System.out.println("Tentative de déconnexion");
         for (Thread clientHandler: clientList
@@ -58,5 +68,5 @@ public class ClientTCP {
         }
         in.close();
         out.close();
-    }
+    }*/
 }

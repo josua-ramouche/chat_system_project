@@ -7,8 +7,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientTCPTest {
     private static final int TEST_PORT = 12345;
@@ -32,7 +31,6 @@ public class ClientTCPTest {
             e.printStackTrace();
         }
     }
-/*
     @Test
     public void testStartConnection() {
         // Arrange
@@ -47,8 +45,10 @@ public class ClientTCPTest {
         ClientTCP.startConnection(ip, TEST_PORT);
 
         // Assert
-        assertTrue(ClientTCP.socket.isConnected());
-    }*/
+        assertNotNull(ClientTCP.getOut());
+        assertNotNull(ClientTCP.getIn());
+    }
+
 
     @Test
     public void testSendMessage() throws IOException {
