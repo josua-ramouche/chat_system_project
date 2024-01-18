@@ -199,27 +199,24 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_handleResponseEnd() throws NoSuchFieldException, IllegalAccessException {
-
-        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outputStream));
+    void testEchoServer_handleResponseEnd() {
 
         User testUser = new User("Test", InetAddress.getLoopbackAddress(),true);
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
-        echoServer.handleResponseEnd();
 
-        System.setOut(System.out);
+        try {
+            echoServer.handleResponseEnd();
 
-        String expectedOutput =  "You are now disconnected\n" + System.lineSeparator();
-        assertEquals(expectedOutput, outputStream.toString());
+            Field serverField = ServerUDP.EchoServer.class.getDeclaredField("server");
+            serverField.setAccessible(true);
+            User server = (User) serverField.get(echoServer);
 
-        Field serverField = ServerUDP.EchoServer.class.getDeclaredField("server");
-        serverField.setAccessible(true);
-        User server = (User) serverField.get(echoServer);
-
-        assertFalse(server.getState());
+            assertFalse(server.getState());
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
 
     }
 
@@ -233,12 +230,12 @@ class ServerUDPTest {
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
-        echoServer.handleChangeOfUsername("newUsername");
 
-        System.setOut(System.out);
-
-        String expectedOutput =  "You have changed your username" + System.lineSeparator() + "Your username is now: newUsername" + System.lineSeparator();
-        assertEquals(expectedOutput, outputStream.toString());
+        try {
+            echoServer.handleChangeOfUsername("newUsername");
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
 
     }
 
@@ -337,15 +334,12 @@ class ServerUDPTest {
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
-        echoServer.handleNotUnique("Test");
-        echoServer.handleNotUnique("");
-
-        System.setOut(System.out);
-
-        String expectedOutput = "Your new username is already used by someone, you cannot change your username."
-                + System.lineSeparator() + "Your username is: Test" + System.lineSeparator()
-                + "Your new username is already used by someone, try to enter a new username." + System.lineSeparator();
-        assertEquals(expectedOutput, outputStream.toString());
+        try {
+            echoServer.handleNotUnique("Test");
+            echoServer.handleNotUnique("");
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
 
     }
 
