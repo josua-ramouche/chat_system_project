@@ -60,12 +60,18 @@ public class ClientTCPTest {
         BufferedReader socketIn = new BufferedReader(new InputStreamReader(testSocket.getInputStream()));
 
         // Act
-        String message = "Hello, Server!";
-        ClientTCP.sendMessage(message);
+        try {
+            String message = "Hello, Server!";
+            ClientTCP.sendMessage(message);
 
-        // Assert
-        assertEquals(message, socketIn.readLine());
+            // Assert
+            assertEquals(message, socketIn.readLine());
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e; // rethrow the exception to see the stack trace
+        }
     }
+
 
     /*@Test
     public void testStopConnection() {
