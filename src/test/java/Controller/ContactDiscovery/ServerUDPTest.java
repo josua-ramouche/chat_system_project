@@ -8,11 +8,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.lang.reflect.Field;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +43,6 @@ class ServerUDPTest {
                 deleteUser(u);
             }
         });
-
     }
 
     @Test
@@ -70,15 +76,11 @@ class ServerUDPTest {
         String broadcastMessage2 = "BROADCAST:TestUser2";
         InetAddress senderAddress2 = InetAddress.getByName("192.168.0.2");
 
-        String broadcastMessage3 = "BROADCAST:TestUser3";
-        InetAddress senderAddress3 = InetAddress.getByName("192.168.0.3");
-
         String broadcastMessage4 = "BROADCAST:TestUser1";
         InetAddress senderAddress4 = InetAddress.getByName("192.168.0.4");
 
         echoServer.handleBroadcastMessage(broadcastMessage1.substring("BROADCAST:".length()), senderAddress1);
         echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
-        echoServer.handleBroadcastMessage(broadcastMessage3.substring("BROADCAST:".length()), senderAddress3);
         echoServer.handleBroadcastMessage(broadcastMessage4.substring("BROADCAST:".length()), senderAddress4);
 
         // Actual list obtained from tested method
@@ -89,7 +91,6 @@ class ServerUDPTest {
 
         expectedList.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
         expectedList.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
-        expectedList.add(new User("TestUser3",InetAddress.getByName("192.168.0.3"),true));
 
         // Comparison of expected list and actual list
         assertEquals(expectedList.size(),contactList.size());
@@ -98,10 +99,11 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
+        deleteTestChatTables();
     }
 
     @Test
-    void testEchoServer_HandleResponseMessage() throws IOException, InterruptedException {
+    void testEchoServer_HandleResponseMessage() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
@@ -117,9 +119,9 @@ class ServerUDPTest {
         String responseMessage3 = "TestUser3";
         InetAddress senderAddress3 = InetAddress.getByName("192.168.0.3");
 
-        echoServer.handleBroadcastMessage(responseMessage1, senderAddress1);
-        echoServer.handleBroadcastMessage(responseMessage2, senderAddress2);
-        echoServer.handleBroadcastMessage(responseMessage3, senderAddress3);
+        echoServer.handleResponseMessage(responseMessage1, senderAddress1);
+        echoServer.handleResponseMessage(responseMessage2, senderAddress2);
+        echoServer.handleResponseMessage(responseMessage3, senderAddress3);
 
         // Actual list obtained from response messages from server (connected user)
         List<User> contactList = DatabaseController.getUsers();
@@ -141,24 +143,24 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
+        deleteTestChatTables();
     }
 
     @Test
-    void testEchoServer_HandleEndMessage() throws IOException, InterruptedException {
+    void testEchoServer_HandleEndMessage() throws IOException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
 
-        // Simulate broadcast messages
-        String broadcastMessage1 = "BROADCAST:TestUser1";
         InetAddress senderAddress1 = InetAddress.getByName("192.168.0.1");
-
-        String broadcastMessage2 = "BROADCAST:TestUser2";
         InetAddress senderAddress2 = InetAddress.getByName("192.168.0.2");
 
-        echoServer.handleBroadcastMessage(broadcastMessage1.substring("BROADCAST:".length()), senderAddress1);
-        echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
+        User testUser1 = new User("TestUser1",senderAddress1,true);
+        User testUser2 = new User("TestUser2",senderAddress2,true);
+
+        DatabaseController.addUser(testUser1);
+        DatabaseController.addUser(testUser2);
 
         // Actual list obtained after first broadcast messages
         List<User> contactList = DatabaseController.getUsers();
@@ -166,8 +168,8 @@ class ServerUDPTest {
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
 
-        expectedList1.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
-        expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+        expectedList1.add(testUser1);
+        expectedList1.add(testUser2);
 
         // Comparison of expected list and actual list after first broadcast messages
         assertEquals(expectedList1.size(),contactList.size());
@@ -197,21 +199,64 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleChangeUsernameMessage() throws IOException, InterruptedException {
+    void testEchoServer_handleResponseEnd() throws NoSuchFieldException, IllegalAccessException {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        User testUser = new User("Test", InetAddress.getLoopbackAddress(),true);
+        DatagramSocket socket = mock(DatagramSocket.class);
+
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
+        echoServer.handleResponseEnd();
+
+        System.setOut(System.out);
+
+        String expectedOutput =  "You are now disconnected\n" + System.lineSeparator();
+        assertEquals(expectedOutput, outputStream.toString());
+
+        Field serverField = ServerUDP.EchoServer.class.getDeclaredField("server");
+        serverField.setAccessible(true);
+        User server = (User) serverField.get(echoServer);
+
+        assertFalse(server.getState());
+
+    }
+
+    @Test
+    void testEchoServer_HandleChangeOfUsername() {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        DatagramSocket socket = mock(DatagramSocket.class);
+
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
+        echoServer.handleChangeOfUsername("newUsername");
+
+        System.setOut(System.out);
+
+        String expectedOutput =  "You have changed your username" + System.lineSeparator() + "Your username is now: newUsername" + System.lineSeparator();
+        assertEquals(expectedOutput, outputStream.toString());
+
+    }
+
+    @Test
+    void testEchoServer_HandleChangeUsernameMessage() throws IOException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
-        // Simulate broadcast messages
-        String broadcastMessage1 = "BROADCAST:TestUser1";
         InetAddress senderAddress1 = InetAddress.getByName("192.168.0.1");
-
-        String broadcastMessage2 = "BROADCAST:TestUser2";
         InetAddress senderAddress2 = InetAddress.getByName("192.168.0.2");
 
-        echoServer.handleBroadcastMessage(broadcastMessage1.substring("BROADCAST:".length()), senderAddress1);
-        echoServer.handleBroadcastMessage(broadcastMessage2.substring("BROADCAST:".length()), senderAddress2);
+        User testUser1 = new User("TestUser1",senderAddress1,true);
+        User testUser2 = new User("TestUser2",senderAddress2,true);
+
+        DatabaseController.addUser(testUser1);
+        DatabaseController.addUser(testUser2);
 
         // Actual list obtained after first broadcast messages
         List<User> contactList = DatabaseController.getUsers();
@@ -219,8 +264,8 @@ class ServerUDPTest {
         // Expected list after first broadcast messages
         List<User> expectedList1 = new ArrayList<>();
 
-        expectedList1.add(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
-        expectedList1.add(new User("TestUser2",InetAddress.getByName("192.168.0.2"),true));
+        expectedList1.add(testUser1);
+        expectedList1.add(testUser2);
 
         // Comparison of expected list and actual list after first broadcast messages
         assertEquals(expectedList1.size(),contactList.size());
@@ -279,6 +324,56 @@ class ServerUDPTest {
 
         assertFalse(echoServer.isUsernameUnique("TestUser1"));
         assertTrue(echoServer.isUsernameUnique("TestUser2"));
+    }
+
+    @Test
+    void testEchoServer_handleNotUnique() {
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outputStream));
+
+        User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        DatagramSocket socket = mock(DatagramSocket.class);
+
+        ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
+
+        echoServer.handleNotUnique("Test");
+        echoServer.handleNotUnique("");
+
+        System.setOut(System.out);
+
+        String expectedOutput = "Your new username is already used by someone, you cannot change your username."
+                + System.lineSeparator() + "Your username is: Test" + System.lineSeparator()
+                + "Your new username is already used by someone, try to enter a new username." + System.lineSeparator();
+        assertEquals(expectedOutput, outputStream.toString());
+
+    }
+
+
+
+    private void deleteTestChatTables() {
+        Connection conn = DatabaseController.connect();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table';");
+
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("name");
+                if (tableName.startsWith("Chat")) {
+                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 }
