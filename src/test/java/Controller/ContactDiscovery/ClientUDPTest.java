@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ClientUDPTest {
+public class ClientUDPTest {
 
     //TEST
     @BeforeAll
@@ -46,6 +46,16 @@ class ClientUDPTest {
         try {
             List<InetAddress> broadcastAddresses = ClientUDP.listAllBroadcastAddresses();
             assertNotNull(broadcastAddresses);
+        } catch (Exception e) {
+            fail("Exception not expected: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void getInterfacesIPTest() {
+        try {
+            List<InetAddress> IPInterfaces = ClientUDP.getInterfacesIP();
+            assertNotNull(IPInterfaces);
         } catch (Exception e) {
             fail("Exception not expected: " + e.getMessage());
         }

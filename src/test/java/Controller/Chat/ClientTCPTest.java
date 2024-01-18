@@ -6,6 +6,9 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -70,6 +73,29 @@ public class ClientTCPTest {
             e.printStackTrace();
             throw e; // rethrow the exception to see the stack trace
         }
+    }
+
+    @Test
+    public void testRemoveIPAndSetGetIPList() {
+
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getByName(TEST_IP);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        List<InetAddress> ipList = new ArrayList<>();
+        ipList.add(ip);
+
+        ClientTCP clientTest = new ClientTCP();
+
+        clientTest.setIPList(ipList);
+
+        assertEquals(1,ClientTCP.getIPList().size());
+
+        ClientTCP.removeIP(ip);
+        assertEquals(0,ClientTCP.getIPList().size());
     }
 
 
