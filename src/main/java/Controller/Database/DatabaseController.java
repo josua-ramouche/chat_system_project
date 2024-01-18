@@ -86,27 +86,7 @@ public class DatabaseController {
             }
         }
     }
-    public static void createChatTableForTest(int id) {
-        createChatTable(id);
-    }
 
-    public static boolean doesTableExist(String tableName) {
-        Connection conn = connect();
-        try (ResultSet resultSet = conn.getMetaData().getTables(null, null, tableName, null)) {
-            return resultSet.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
 
     public static void initConnection() {
         createUserTable();
