@@ -10,7 +10,7 @@ import java.net.Socket;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ClientTCPTest {
-    private static final int TEST_PORT = 54321;  // Utilisez un autre numéro de port disponible
+    private static final int TEST_PORT = 54321;
     private static final String TEST_IP = "127.0.0.1";
     private static ServerSocket serverSocket;
 
