@@ -14,14 +14,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 public class LoginApp extends JFrame implements CustomListener{
-
     private final AtomicBoolean not_unique= new AtomicBoolean(false);
     private JTextField usernameField;
-
     private final List<CustomListener2> listeners2 = new ArrayList<>();
-
     private ContactListApp contactListApp =null;
 
+    //Constructor
     public LoginApp() {
         setTitle("Login");
         setSize(300, 150);
@@ -30,6 +28,7 @@ public class LoginApp extends JFrame implements CustomListener{
         initComponents();
     }
 
+    //Constructor for login after a disconnection
     public LoginApp(ContactListApp contactlistapp) {
         setTitle("Login");
         setSize(300, 150);
@@ -43,13 +42,11 @@ public class LoginApp extends JFrame implements CustomListener{
         return contactListApp;
     }
 
-
+    //Init components of the interface
     private void initComponents() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
-
         JButton loginButton = new JButton("Log In");
         loginButton.addActionListener(e -> {
             try {
@@ -72,56 +69,47 @@ public class LoginApp extends JFrame implements CustomListener{
         panel.add(usernameField);
         panel.add(new JLabel());
         panel.add(loginButton);
-
         add(panel);
     }
 
 
+    //Actions performed when login button is clicked
     private void onLoginButtonClick() throws IOException, InterruptedException {
-
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
         }
         else {
-
             UserContactDiscovery.inituser(username);
             UserContactDiscovery U = new UserContactDiscovery(username);
             // set atomic bool no_unique to false to reset it
             not_unique.set(false);
             U.Action();
-
             try {
                 Thread.sleep(2100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            // Check if the login is successful before calling unique
+            // Check if the login is successful before calling unique (if the username is unique)
             if (!not_unique.get()) {
                 unique();
             }
         }
     }
 
-
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }
 
-
-
+    //Actions performed when the username is unique
     @Override
     public void unique() throws UnknownHostException, InterruptedException {
-
         // check if atomic bool not_unique if at false to continue
-
         if (!not_unique.get()) {
             User me = new User();
             me.setUsername(usernameField.getText());
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
-
             if (contactListApp==null) {
                 contactListApp = new ContactListApp(me);
                 this.addActionListener2(contactListApp);
@@ -131,13 +119,12 @@ public class LoginApp extends JFrame implements CustomListener{
                 contactListApp.setMyUsername(me.getUsername());
                 contactListApp.setVisible(true);
             }
-
             this.setVisible(false);
             launchTest();
         }
-
-
     }
+
+    //Update the contact list
     @Override
     public synchronized void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
@@ -146,7 +133,7 @@ public class LoginApp extends JFrame implements CustomListener{
         }
     }
 
-
+    //Pop up when the username is not unique in one database of connected users
     @Override
     public void notUniquePopup(String message) {
         if(!not_unique.get() && message.equals("LOG IN")) {
