@@ -23,6 +23,8 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private ContactListApp mainAppInterface;
     private final User oldme;
 
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
     public ChangeUsernameApp(User oldme, ContactListApp contactListApp) {
         this.oldme=oldme;
         setTitle("Change username");
@@ -87,7 +89,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
         add(panel);
     }
-    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }

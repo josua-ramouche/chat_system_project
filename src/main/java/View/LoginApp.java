@@ -20,8 +20,6 @@ public class LoginApp extends JFrame implements CustomListener{
 
     private final List<CustomListener2> listeners2 = new ArrayList<>();
 
-
-
     private ContactListApp contactListApp =null;
 
     public LoginApp() {
@@ -41,6 +39,9 @@ public class LoginApp extends JFrame implements CustomListener{
         contactListApp=contactlistapp;
     }
 
+    public ContactListApp getContactListApp() {
+        return contactListApp;
+    }
 
 
     private void initComponents() {
@@ -154,6 +155,9 @@ public class LoginApp extends JFrame implements CustomListener{
             JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
             this.setVisible(true);
             // Show a popup with the received message
+        }
+        else {
+            this.getContactListApp().getChangeUsernameApp().notUniquePopup(message);
         }
 
 
