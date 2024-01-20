@@ -70,8 +70,14 @@ public class ServerTCP {
                 //If PrintHistory is called with id -1, then the connection is ended, and we can not use the chat with this user anymore (if we were on the ChatApp)
                 ChatApp.PrintHistory(-1);
             } catch (IOException | BadLocationException e) {
+                System.out.println("CONVERSATION: Connection ended with client");
+                //If PrintHistory is called with id -1, then the connection is ended, and we can not use the chat with this user anymore (if we were on the ChatApp)
+                try {
+                    ChatApp.PrintHistory(-1);
+                } catch (BadLocationException ex) {
+                    throw new RuntimeException(ex);
+                }
                 ClientTCP.removeIP(ipReceived);
-                e.printStackTrace();
             }
         }
     }
