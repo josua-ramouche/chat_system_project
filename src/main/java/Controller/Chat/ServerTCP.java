@@ -91,6 +91,9 @@ public class ServerTCP {
                     //}
 
                    // }
+                    if(in == null) {
+                        break;
+                    }
                 }
 
 
