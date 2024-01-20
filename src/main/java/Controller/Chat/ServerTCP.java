@@ -62,9 +62,6 @@ public class ServerTCP {
                     System.out.println("CONTENT :" + inputLine);
                     DatabaseController.saveReceivedMessage(idsender, inputLine);
                     ChatApp.PrintHistory(idsender);
-                    //}
-
-                   // }
                     if(in == null) {
                         break;
                     }
