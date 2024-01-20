@@ -12,15 +12,14 @@ import java.util.List;
 
 public class DatabaseController {
 
+    //Create a connection to the local database
     public static Connection connect() {
         Connection conn = null;
         try {
-            String ad = InetAddress.getLocalHost().getHostName();
+            String pcName = InetAddress.getLocalHost().getHostName();
             //Database parameters
-            String url = "jdbc:sqlite:chatsystem" + ad +".db";
-            //Create a connection to the database
+            String url = "jdbc:sqlite:chatsystem" + pcName +".db";
             conn = DriverManager.getConnection(url);
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         } catch (UnknownHostException e) {
@@ -28,7 +27,6 @@ public class DatabaseController {
         }
         return conn;
     }
-
 
     // Create a User Table in database
     public static void createUserTable() {
@@ -58,7 +56,6 @@ public class DatabaseController {
         }
     }
 
-
     //Create a Chat Table in the database
     public static void createChatTable(int id) {
         Connection conn = connect();
@@ -87,7 +84,7 @@ public class DatabaseController {
         }
     }
 
-
+    //Create a User table (if not already created) and set the state (1 if connected and 0 if disconnected) to 0 for all the users when we launch the application
     public static void initConnection() {
         createUserTable();
         String sql = "UPDATE Users " +
@@ -111,6 +108,7 @@ public class DatabaseController {
         }
     }
 
+    //Add a user to the User table in the database
     public static void addUser(User u){
         if(!u.getUsername().equals("")) {
             String sql = "INSERT OR IGNORE INTO Users (username,ipaddress,connectionState) VALUES (?,?,?);";
@@ -137,15 +135,14 @@ public class DatabaseController {
         }
     }
 
+    //Get the id of a user in the database
     public static int getUserID(User u){
         Connection conn = connect();
         int id = 0;
         String sql = "SELECT userID FROM Users WHERE ipaddress = ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, u.getIPAddress().getHostAddress());
-
             ResultSet resultSet = pstmt.executeQuery();
-
             while(resultSet.next()) {
                 id = resultSet.getInt("userID");
             }
@@ -167,15 +164,14 @@ public class DatabaseController {
         return id;
     }
 
+    //Get the id of a user with its IpAddress in the database
     public static int getUserID2(InetAddress address){
         Connection conn = connect();
         int id = 0;
         String sql = "SELECT userID FROM Users WHERE ipaddress = ?;";
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, address.getHostAddress());
-
             ResultSet resultSet = pstmt.executeQuery();
-
             while(resultSet.next()) {
                 id = resultSet.getInt("userID");
             }
@@ -197,13 +193,12 @@ public class DatabaseController {
         return id;
     }
 
+    //Change the state of a user in the database (1=connected, 0=disconnected)
     public static void updateConnectionState(User u,boolean state) {
         String sql = "UPDATE Users " +
                 "SET connectionState = ? " +
                 "WHERE username = ? AND ipaddress = ?;";
-
         Connection conn = connect();
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setBoolean(1,state);
             pstmt.setString(2,u.getUsername());
@@ -225,14 +220,13 @@ public class DatabaseController {
         }
     }
 
+    //Change the username of a user in the database
     public static void updateUsername(User u, String name) {
         if(!u.getUsername().equals("")) {
             String sql = "UPDATE OR IGNORE Users " +
                     "SET username = ? " +
                     "WHERE userID = ? AND ipaddress = ?;";
-
             Connection conn = connect();
-
             try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                 pstmt.setString(1, name);
                 pstmt.setInt(2, getUserID(u));
@@ -254,11 +248,13 @@ public class DatabaseController {
         }
     }
 
+    //Check if the user is contained in the database
     public static boolean containsUser(User u) {
         int id = getUserID(u);
         return id != 0;
     }
 
+    //Get all the connected users from the database and return them in a List<User>
     public static List<User> getUsers(){
         List<User> users = new ArrayList<>();
         String username;
@@ -268,12 +264,10 @@ public class DatabaseController {
         String sql = "SELECT * FROM Users WHERE connectionState='1';";
         try (Statement stmt = conn.createStatement()) {
             ResultSet resultSet = stmt.executeQuery(sql);
-
             while(resultSet.next()) {
                 username = resultSet.getString("username");
                 ipaddress = InetAddress.getByName(resultSet.getString("ipaddress"));
                 state = resultSet.getBoolean("connectionState");
-
                 User user = new User(username,ipaddress,state);
                 users.add(user);
             }
@@ -295,6 +289,7 @@ public class DatabaseController {
         return users;
     }
 
+    //Get all the users (connected and disconnected) from the database and return them in a List<User>
     public static List<User> getAllUsers(){
         List<User> users = new ArrayList<>();
         String username;
@@ -304,12 +299,10 @@ public class DatabaseController {
         String sql = "SELECT * FROM Users;";
         try (Statement stmt = conn.createStatement()) {
             ResultSet resultSet = stmt.executeQuery(sql);
-
             while(resultSet.next()) {
                 username = resultSet.getString("username");
                 ipaddress = InetAddress.getByName(resultSet.getString("ipaddress"));
                 state = resultSet.getBoolean("connectionState");
-
                 User user = new User(username,ipaddress,state);
                 users.add(user);
             }
@@ -331,11 +324,10 @@ public class DatabaseController {
         return users;
     }
 
+    //Save the messages we sent (TCP) to the database in the Chat table, a message is composed of a sender, a content and a timestamp
     public static void saveSentMessage(int id, String message) {
         String sql = "INSERT INTO Chat" + id + " (message,senderID) VALUES (?,?);";
-
         Connection conn = connect();
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,message);
             pstmt.setInt(2, 0);
@@ -355,11 +347,10 @@ public class DatabaseController {
         }
     }
 
+    //Save the messages we received (TCP) to the database in the Chat table, a message is composed of a sender, a content and a timestamp
     public static void saveReceivedMessage(int id, String message) {
         String sql = "INSERT INTO Chat" + id + " (message,senderID) VALUES (?,?);";
-
         Connection conn = connect();
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1,message);
             pstmt.setInt(2, id);
@@ -379,6 +370,7 @@ public class DatabaseController {
         }
     }
 
+    //Get a user by its id on the database
     public static User getUser(int id) {
         User user = new User();
         String sql = "SELECT * FROM Users WHERE userID = ?;";
@@ -412,6 +404,7 @@ public class DatabaseController {
         return user;
     }
 
+    //Get all the messages from the Chat table with a user (id of the user), this id also correspond to the chat name
     public static List<Message> getMessages(int id){
         List<Message> messages = new ArrayList<>();
         String content;
@@ -421,14 +414,11 @@ public class DatabaseController {
         String sql = "SELECT * FROM Chat" + id +";";
         try (Statement stmt = conn.createStatement()) {
             ResultSet resultSet = stmt.executeQuery(sql);
-
             while(resultSet.next()) {
                 content = resultSet.getString("message");
                 senderID = resultSet.getInt("senderID");
                 timeStamp = resultSet.getString("timestamp");
-
                 User user = getUser(senderID);
-
                 Message message = new Message(content,timeStamp,user);
                 messages.add(message);
             }
@@ -451,6 +441,7 @@ public class DatabaseController {
         return messages;
     }
 
+    //Print all the users in the contact list
     public static synchronized void printContactList(){
         System.out.println("Print Contact List :");
         List<User> Users = DatabaseController.getUsers();
@@ -461,11 +452,10 @@ public class DatabaseController {
         });
     }
 
+    //Delete a user from the database
     public static void deleteUser(User u) {
         String sql = "DELETE FROM Users WHERE userID=?;";
-
         Connection conn = connect();
-
         try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1,getUserID(u));
             pstmt.executeUpdate();

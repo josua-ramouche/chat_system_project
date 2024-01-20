@@ -22,14 +22,14 @@ public class ClientUDP {
             byte[] buffer = broadcastMessage.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
-            System.out.println("J'ENVOIE LE SOCKET :" + socket);
+            System.out.println("socket send :" + socket);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-    //
+
     // Create a list of all the broadcast addresses available on a computer
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();
@@ -82,7 +82,7 @@ public class ClientUDP {
             } else {
                 System.out.println("Username '" + username + "' is not unique. Please choose a different username.");
                 for (CustomListener listener : listeners) {
-                    listener.notUniquePopup("Username not unique");
+                    listener.notUniquePopup("LOG IN");
                 }
             }
     }
@@ -120,7 +120,7 @@ public class ClientUDP {
         {
             System.out.println("New username '" + newUsername + "' is not unique. Please choose a different username.");
             for (CustomListener listener : listeners) {
-                listener.notUniquePopup("Change of username not unique");
+                listener.notUniquePopup("CHANGE USERNAME");
             }
         }
     }

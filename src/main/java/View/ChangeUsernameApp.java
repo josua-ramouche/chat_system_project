@@ -23,6 +23,8 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private ContactListApp mainAppInterface;
     private final User oldme;
 
+    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
     public ChangeUsernameApp(User oldme, ContactListApp contactListApp) {
         this.oldme=oldme;
         setTitle("Change username");
@@ -39,10 +41,10 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
 
-        JButton loginButton = new JButton("Change username");
-        loginButton.addActionListener(e -> {
+        JButton changeButton = new JButton("Change username");
+        changeButton.addActionListener(e -> {
             try {
-                onLoginButtonClick();
+                onChangeButtonClick();
             } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
@@ -60,7 +62,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         // Add ActionListener to usernameField to listen for Enter key
         usernameField.addActionListener(e -> {
             try {
-                onLoginButtonClick();
+                onChangeButtonClick();
             } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
@@ -81,19 +83,19 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(new JLabel());
-        panel.add(loginButton);
+        panel.add(changeButton);
         panel.add(new JLabel());
         panel.add(backButton);
 
         add(panel);
     }
-    private final List<CustomListener2> listeners2 = new ArrayList<>();
+
     public void addActionListener2(CustomListener2 listener) {
         listeners2.add(listener);
     }
 
 
-    private void onLoginButtonClick() throws IOException, InterruptedException {
+    private void onChangeButtonClick() throws IOException, InterruptedException {
 
         String username = usernameField.getText();
         if (username.isEmpty()) {
@@ -105,7 +107,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             not_unique.set(false);
 
             ClientUDP.sendChangeUsername(oldme,usernameField.getText());
-            TimeUnit.SECONDS.sleep(1);
+
+            try {
+                Thread.sleep(2100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             unique();
         }
     }
@@ -124,18 +132,25 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
             this.setVisible(false);
         }
-
+        launchTest();
 
     }
 
     @Override
-    public void notUniquePopup(String message) {
+    public void notUniquePopup(String message) {  //unused here
         // set atomic bool no_unique to true
-        not_unique.set(true);
-        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-        this.setVisible(true);
+        System.out.println("not unique du change username avant");
+        if (!not_unique.get()) {
+            System.out.println("not unique du change username apres");
+
+            not_unique.set(true);
+            JOptionPane.showMessageDialog(this, "Username not unique", "Username not unique", JOptionPane.ERROR_MESSAGE);
+            this.setVisible(true);
+        }
         // Show a popup with the received message
     }
+
+
 
     @Override
     public synchronized void launchTest() {
@@ -148,7 +163,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private void goBack() throws UnknownHostException, InterruptedException {
         //mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
-        this.dispose(); // Close the current window
+        this.setVisible(false);
     }
 
     private void disconnectAndExit() throws IOException {

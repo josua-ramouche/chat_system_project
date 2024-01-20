@@ -24,6 +24,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private List<User> contactList;
     private static User me;
 
+    private ChangeUsernameApp changeUsernameApp = null;
+
     private JLabel nameLabel;
 
     public void setMyUsername(String username) {
@@ -54,8 +56,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
             //ClientUDP.sendEndConnection(me);
-            ChangeUsernameApp change = new ChangeUsernameApp(me,this);
-            change.setVisible(true);
+            changeUsernameApp = new ChangeUsernameApp(me,this);
+            changeUsernameApp.setVisible(true);
             System.out.println("Change username button clicked");
             this.dispose();
         });
@@ -120,6 +122,10 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
+    }
+
+    public ChangeUsernameApp getChangeUsernameApp() {
+        return changeUsernameApp;
     }
 
     private void disconnectAndExit() throws IOException, InterruptedException {

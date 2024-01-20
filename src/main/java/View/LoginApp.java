@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -40,6 +39,9 @@ public class LoginApp extends JFrame implements CustomListener{
         contactListApp=contactlistapp;
     }
 
+    public ContactListApp getContactListApp() {
+        return contactListApp;
+    }
 
 
     private void initComponents() {
@@ -89,7 +91,11 @@ public class LoginApp extends JFrame implements CustomListener{
             not_unique.set(false);
             U.Action();
 
-            TimeUnit.MILLISECONDS.sleep(1500);
+            try {
+                Thread.sleep(2100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // Check if the login is successful before calling unique
             if (!not_unique.get()) {
@@ -104,6 +110,7 @@ public class LoginApp extends JFrame implements CustomListener{
     }
 
 
+
     @Override
     public void unique() throws UnknownHostException, InterruptedException {
 
@@ -116,9 +123,9 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setState(true);
 
             if (contactListApp==null) {
-                ContactListApp mainAppInterface = new ContactListApp(me);
-                this.addActionListener2(mainAppInterface);
-                mainAppInterface.setVisible(true);
+                contactListApp = new ContactListApp(me);
+                this.addActionListener2(contactListApp);
+                contactListApp.setVisible(true);
             }
             else {
                 contactListApp.setMyUsername(me.getUsername());
@@ -126,6 +133,7 @@ public class LoginApp extends JFrame implements CustomListener{
             }
 
             this.setVisible(false);
+            launchTest();
         }
 
 
@@ -141,11 +149,17 @@ public class LoginApp extends JFrame implements CustomListener{
 
     @Override
     public void notUniquePopup(String message) {
-        // set atomic bool not_unique to true
-        not_unique.set(true);
-        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-        this.setVisible(true);
-        // Show a popup with the received message
+        if(!not_unique.get() && message.equals("LOG IN")) {
+            // set atomic bool not_unique to true
+            not_unique.set(true);
+            JOptionPane.showMessageDialog(this, "Username not unique", "Username not unique", JOptionPane.ERROR_MESSAGE);
+            this.setVisible(true);
+            // Show a popup with the received message
+        }
+        else if(contactListApp != null){
+            this.getContactListApp().getChangeUsernameApp().notUniquePopup(message);
+        }
+
 
     }
 }
