@@ -39,10 +39,10 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
 
-        JButton loginButton = new JButton("Change username");
-        loginButton.addActionListener(e -> {
+        JButton changeButton = new JButton("Change username");
+        changeButton.addActionListener(e -> {
             try {
-                onLoginButtonClick();
+                onChangeButtonClick();
             } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
@@ -60,7 +60,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         // Add ActionListener to usernameField to listen for Enter key
         usernameField.addActionListener(e -> {
             try {
-                onLoginButtonClick();
+                onChangeButtonClick();
             } catch (IOException | InterruptedException ioException) {
                 ioException.printStackTrace();
             }
@@ -81,7 +81,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         panel.add(usernameLabel);
         panel.add(usernameField);
         panel.add(new JLabel());
-        panel.add(loginButton);
+        panel.add(changeButton);
         panel.add(new JLabel());
         panel.add(backButton);
 
@@ -93,7 +93,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     }
 
 
-    private void onLoginButtonClick() throws IOException, InterruptedException {
+    private void onChangeButtonClick() throws IOException, InterruptedException {
 
         String username = usernameField.getText();
         if (username.isEmpty()) {
@@ -130,11 +130,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
     @Override
     public void notUniquePopup(String message) {
-        // set atomic bool no_unique to true
-        not_unique.set(true);
-        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-        this.setVisible(true);
-        // Show a popup with the received message
+        if(message.equals("Username not unique : change username")) {
+            // set atomic bool no_unique to true
+            not_unique.set(true);
+            JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
+            this.setVisible(true);
+            // Show a popup with the received message
+        }
     }
 
     @Override
