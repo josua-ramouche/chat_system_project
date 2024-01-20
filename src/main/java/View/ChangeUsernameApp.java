@@ -16,15 +16,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeUsernameApp extends JFrame implements CustomListener {
-    //TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
-
     private ContactListApp mainAppInterface;
     private final User oldme;
-
     private final List<CustomListener2> listeners2 = new ArrayList<>();
 
+    //Constructor
     public ChangeUsernameApp(User oldme, ContactListApp contactListApp) {
         this.oldme=oldme;
         setTitle("Change username");
@@ -35,12 +33,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         initComponents();
     }
 
+    //Initialization of the interface components
     private void initComponents() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
-
         JButton changeButton = new JButton("Change username");
         changeButton.addActionListener(e -> {
             try {
