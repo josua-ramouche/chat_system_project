@@ -21,7 +21,6 @@ public class ServerUDP {
         private final DatagramSocket socket;
         private List<InetAddress> interfacesIP;
 
-        //signals and slots for unicity with GUI
         private final List<CustomListener> listeners = new ArrayList<>();
 
         // Constructor
@@ -57,22 +56,15 @@ public class ServerUDP {
             System.out.println("-----------------------------");
             // Stops if the user is disconnected (if getState() is false)
             while (true) {
-                System.out.println("Le serveur tourne...");
                 DatagramPacket packet = new DatagramPacket(new byte[256], 256);
                 try {
-
-                    System.out.println("Before Datagram reception");
                     socket.receive(packet);
-                    System.out.println("After Datagram reception");
-
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
 
                 InetAddress address = packet.getAddress();
                 String received = new String(packet.getData(), 0, packet.getLength());
-
-
 
                 // Allows to handle all the different received messages
                 if (!received.equals("") && !address.equals(server.getIPAddress()) && !interfacesIP.contains(address)) {
@@ -115,9 +107,9 @@ public class ServerUDP {
                         System.out.println("End message received by distant server");
                         handleResponseEnd();
                     }
+                    //listener to update the contact list
                     for (CustomListener listener : listeners) {
                         listener.launchTest();
-                        System.out.println("check launchtest");
                     }
                 }
             }
@@ -126,27 +118,21 @@ public class ServerUDP {
 
         // Change of username accepted
         public void handleChangeOfUsername(String message) {
-
             System.out.println("You have changed your username");
             System.out.println("Your username is now: " + message);
-
         }
 
         // Change of username declined
         public void handleNotUnique(String message) {
-
             String[] parts = message.split(":");
             String username = parts[0];
             if (!message.equals("")) {
                 for (CustomListener listener : listeners) {
                     listener.notUniquePopup("CHANGE USERNAME");
                 }
-
-
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);
-
             }
             else {
                 for (CustomListener listener : listeners) {
@@ -159,13 +145,10 @@ public class ServerUDP {
         // Reception of a broadcast message
         public void handleBroadcastMessage(String message, InetAddress address) throws InterruptedException, SocketException {
             List <InetAddress> interfaces = ClientUDP.getInterfacesIP();
-
             String[] parts = message.split(":");
             String username = parts[0];
-
             TimeUnit.SECONDS.sleep(2);
             System.out.println("handle broadcast message : ");
-
 
             // checks if the user who sends the broadcast message has a unique username
             if (isUsernameUnique(username)) {
@@ -173,15 +156,10 @@ public class ServerUDP {
                 contact.setUsername(username);
                 contact.setIPAddress(address);
                 contact.setState(true);
-
                 List<User> Users = DatabaseController.getUsers();
-
 
                 // if the sender is not already in the contact list, he is added to the contact list
                 if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
-                    System.out.println("estce quon passe ici 1?");
-                    System.out.println("IPADDRESS : " + address.getHostAddress());
-                    //ContactList.addContact(contact); contact list retirée
                     //Adds user to the database
                     if(DatabaseController.containsUser(contact)) {
                         System.out.println("User already in database, updating username in database");
@@ -195,15 +173,9 @@ public class ServerUDP {
                     }
                     System.out.println("New contact added");
                 }
-
                 System.out.println("Contact List (connected):");
                 printContactList();
-
                 sendIP("HANDLE_RESPONSE_MESSAGE:"+server.getUsername(), address, socket);
-                System.out.println("Socket : "+socket.getPort());
-
-                //new listener vers interface contact list pour update
-
             } else {
                 // Notify the client that the username is not unique
                 sendIP("USERNAME_NOT_UNIQUE:", address, socket);
@@ -214,27 +186,20 @@ public class ServerUDP {
         // Reception of the response to the broadcast message
         public void handleResponseMessage(String message, InetAddress address) throws SocketException {
             List <InetAddress> interfaces = ClientUDP.getInterfacesIP();
-
             String[] parts = message.split(":");
             String username = parts[0];
-
-            System.out.println("HANDLE RESPONSE MESSAGE");
             if (address.equals(lastResponseSender)) {
                 return;
             }
-
             lastResponseSender = address;
 
             User contact = new User();
             contact.setUsername(username);
             contact.setIPAddress(address);
             contact.setState(true);
-
             List<User> Users = DatabaseController.getUsers();
 
             if (!server.containsContact(Users, contact)&& !interfaces.contains(address) && !username.equals(server.getUsername())) {
-                System.out.println("IPADDRESS : " + address.getHostAddress());
-                //ContactList.addContact(contact); retirée contact list
                 if(DatabaseController.containsUser(contact)) {
                     System.out.println("User already in database, updating username in database");
                     DatabaseController.updateUsername(contact, contact.getUsername());
@@ -256,15 +221,11 @@ public class ServerUDP {
         // Reception of an end message
         public void handleEndMessage(InetAddress address) {
             String disconnectedUser = null;
-            System.out.println("ON EST DANS HANDLE END MESSAGE");
             for (User u : DatabaseController.getUsers()) {
                 if (u.getIPAddress().equals(address)) {
                     // set the sender state to disconnected (false)
-                    System.out.println("Update de l'état de connection dans la database en cours...");
                     DatabaseController.updateConnectionState(u,false);
-                    System.out.println("Utilisateur + " + u.getUsername() + " déconnecté dans la database");
                     u.setState(false);
-                    System.out.println("Etat de l'utilisateur à false");
                     disconnectedUser = u.getUsername();
                     System.out.println("Disconnected User : " + disconnectedUser);
                     break;
@@ -274,11 +235,10 @@ public class ServerUDP {
                 System.out.println("User " + disconnectedUser + " disconnected");
             }
             System.out.println("Contact List (connected) after disconnection:");
-            //ContactList.getContacts().forEach(u -> { if (u.getState()) { System.out.println(u.getUsername()); } });
-
             sendIP("HANDLE_RESPONSE_END", address, socket);
         }
 
+        // Response of the handleEndMessage
         public void handleResponseEnd() {
             server.setState(false);
             System.out.println("You are now disconnected\n");

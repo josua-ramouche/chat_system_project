@@ -15,11 +15,9 @@ public class Message {
     public String getContent() {
         return content;
     }
-
     public String getDate() {
         return date;
     }
-
     public User getSender() {
         return sender;
     }

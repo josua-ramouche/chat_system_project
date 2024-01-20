@@ -22,14 +22,14 @@ public class ClientUDP {
             byte[] buffer = broadcastMessage.getBytes();
             DatagramPacket packet = new DatagramPacket(buffer, buffer.length, address, 1556);
             socket.send(packet);
-            System.out.println("J'ENVOIE LE SOCKET :" + socket);
+            System.out.println("socket send :" + socket);
         }
         catch (Exception e)
         {
             e.printStackTrace();
         }
     }
-    //
+
     // Create a list of all the broadcast addresses available on a computer
     public static List<InetAddress> listAllBroadcastAddresses() throws SocketException {
         List<InetAddress> broadcastList = new ArrayList<>();

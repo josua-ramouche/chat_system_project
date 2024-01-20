@@ -10,14 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ClientTCP {
-    //private  Map<InetAddress, Socket> socketMap = new HashMap<>();
     private static PrintWriter out;
     private static BufferedReader in;
-
     private static List<Thread> clientList = new ArrayList<>();
-
     private static List<InetAddress> ipList = new ArrayList<>();
 
+    //Initiate a TCP connection between two users
     public static void startConnection(InetAddress ip, int port) {
         try {
             Socket socket = new Socket(ip, port);
@@ -36,38 +34,33 @@ public class ClientTCP {
         }
     }
 
+    //Out getter
     public static PrintWriter getOut() {
         return out;
     }
 
+    //In getter
     public static BufferedReader getIn() {
         return in;
     }
 
+    //Send a TCP message
     public static void sendMessage(String message) {
         out.println(message);
     }
 
+    //Remove the IP address from the ipList
     public static void removeIP(InetAddress ip) {
         ipList.remove(ip);
     }
 
-
+    //ipList getter
     public static List<InetAddress> getIPList() {
         return ipList;
     }
 
+    //ipList setter
     public static void setIPList(List<InetAddress> listIP) {
         ipList = listIP;
     }
-    /*
-    public static void stopConnection() throws IOException {
-        System.out.println("Tentative de déconnexion");
-        for (Thread clientHandler: clientList
-             ) {
-            clientHandler.interrupt();
-        }
-        in.close();
-        out.close();
-    }*/
 }

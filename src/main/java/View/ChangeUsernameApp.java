@@ -144,7 +144,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             System.out.println("not unique du change username apres");
 
             not_unique.set(true);
-            JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Username not unique", "Username not unique", JOptionPane.ERROR_MESSAGE);
             this.setVisible(true);
         }
         // Show a popup with the received message

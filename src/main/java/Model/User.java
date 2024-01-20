@@ -26,6 +26,7 @@ public class User {
         this.ipaddress = ipaddress;
         this.state = state;
     }
+
     // Getters and Setters for username, IPAddress, contact list and status
     public String getUsername(){
         return this.username;
@@ -47,8 +48,6 @@ public class User {
         this.state = state;
     }
 
-    // Add a user to the contact list
-
     // Checks if a user is in the contact list
     public Boolean containsContact(List<User> contactList, User u) {
         return contactList.stream().anyMatch(v -> v.equals(u));
@@ -63,7 +62,6 @@ public class User {
                 Objects.equals(ipaddress, user.ipaddress) &&
                 Objects.equals(state, user.state);
     }
-
 
     @Override
     public int hashCode() {
