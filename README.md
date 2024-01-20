@@ -50,8 +50,8 @@ To compile the project, in the project's directory :
 ----------------------------------------------------------------------------------------------------------------------------------
 ## Once on the application:
 
- -> One you have launch the main class of our program a Login window will open, you can then enter a username.
-An empty username or a username already used by someone (i.e. already present in a user's database) is not valid.
+ -> Once you have launch the main class of our program a Login window will open, you can then enter a username.
+An empty username or a username already used by someone (i.e. already present in a user's database, even if it is disconnected) is not valid.
 Subsequently, click on Log In, and you will be on the Contact List Interface after a 2 seconds delay (be careful not to click on this button at the same time, you must wait until the first user is on the Contact List interface)
 
  -> You are now on the Contact List interface, on it you can see the other users connected to your network.
