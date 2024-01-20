@@ -1,7 +1,6 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
-import View.ChangeUsernameApp;
 import View.CustomListener;
 
 import java.io.IOException;
@@ -165,6 +164,7 @@ public class ServerUDP {
                         System.out.println("User already in database, updating username in database");
                         DatabaseController.updateUsername(contact, contact.getUsername());
                         DatabaseController.updateConnectionState(contact,true);
+                        DatabaseController.createChatTable(getUserID(contact));
                     }
                     else {
                         System.out.println("User not registered in database, adding user to database");
@@ -204,6 +204,7 @@ public class ServerUDP {
                     System.out.println("User already in database, updating username in database");
                     DatabaseController.updateUsername(contact, contact.getUsername());
                     DatabaseController.updateConnectionState(contact,true);
+                    DatabaseController.createChatTable(getUserID(contact));
                 }
                 else {
                     System.out.println("User not registered in database, adding user to database");

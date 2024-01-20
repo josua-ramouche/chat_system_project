@@ -357,7 +357,7 @@ public class DatabaseController {
             pstmt.executeUpdate();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            System.out.println("This Chat table does not exist");
         }
         finally {
             try {

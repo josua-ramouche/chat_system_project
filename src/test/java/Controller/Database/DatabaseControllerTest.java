@@ -11,127 +11,147 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class DatabaseControllerTest {
 
+    private static final List<String> createdChatTables = new ArrayList<>();
+
+    //Ensure that a table "Users" is created, and that all users are initially disconnected
     @BeforeAll
     static void setup() {
         DatabaseController.initConnection();
     }
 
+    //Start each test method with a clean database, and empty tables
     @BeforeEach
     void beforeEach() {
         cleanDatabase();
         DatabaseController.createUserTable();
-        DatabaseController.createChatTable(Integer.MAX_VALUE);
+        int chatID = Integer.MAX_VALUE;
+        DatabaseController.createChatTable(chatID);
+        createdChatTables.add("Chat" + chatID);
     }
 
+    //End each test method by removing test objects from the database
     @AfterEach
     void afterEach() {
         cleanDatabase();
     }
 
-
-
     @Test
-    void testCreateUserTable() {
+    void createUserTableTest() {
         DatabaseController.createUserTable();
+        //Check that table "Users" was created in database
         assertTrue(isTableExists("Users"));
     }
 
     @Test
-    void testCreateChatTable() {
+    void createChatTableTest() {
         int chatId = 1;
         DatabaseController.createChatTable(chatId);
+        //Check that table "Chat1" was created in database
         assertTrue(isTableExists("Chat" + chatId));
+        createdChatTables.add("Chat1");
     }
 
     @Test
-    void testInitConnection() {
+    void initConnectionTest() {
         DatabaseController.initConnection();
         List<User> users = DatabaseController.getUsers();
+        //Check that all users in database are disconnected
         assertTrue(users.isEmpty());
     }
 
     @Test
-    void testAddUser() {
+    void addUserTest() {
         User user = new User("testUser", getInetAddress(), true);
         DatabaseController.addUser(user);
+        //Check that the user was added in the database
         assertTrue(DatabaseController.containsUser(user));
     }
 
     @Test
-    void testUpdateUsername() {
+    void updateUsernameTest() {
         User user = new User("testUser", getInetAddress(), true);
         DatabaseController.addUser(user);
         String newUsername = "updatedUser";
         DatabaseController.updateUsername(user, newUsername);
         User updatedUser = DatabaseController.getUser(DatabaseController.getUserID(user));
+        //Check that the username was changed in the database
         assertEquals(newUsername, updatedUser.getUsername());
     }
 
     @Test
-    void testUpdateConnectionState() {
+    void updateConnectionStateTest() {
         User user = new User("testUser", getInetAddress(), true);
         DatabaseController.addUser(user);
         boolean newState = false;
         DatabaseController.updateConnectionState(user, newState);
         User updatedUser = DatabaseController.getUser(DatabaseController.getUserID(user));
+        //Check that the connection state was updated in the database
         assertEquals(newState, updatedUser.getState());
     }
 
     @Test
-    void testContainsUser() {
+    void containsUserTest() {
         User user = new User("testUser", getInetAddress(), true);
+        //Check that the database does not contain the user
         assertFalse(DatabaseController.containsUser(user));
         DatabaseController.addUser(user);
+        //Check that the database contains the user
         assertTrue(DatabaseController.containsUser(user));
     }
 
     @Test
-    void testGetUsers() {
+    void getUsersTest() {
         List<User> users = DatabaseController.getUsers();
         assertNotNull(users);
     }
 
     @Test
-    void testGetAllUsers() {
+    void getAllUsersTest() {
         List<User> users = DatabaseController.getAllUsers();
         assertNotNull(users);
     }
 
     @Test
-    void testSaveSentMessage() {
+    void saveSentMessageTest() {
         int chatId = Integer.MAX_VALUE;
         String message = "Hello, this is a test message.";
         DatabaseController.saveSentMessage(chatId, message);
         List<Message> messages = DatabaseController.getMessages(chatId);
+        //Check that a message was added in the database, and that this message correspond to the message we created
         assertEquals(1, messages.size());
         assertEquals(message, messages.get(0).getContent());
     }
 
     @Test
-    void testSaveReceivedMessage() {
+    void saveReceivedMessageTest() {
         int chatId = Integer.MAX_VALUE;
         String message = "Hello, this is a test message.";
         DatabaseController.saveReceivedMessage(chatId, message);
         List<Message> messages = DatabaseController.getMessages(chatId);
+        //Check that a message was added in the database, and that this message correspond to the message we created
         assertEquals(1, messages.size());
         assertEquals(message, messages.get(0).getContent());
     }
 
     @Test
-    void testDeleteUser() {
+    void deleteUserTest() {
         User user = new User("testUser", getInetAddress(), true);
         DatabaseController.addUser(user);
+        //Check that a user was added to the database
         assertTrue(DatabaseController.containsUser(user));
         DatabaseController.deleteUser(user);
+        //Check that there is no more users in database after removing the only user
         assertFalse(DatabaseController.containsUser(user));
     }
 
+    //Used to get the local IP address for test purposes
     private InetAddress getInetAddress() {
         try {
             return InetAddress.getLocalHost();
@@ -141,11 +161,12 @@ class DatabaseControllerTest {
         }
     }
 
+    // Check that a table exist in our database
     private boolean isTableExists(String tableName) {
         Connection conn = DatabaseController.connect();
         try {
-            DatabaseMetaData metaData = conn.getMetaData();
-            ResultSet resultSet = metaData.getTables(null, null, tableName, null);
+            DatabaseMetaData data = conn.getMetaData();
+            ResultSet resultSet = data.getTables(null, null, tableName, null);
 
             return resultSet.next();
         } catch (SQLException e) {
@@ -167,6 +188,7 @@ class DatabaseControllerTest {
         deleteTestChatTables();
     }
 
+    //Delete all test users from the database
     private void deleteTestUsers() {
         Connection conn = DatabaseController.connect();
         try {
@@ -185,6 +207,7 @@ class DatabaseControllerTest {
         }
     }
 
+    //Delete all test chat tables from the database
     private void deleteTestChatTables() {
         Connection conn = DatabaseController.connect();
         try {
@@ -194,8 +217,10 @@ class DatabaseControllerTest {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("name");
                 if (tableName.startsWith("Chat")) {
-                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
-                }
+                    if (createdChatTables.contains(tableName)) {
+                        // Delete only tables created during the test
+                        stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
+                    }                }
             }
         } catch (SQLException e) {
             e.printStackTrace();

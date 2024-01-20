@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ClientUDPTest {
+class ClientUDPTest {
 
     //TEST
     @BeforeAll
@@ -30,8 +30,8 @@ public class ClientUDPTest {
     }
 
     @Test
-    void broadcast() {
-        // Test broadcast method
+    void broadcastTest() {
+        //Check that no exceptions were thrown during the broadcast() method execution
         try {
             ClientUDP.broadcast("Test Message", InetAddress.getLocalHost());
         } catch (IOException e) {
@@ -41,8 +41,8 @@ public class ClientUDPTest {
 
 
     @Test
-    void listAllBroadcastAddresses() {
-        // Test listAllBroadcastAddresses method
+    void listAllBroadcastAddressesTest() {
+        //Check that no exceptions were thrown during the listAllBroadcastAddresses() method execution
         try {
             List<InetAddress> broadcastAddresses = ClientUDP.listAllBroadcastAddresses();
             assertNotNull(broadcastAddresses);
@@ -53,6 +53,7 @@ public class ClientUDPTest {
 
     @Test
     void getInterfacesIPTest() {
+        //Check that no exceptions were thrown during the getInterfacesIP() method execution
         try {
             List<InetAddress> IPInterfaces = ClientUDP.getInterfacesIP();
             assertNotNull(IPInterfaces);
@@ -62,11 +63,11 @@ public class ClientUDPTest {
     }
 
     @Test
-    void sendUsername() {
-        // Test sendUsername method
+    void sendUsernameTest() {
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
         List<InetAddress> broadcastList;
         List<User> Users = DatabaseController.getUsers();
+        //Check that no exceptions were thrown during the sendUsername() method execution
         try {
             broadcastList = ClientUDP.listAllBroadcastAddresses();
             ClientUDP.sendUsername(broadcastList, user);
@@ -79,9 +80,9 @@ public class ClientUDPTest {
     }
 
     @Test
-    void sendChangeUsername() {
-        // Test sendChangeUsername method
+    void sendChangeUsernameTest() {
         User user = new User("TestUser", InetAddress.getLoopbackAddress(), true);
+        //Check that no exceptions were thrown during the sendChangeUsername() method execution
         try {
             ClientUDP.sendChangeUsername(user, "NewUsername");
 
@@ -93,8 +94,8 @@ public class ClientUDPTest {
     }
 
     @Test
-    void sendEndConnection() {
-        // Test sendEndConnection method
+    void sendEndConnectionTest() {
+        //Check that no exceptions were thrown during the sendEndConnection() method execution
         try {
             ClientUDP.sendEndConnection();
             List<User> Users = DatabaseController.getUsers();
@@ -105,7 +106,8 @@ public class ClientUDPTest {
         }
     }
 
-    private static void deleteTestChatTable() {
+    //Delete all test chat tables from the database
+    private void deleteTestChatTable() {
         Connection conn = DatabaseController.connect();
         try {
             Statement stmt = conn.createStatement();
@@ -114,8 +116,8 @@ public class ClientUDPTest {
             while (resultSet.next()) {
                 String tableName = resultSet.getString("name");
                 if (tableName.startsWith("Chat")) {
-                    stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
-                }
+                        stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
+                    }
             }
         } catch (SQLException e) {
             e.printStackTrace();

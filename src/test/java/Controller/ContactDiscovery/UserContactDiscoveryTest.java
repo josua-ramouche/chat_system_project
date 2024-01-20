@@ -1,12 +1,16 @@
 package Controller.ContactDiscovery;
 
 import Controller.Database.DatabaseController;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,13 +21,16 @@ class UserContactDiscoveryTest {
         DatabaseController.createUserTable();
     }
 
-    @Test
-    void testInituser() {
-        try {
-            UserContactDiscovery userContactDiscovery = new UserContactDiscovery("testUser");
-            UserContactDiscovery.inituser("testUser");
+    @AfterEach
+    void afterEach() {
+        cleanDatabase();
+    }
 
-            // Add assertions based on your requirements
+    @Test
+    void initUserTest() {
+        try {
+            UserContactDiscovery.inituser("testUser");
+            //Check that attribute "temp" was initialized
             assertEquals("testUser", UserContactDiscovery.temp.getUsername());
             assertNotNull(UserContactDiscovery.temp.getIPAddress());
             assertTrue(UserContactDiscovery.temp.getState());
@@ -33,12 +40,10 @@ class UserContactDiscoveryTest {
     }
 
     @Test
-    void testInit() {
+    void initTest() {
         try {
-            UserContactDiscovery userContactDiscovery = new UserContactDiscovery("testUser");
             ServerUDP.EchoServer echoServer = UserContactDiscovery.Init();
-
-            // Add assertions based on your requirements
+            //Check that echoServer was created
             assertNotNull(echoServer);
         } catch (SocketException e) {
             fail("Exception thrown: " + e.getMessage());
@@ -46,15 +51,40 @@ class UserContactDiscoveryTest {
     }
 
     @Test
-    void testAction() {
+    void actionTest() {
+        //Check that method "Action" does not raise an exception while running
         try {
             UserContactDiscovery userContactDiscovery = new UserContactDiscovery("testUser");
             userContactDiscovery.Action();
-
-            // Add assertions based on your requirements
-            // You might need to mock certain behaviors for testing
         } catch (UnknownHostException | SocketException | InterruptedException e) {
             fail("Exception thrown: " + e.getMessage());
+        }
+    }
+
+    //Delete all test chat tables from the database
+    private void cleanDatabase() {
+        Connection conn = DatabaseController.connect();
+        try {
+            Statement stmt = conn.createStatement();
+            ResultSet resultSet = stmt.executeQuery("SELECT name FROM sqlite_master WHERE type='table';");
+
+            while (resultSet.next()) {
+                String tableName = resultSet.getString("name");
+                if (tableName.startsWith("Chat")) {
+                        // Delete only tables created during the test
+                        stmt.executeUpdate("DROP TABLE IF EXISTS " + tableName + ";");
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

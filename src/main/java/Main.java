@@ -21,7 +21,6 @@ public class Main {
                 UserContactDiscovery.inituser("");
 
                 ServerUDP.EchoServer serverUDP = UserContactDiscovery.Init();
-                //serverUDP.setDaemon(true);
                 serverUDP.start();
                 serverUDP.addActionListener(loginApp);
 

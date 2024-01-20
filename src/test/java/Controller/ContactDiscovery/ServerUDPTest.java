@@ -37,6 +37,7 @@ class ServerUDPTest {
 
     @AfterEach
     void clearDatabase() {
+        //Delete all test users created in database
         List<User> users = DatabaseController.getAllUsers();
         users.forEach(u -> {
             if (u.getUsername().equals("TestUser1") || u.getUsername().equals("TestUser2") || u.getUsername().equals("TestUser3") || u.getUsername().equals("NewUsername")) {
@@ -45,26 +46,38 @@ class ServerUDPTest {
         });
     }
 
+    @AfterEach
+    void afterEach() {
+        cleanDatabase();
+    }
+
     @Test
-    void testEchoServer_SendIP() throws IOException {
+    void sendIPTest() throws IOException {
         String message = "test";
+        //Mocking InetAddress and DatagramSocket classes
         InetAddress ip_address = mock(InetAddress.class);
         DatagramSocket socket = mock(DatagramSocket.class);
 
+        //Check that sendIP does not throw an error
         assertDoesNotThrow(() -> ServerUDP.EchoServer.sendIP(message,ip_address,socket));
 
+        //Reads what occurs on the DatagramPacket class
         ArgumentCaptor<DatagramPacket> packetCaptor = ArgumentCaptor.forClass(DatagramPacket.class);
+        //Check that the method socket.send() was called
         Mockito.verify(socket,times(1)).send(packetCaptor.capture());
 
         DatagramPacket sentPacket = packetCaptor.getValue();
+
+        //Check that the IP was sent correctly
         assertEquals(message, new String(sentPacket.getData()));
         assertEquals(ip_address, sentPacket.getAddress());
         assertEquals(1556, sentPacket.getPort());
     }
 
     @Test
-    void testEchoServer_HandleBroadcastMessage() throws IOException, InterruptedException {
+    void handleBroadcastMessageTest() throws IOException, InterruptedException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
+        // Mocking DatagramSocket class
         DatagramSocket datagramSocket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,datagramSocket);
@@ -99,12 +112,12 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
-        deleteTestChatTables();
     }
 
     @Test
-    void testEchoServer_HandleResponseMessage() throws IOException {
+    void handleResponseMessageTest() throws IOException {
         User testUser = new User("Test",InetAddress.getLoopbackAddress());
+        // Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
@@ -143,12 +156,12 @@ class ServerUDPTest {
             assertEquals(expectedList.get(i).getIPAddress(), contactList.get(i).getIPAddress());
             assertEquals(expectedList.get(i).getState(), contactList.get(i).getState());
         }
-        deleteTestChatTables();
     }
 
     @Test
-    void testEchoServer_HandleEndMessage() throws IOException {
+    void handleEndMessageTest() throws IOException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        // Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
@@ -199,16 +212,17 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_handleResponseEnd() {
-
+    void handleResponseEndTest() {
         User testUser = new User("Test", InetAddress.getLoopbackAddress(),true);
+        // Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
 
+        //Check that no exceptions were thrown during the handleResponseEnd() method execution
         try {
             echoServer.handleResponseEnd();
-
+            //Check that variable server in EchoServer class was modified
             Field serverField = ServerUDP.EchoServer.class.getDeclaredField("server");
             serverField.setAccessible(true);
             User server = (User) serverField.get(echoServer);
@@ -221,16 +235,17 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleChangeOfUsername() {
-
+    void handleChangeOfUsernameTest() {
+        //To retrieve what is displayed on the console
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        //Mocking the DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser, socket);
-
+        //Check that no exceptions were thrown during the handleChangeOfUsername() method execution
         try {
             echoServer.handleChangeOfUsername("newUsername");
         } catch (Exception e) {
@@ -240,8 +255,9 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_HandleChangeUsernameMessage() throws IOException {
+    void handleChangeUsernameMessageTest() throws IOException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        // Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
@@ -252,6 +268,7 @@ class ServerUDPTest {
         User testUser1 = new User("TestUser1",senderAddress1,true);
         User testUser2 = new User("TestUser2",senderAddress2,true);
 
+        //Adding users to database
         DatabaseController.addUser(testUser1);
         DatabaseController.addUser(testUser2);
 
@@ -296,14 +313,16 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_isUsernameUniqueUsernameAddress() throws UnknownHostException {
+    void isUsernameUniqueUsernameAddressTest() throws UnknownHostException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        //Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
         DatabaseController.addUser(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
 
+        //Call directly isUsernameUnique() method in the assertions to verify username unicity
         assertTrue(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.1")));
         assertFalse(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.3")));
         assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.1")));
@@ -311,29 +330,32 @@ class ServerUDPTest {
     }
 
     @Test
-    void testEchoServer_isUsernameUniqueUsername() throws UnknownHostException {
+    void isUsernameUniqueUsernameTest() throws UnknownHostException {
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        //Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
         DatabaseController.addUser(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
 
+        //Call directly isUsernameUnique() method in the assertions to verify username unicity
         assertFalse(echoServer.isUsernameUnique("TestUser1"));
         assertTrue(echoServer.isUsernameUnique("TestUser2"));
     }
 
     @Test
-    void testEchoServer_handleNotUnique() {
-
+    void handleNotUniqueTest() {
+        //To retrieve what is displayed on the console
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outputStream));
 
         User testUser = new User("Test", InetAddress.getLoopbackAddress());
+        //Mocking DatagramSocket class
         DatagramSocket socket = mock(DatagramSocket.class);
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
-
+        //Check that no exceptions were thrown during the handleNotUnique() method execution
         try {
             echoServer.handleNotUnique("Test");
             echoServer.handleNotUnique("");
@@ -344,8 +366,8 @@ class ServerUDPTest {
     }
 
 
-
-    private void deleteTestChatTables() {
+    //Delete all test chat tables from the database
+    private void cleanDatabase() {
         Connection conn = DatabaseController.connect();
         try {
             Statement stmt = conn.createStatement();
