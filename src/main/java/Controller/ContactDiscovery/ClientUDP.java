@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Objects;
 
 public class ClientUDP {
+
+    private static final List<CustomListener> listeners = new ArrayList<>();
+
     // Send a broadcast message on the current network of the interface on socket 1556
     public static void broadcast(String broadcastMessage, InetAddress address) throws IOException{
         // Create a new datagram that is closed after the packet is sent
@@ -83,8 +86,6 @@ public class ClientUDP {
                 }
             }
     }
-
-    private static final List<CustomListener> listeners = new ArrayList<>();
 
     public static void addActionListener(CustomListener listener) {
         listeners.add(listener);
