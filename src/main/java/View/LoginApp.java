@@ -89,7 +89,11 @@ public class LoginApp extends JFrame implements CustomListener{
             not_unique.set(false);
             U.Action();
 
-            TimeUnit.MILLISECONDS.sleep(1500);
+            try {
+                Thread.sleep(2100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
             // Check if the login is successful before calling unique
             if (!not_unique.get()) {
