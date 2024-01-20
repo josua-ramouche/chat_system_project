@@ -82,7 +82,7 @@ public class ClientUDP {
             } else {
                 System.out.println("Username '" + username + "' is not unique. Please choose a different username.");
                 for (CustomListener listener : listeners) {
-                    listener.notUniquePopup("Username not unique");
+                    listener.notUniquePopup("LOG IN");
                 }
             }
     }
@@ -120,7 +120,7 @@ public class ClientUDP {
         {
             System.out.println("New username '" + newUsername + "' is not unique. Please choose a different username.");
             for (CustomListener listener : listeners) {
-                listener.notUniquePopup("Change of username not unique");
+                listener.notUniquePopup("CHANGE USERNAME");
             }
         }
     }

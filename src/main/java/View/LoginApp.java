@@ -20,6 +20,8 @@ public class LoginApp extends JFrame implements CustomListener{
 
     private final List<CustomListener2> listeners2 = new ArrayList<>();
 
+
+
     private ContactListApp contactListApp =null;
 
     public LoginApp() {
@@ -107,6 +109,7 @@ public class LoginApp extends JFrame implements CustomListener{
     }
 
 
+
     @Override
     public void unique() throws UnknownHostException, InterruptedException {
 
@@ -145,12 +148,14 @@ public class LoginApp extends JFrame implements CustomListener{
 
     @Override
     public void notUniquePopup(String message) {
-        if(!not_unique.get() && message.equals("Username not unique : log in")) {
+        if(!not_unique.get() && message.equals("LOG IN")) {
             // set atomic bool not_unique to true
             not_unique.set(true);
             JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
             this.setVisible(true);
             // Show a popup with the received message
         }
+
+
     }
 }

@@ -138,7 +138,7 @@ public class ServerUDP {
             String username = parts[0];
             if (!message.equals("")) {
                 for (CustomListener listener : listeners) {
-                    listener.notUniquePopup("Username not unique : change username");
+                    listener.notUniquePopup("CHANGE USERNAME");
                 }
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
@@ -147,8 +147,7 @@ public class ServerUDP {
             }
             else {
                 for (CustomListener listener : listeners) {
-                    listener.notUniquePopup("Username not unique : log in");
-                }
+                    listener.notUniquePopup("LOG IN");                }
                 // the user cannot connect to the application because his first username is not unique, he needs to change it first
                 System.out.println("Your new username is already used by someone, try to enter a new username.");
             }
