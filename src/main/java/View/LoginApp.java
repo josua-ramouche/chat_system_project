@@ -130,6 +130,7 @@ public class LoginApp extends JFrame implements CustomListener{
             }
 
             this.setVisible(false);
+            launchTest();
         }
 
 
@@ -146,10 +147,11 @@ public class LoginApp extends JFrame implements CustomListener{
     @Override
     public void notUniquePopup(String message) {
         // set atomic bool not_unique to true
+        if (!not_unique.get()) {
         not_unique.set(true);
         JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
         this.setVisible(true);
         // Show a popup with the received message
-
+        }
     }
 }

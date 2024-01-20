@@ -105,7 +105,13 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             not_unique.set(false);
 
             ClientUDP.sendChangeUsername(oldme,usernameField.getText());
-            TimeUnit.SECONDS.sleep(1);
+
+            try {
+                Thread.sleep(2100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
             unique();
         }
     }
@@ -124,16 +130,18 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
 
             this.setVisible(false);
         }
-
+        launchTest();
 
     }
 
     @Override
     public void notUniquePopup(String message) {
         // set atomic bool no_unique to true
-        not_unique.set(true);
-        JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
-        this.setVisible(true);
+        if (!not_unique.get()) {
+            not_unique.set(true);
+            JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
+            this.setVisible(true);
+            }
         // Show a popup with the received message
     }
 
@@ -148,7 +156,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
     private void goBack() throws UnknownHostException, InterruptedException {
         //mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
-        this.dispose(); // Close the current window
+        this.setVisible(false);
     }
 
     private void disconnectAndExit() throws IOException {
