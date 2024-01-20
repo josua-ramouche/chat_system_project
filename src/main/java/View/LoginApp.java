@@ -119,7 +119,7 @@ public class LoginApp extends JFrame implements CustomListener{
                 contactListApp.setMyUsername(me.getUsername());
                 contactListApp.setVisible(true);
             }
-            this.setVisible(false);
+            this.dispose();
             launchTest();
         }
     }
@@ -129,7 +129,6 @@ public class LoginApp extends JFrame implements CustomListener{
     public synchronized void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
             listener2.updateContactList();
-            System.out.println("check ok listener2");
         }
     }
 
@@ -146,7 +145,5 @@ public class LoginApp extends JFrame implements CustomListener{
         else if(contactListApp != null){
             this.getContactListApp().getChangeUsernameApp().notUniquePopup(message);
         }
-
-
     }
 }
