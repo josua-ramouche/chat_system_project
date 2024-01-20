@@ -16,15 +16,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ChangeUsernameApp extends JFrame implements CustomListener {
-    //TEST
     private final AtomicBoolean not_unique = new AtomicBoolean(false);
     private JTextField usernameField;
-
     private ContactListApp mainAppInterface;
     private final User oldme;
-
     private final List<CustomListener2> listeners2 = new ArrayList<>();
 
+    //Constructor
     public ChangeUsernameApp(User oldme, ContactListApp contactListApp) {
         this.oldme=oldme;
         setTitle("Change username");
@@ -35,12 +33,11 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         initComponents();
     }
 
+    //Initialization of the interface components
     private void initComponents() {
         JPanel panel = new JPanel(new GridLayout(3, 2, 5, 5));
-
         JLabel usernameLabel = new JLabel("Username:");
         usernameField = new JTextField();
-
         JButton changeButton = new JButton("Change username");
         changeButton.addActionListener(e -> {
             try {
@@ -68,6 +65,7 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             }
         });
 
+        //End of TCPs and UDP connection when the app is closed
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -86,7 +84,6 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         panel.add(changeButton);
         panel.add(new JLabel());
         panel.add(backButton);
-
         add(panel);
     }
 
@@ -94,9 +91,8 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
         listeners2.add(listener);
     }
 
-
+    //Actions performed when Change Username button is clicked
     private void onChangeButtonClick() throws IOException, InterruptedException {
-
         String username = usernameField.getText();
         if (username.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a username.", "Error", JOptionPane.ERROR_MESSAGE);
@@ -105,22 +101,22 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             UserContactDiscovery.inituser(username);
             // set atomic bool no_unique to false to reset it
             not_unique.set(false);
-
             ClientUDP.sendChangeUsername(oldme,usernameField.getText());
-
             try {
                 Thread.sleep(2100);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
-            unique();
+            // Check if the change username is successful before calling unique (if the username is unique)
+            if (!not_unique.get()) {
+                unique();
+            }
         }
     }
 
+    //Actions performed when the username is unique
     @Override
     public void unique() {
-
         // check if atomic bool not_unique if at false to continue
         if (!not_unique.get()) {
             oldme.setUsername(usernameField.getText());
@@ -133,45 +129,36 @@ public class ChangeUsernameApp extends JFrame implements CustomListener {
             this.setVisible(false);
         }
         launchTest();
-
     }
 
+    //Pop up when the username is not unique in one database of connected users
     @Override
     public void notUniquePopup(String message) {  //unused here
         // set atomic bool no_unique to true
-        System.out.println("not unique du change username avant");
         if (!not_unique.get()) {
-            System.out.println("not unique du change username apres");
-
             not_unique.set(true);
             JOptionPane.showMessageDialog(this, "Username not unique", "Username not unique", JOptionPane.ERROR_MESSAGE);
             this.setVisible(true);
         }
-        // Show a popup with the received message
     }
 
-
-
+    //Update the contact list
     @Override
     public synchronized void launchTest() {
         for (CustomListener2 listener2 : listeners2) {
             listener2.updateContactList();
-            System.out.println("check ok listener2");
         }
     }
 
+    //Back button action
     private void goBack() throws UnknownHostException, InterruptedException {
-        //mainAppInterface = new ContactListApp(oldme);
         mainAppInterface.setVisible(true);
         this.setVisible(false);
     }
 
+    //Actions performed when the app is closed
     private void disconnectAndExit() throws IOException {
-        // Disconnect and exit the application
-        //ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection();
         System.exit(0);
     }
-
-
 }

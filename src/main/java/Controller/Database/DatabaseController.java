@@ -271,7 +271,6 @@ public class DatabaseController {
                 User user = new User(username,ipaddress,state);
                 users.add(user);
             }
-            System.out.println("Connected users retrieved from database successfully");
             return users;
         }
         catch (SQLException | UnknownHostException e) {

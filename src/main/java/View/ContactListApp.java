@@ -18,44 +18,37 @@ import static Controller.Database.DatabaseController.printContactList;
 
 
 public class ContactListApp extends JFrame implements CustomListener2{
-
     private final DefaultListModel<String> contactListModel;
     private final JList<String> contactListView;
     private List<User> contactList;
     private static User me;
-
     private ChangeUsernameApp changeUsernameApp = null;
-
     private JLabel nameLabel;
 
+    //Set our name in the Contact List app
     public void setMyUsername(String username) {
         me.setUsername(username);
         nameLabel.setText("Contact List of "  + me.getUsername());
     }
 
+    //Constructor and initialization of the components of the interface
     public ContactListApp(User me) throws InterruptedException {
         this.me =me;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
-
-        //frame = new JFrame("Chat System");
         JButton changeButton = new JButton("Change Username");
-        // Added back button
         JButton backButton = new JButton("Disconnect");
         contactListModel = new DefaultListModel<>();
         contactListView = new JList<>(contactListModel);
-
         List<User> users = DatabaseController.getUsers();
         addContactsToDisplayedList(users);
-
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setSize(400, 300);
         this.setLocationRelativeTo(null);
 
-
+        //Components
         changeButton.setActionCommand("Change Username");
         changeButton.addActionListener(e -> {
-            //ClientUDP.sendEndConnection(me);
             changeUsernameApp = new ChangeUsernameApp(me,this);
             changeUsernameApp.setVisible(true);
             System.out.println("Change username button clicked");
@@ -74,6 +67,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
             System.out.println("Disconnect button clicked");
             this.dispose();
         });
+
+        //Closing TCPs and UDP connections when we exit the app
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -86,8 +81,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
             }
         });
 
-
-
         contactListView.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         contactListView.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -99,27 +92,22 @@ public class ContactListApp extends JFrame implements CustomListener2{
                 }
             }
         });
-        contactListView.setVisibleRowCount(5);
 
+        contactListView.setVisibleRowCount(5);
         nameLabel = new JLabel("Contact List of "  + me.getUsername());
         nameLabel.setFont(new Font("Arial", Font.BOLD, 15));
-
         JPanel namePanel = new JPanel();
         namePanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         namePanel.add(nameLabel);
-
         JScrollPane listScrollPane = new JScrollPane(contactListView);
-
         JPanel buttonPanel = new JPanel();
         buttonPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
         buttonPanel.add(changeButton);
-        buttonPanel.add(backButton); // Added back button to the panel
-
+        buttonPanel.add(backButton);
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(namePanel, BorderLayout.NORTH);
         mainPanel.add(listScrollPane, BorderLayout.CENTER);
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
-
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
     }
@@ -129,27 +117,22 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     private void disconnectAndExit() throws IOException, InterruptedException {
-        // Disconnect and exit the application
-        //ServerTCP.ClientHandler.endConnection();
         ClientUDP.sendEndConnection();
         System.exit(0);
     }
 
+    //Open a chat with the clicked user on the contact list
     private void onContactSelection() throws BadLocationException {
         // Index of the selected contact on the interface
         int index = contactListView.getSelectedIndex();
         System.out.println("INDEX: " + index);
-
         if(index!=-1) {
             // Get the actual user object from the contactList previously created
             User selectedContact = contactList.get(index);
-
             // Set the selectedIndex to the index from getSelectedIndex() method
             contactListView.setSelectedIndex(index);
             // Highlights the selected mission
             contactListView.ensureIndexIsVisible(index);
-
-
             ChatApp chat = new ChatApp(selectedContact, me, this);
             chat.setVisible(true);
             //frame.dispose();
@@ -159,47 +142,27 @@ public class ContactListApp extends JFrame implements CustomListener2{
         }
     }
 
+    //Call a method to update the contact list (from the custom listener2)
     @Override
     public void updateContactList() {
         SwingUtilities.invokeLater(() -> {
-            printContactList();
-            System.out.println("dans le listener2 : updatecontactlist");
             contactList = DatabaseController.getUsers();
-            System.out.println("contact list size :" + contactList.size());
             printContactList();
-
-            List<User> users = DatabaseController.getUsers();
-            System.out.println("users !!!!!!!!: ");
-            users.forEach(u -> {
-                if (u.getState()) {
-                    System.out.println("user : " + u.getUsername());
-                }
-            });
             try {
-                addContactsToDisplayedList(users);
+                addContactsToDisplayedList(contactList);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
     }
 
-
+    //Update the contact list from the database
     private synchronized void addContactsToDisplayedList(List<User> users) throws InterruptedException {
-
-
-
-        System.out.println("before add element: ");
-        printContactList();
-        //TimeUnit.SECONDS.sleep(1);
         SwingUtilities.invokeLater(() -> {
             contactListModel.clear();
-
             for (User user : users) {
                 contactListModel.addElement(user.getUsername() + " Online");
             }
         });
-        System.out.println("after add element: ");
-        printContactList();
     }
-
 }
