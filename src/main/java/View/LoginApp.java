@@ -10,7 +10,6 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
@@ -130,6 +129,7 @@ public class LoginApp extends JFrame implements CustomListener{
             }
 
             this.setVisible(false);
+            launchTest();
         }
 
 
@@ -145,13 +145,12 @@ public class LoginApp extends JFrame implements CustomListener{
 
     @Override
     public void notUniquePopup(String message) {
-        if(message.equals("Username not unique : log in")) {
+        if(!not_unique.get() && message.equals("Username not unique : log in")) {
             // set atomic bool not_unique to true
             not_unique.set(true);
             JOptionPane.showMessageDialog(this, message, "Username not unique", JOptionPane.ERROR_MESSAGE);
             this.setVisible(true);
             // Show a popup with the received message
         }
-
     }
 }

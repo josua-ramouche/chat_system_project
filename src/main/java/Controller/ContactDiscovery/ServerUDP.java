@@ -133,17 +133,22 @@ public class ServerUDP {
 
         // Change of username declined
         public void handleNotUnique(String message) {
-            for (CustomListener listener : listeners) {
-                listener.notUniquePopup("Username not unique");
-            }
+
             String[] parts = message.split(":");
             String username = parts[0];
             if (!message.equals("")) {
+                for (CustomListener listener : listeners) {
+                    listener.notUniquePopup("Username not unique : change username");
+                }
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);
+
             }
             else {
+                for (CustomListener listener : listeners) {
+                    listener.notUniquePopup("Username not unique : log in");
+                }
                 // the user cannot connect to the application because his first username is not unique, he needs to change it first
                 System.out.println("Your new username is already used by someone, try to enter a new username.");
             }
@@ -285,7 +290,12 @@ public class ServerUDP {
             List<User> Users = DatabaseController.getUsers();
             System.out.println("ask for change of username received");
             //check if the sender new username is unique
-            if (isUsernameUnique(newUsername, address)) {
+            if (!isUsernameUnique(newUsername, address)) {
+                // Notify the client that the new username is not unique
+                sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
+                System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
+
+            } else {
                 for (User u : Users) {
                     if (u.getUsername().equals(oldUsername)) {
                         //Updates username in database
@@ -295,15 +305,8 @@ public class ServerUDP {
                         break;
                     }
                 }
-
-
                 // Send a message to the sender to inform him that his username can be changed
                 sendIP("USERNAME_UPDATED"+newUsername, address, socket);
-
-            } else {
-                // Notify the client that the new username is not unique
-                sendIP("USERNAME_NOT_UNIQUE"+oldUsername, address, socket);
-                System.out.println("Username '" + newUsername + "' is not unique. Notifying the client.");
             }
 
         }
