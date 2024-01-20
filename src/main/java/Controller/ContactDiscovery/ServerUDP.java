@@ -1,6 +1,7 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
+import View.ChangeUsernameApp;
 import View.CustomListener;
 
 import java.io.IOException;
@@ -140,6 +141,8 @@ public class ServerUDP {
                 for (CustomListener listener : listeners) {
                     listener.notUniquePopup("CHANGE USERNAME");
                 }
+
+
                 // the user do not change his username and will use the old one
                 System.out.println("Your new username is already used by someone, you cannot change your username.");
                 System.out.println("Your username is: " + username);

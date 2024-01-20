@@ -123,9 +123,9 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setState(true);
 
             if (contactListApp==null) {
-                ContactListApp mainAppInterface = new ContactListApp(me);
-                this.addActionListener2(mainAppInterface);
-                mainAppInterface.setVisible(true);
+                contactListApp = new ContactListApp(me);
+                this.addActionListener2(contactListApp);
+                contactListApp.setVisible(true);
             }
             else {
                 contactListApp.setMyUsername(me.getUsername());
@@ -156,7 +156,7 @@ public class LoginApp extends JFrame implements CustomListener{
             this.setVisible(true);
             // Show a popup with the received message
         }
-        else {
+        else if(contactListApp != null){
             this.getContactListApp().getChangeUsernameApp().notUniquePopup(message);
         }
 
