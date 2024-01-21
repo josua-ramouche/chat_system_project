@@ -48,4 +48,4 @@ For the chat system project, we have developed a highly robust UDP server capabl
 
 Tests for this class were executed meticulously, and the conclusion is that the implementation of the UDP server was one of the most challenging tasks for us. We are pleased with the obtained result.
 
-You can find the UDP server implementation in src/main/java/Controller/ContactDiscovery/ServerUDP.java and the JUnit tests for this class in test/java/Controller/ContactDiscovery/ServerUDPTest .
+You can find the UDP server implementation in src/main/java/Controller/ContactDiscovery/ServerUDP.java and the JUnit tests for this class in src/test/java/Controller/ContactDiscovery/ServerUDPTest .
