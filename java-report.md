@@ -34,8 +34,16 @@ As mentioned before, we used **JUnit** to make our tests. Thus, we progressively
 
 For most of them, the results are based on **assertions** after the use of certain methods, to verify values of attributes or length of lists. Others, as some tested methods do not have an impact on specific attributes, only verify that no exceptions were thrown during the execution of the test.
 
-We also had to check that our tests passed correctly, on our machines in the first place, but also on **Git** (the green check mark indicating that no errors occurred while executing the tests on continuous integration). That was initially not always the case as some variables were null when the tests were executed outside our IDE. That is when **Mockito** was used, to ensure that problematic tests have constant results no matter where they were executed from.
+We also had to check that our tests passed correctly, on our machines in the first place, but also on **Git** (the green check mark from PDLA indicating that no errors occurred while executing the tests on continuous integration). That was initially not always the case as some variables were null when the tests were executed outside our IDE. That is when **Mockito** was used, to ensure that problematic tests have constant results no matter where they were executed from.
 
 After we verified that our methods were correct for the Controller and Model part of the project, we tested our **GUIs**. We first tried with two users on the same network. To test with more users, we opened the app from other INSA computers using ssh.
 
 Finally, during the whole process, we made sure to write the maximum information possible in the console, in order to be able to debug our code.
+
+## Highlights
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+For the chat system project, we have developed a highly robust UDP server capable of handling various situations, whether responding to the UDP client or managing the return to the initial user. Our server also ensures the uniqueness of pseudonyms through the Custom Listener we implemented (Observer pattern).
+
+Tests for this class were executed meticulously, and the conclusion is that the implementation of the UDP server was one of the most challenging tasks for us. We are pleased with the obtained result.
