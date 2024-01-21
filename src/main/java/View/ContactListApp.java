@@ -12,7 +12,6 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static Controller.Database.DatabaseController.printContactList;
 
@@ -26,12 +25,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private JLabel nameLabel;
 
     private LoginApp loginApp;
-
-    //Set our name in the Contact List app
-    public void setMyUsername(String username) {
-        me.setUsername(username);
-        nameLabel.setText("Contact List of "  + me.getUsername());
-    }
 
     //Constructor and initialization of the components of the interface
     public ContactListApp(User me, LoginApp loginApp) throws InterruptedException {
@@ -108,6 +101,12 @@ public class ContactListApp extends JFrame implements CustomListener2{
         mainPanel.add(buttonPanel, BorderLayout.SOUTH);
         this.getContentPane().add(mainPanel);
         this.setVisible(true);
+    }
+
+    //Set our name in the Contact List app
+    public void setMyUsername(String username) {
+        me.setUsername(username);
+        nameLabel.setText("Contact List of "  + me.getUsername());
     }
 
     public ChangeUsernameApp getChangeUsernameApp() {

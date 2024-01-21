@@ -1,7 +1,6 @@
 package View;
 
 import Controller.Chat.ClientTCP;
-import Controller.Chat.ServerTCP;
 import Controller.ContactDiscovery.ClientUDP;
 import Controller.Database.DatabaseController;
 import Model.Message;
@@ -9,7 +8,6 @@ import Model.User;
 
 import javax.swing.*;
 import javax.swing.text.*;
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -118,9 +116,9 @@ public class ChatApp extends JFrame {
     }
 
     //Print all the messages between me and the partner in the database
-    public synchronized static void PrintHistory(int iddisconnected) throws BadLocationException {
+    public synchronized static void PrintHistory(int idDisconnected) throws BadLocationException {
         //if the id is -1 then the partner is disconnected
-        if (iddisconnected!=-1 ) {
+        if (idDisconnected!=-1 ) {
             if (partner != null) {
                 chatArea.setText("");
                 int clientid = DatabaseController.getUserID(partner);
