@@ -17,7 +17,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class ClientUDPTest {
 
-    //TEST
     @BeforeAll
     static void ensure_database_is_created() {
         DatabaseController.createUserTable();

@@ -17,6 +17,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserContactDiscoveryTest {
 
     @BeforeAll
+    static void setup() {
+        DatabaseController.initConnection();
+    }
+
+    @BeforeAll
     static void ensure_database_is_created() {
         DatabaseController.createUserTable();
     }

@@ -21,6 +21,11 @@ class ClientTCPTest {
     private static final String TEST_IP = "127.0.0.1";
     private static ServerSocket serverSocket;
 
+    @BeforeAll
+    static void setup() {
+        DatabaseController.initConnection();
+    }
+
     @BeforeEach
     void initSocket() {
         try {

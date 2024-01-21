@@ -31,6 +31,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class ServerUDPTest {
 
     @BeforeAll
+    static void setup() {
+        DatabaseController.initConnection();
+    }
+
+    @BeforeAll
     static void ensure_database_is_created() {
         DatabaseController.createUserTable();
     }

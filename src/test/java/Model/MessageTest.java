@@ -1,6 +1,7 @@
 package Model;
 import Controller.Database.DatabaseController;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.net.InetAddress;
@@ -12,6 +13,11 @@ import java.sql.Statement;
 import static org.junit.jupiter.api.Assertions.*;
 
 class MessageTest {
+
+    @BeforeAll
+    static void setup() {
+        DatabaseController.initConnection();
+    }
 
     @AfterEach
     void afterEach() {

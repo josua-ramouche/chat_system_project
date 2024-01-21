@@ -2,6 +2,7 @@ package Controller.Chat;
 
 import Controller.Database.DatabaseController;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.*;
@@ -17,6 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
 
 class ServerTCPTest {
+
+    @BeforeAll
+    static void setup() {
+        DatabaseController.initConnection();
+    }
 
     @AfterEach
     void afterEach() {
