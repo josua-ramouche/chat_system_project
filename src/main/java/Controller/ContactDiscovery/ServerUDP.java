@@ -1,8 +1,10 @@
 package Controller.ContactDiscovery;
 import Controller.Database.DatabaseController;
 import Model.User;
+import View.ChatApp;
 import View.CustomListener;
 
+import javax.swing.text.BadLocationException;
 import java.io.IOException;
 import java.net.*;
 import java.util.ArrayList;
@@ -150,7 +152,7 @@ public class ServerUDP {
             System.out.println("handle broadcast message : ");
 
             // checks if the user who sends the broadcast message has a unique username
-            if (isUsernameUnique(username)) {
+            if (isUsernameUnique(username, address)) {
                 User contact = new User();
                 contact.setUsername(username);
                 contact.setIPAddress(address);
@@ -235,6 +237,8 @@ public class ServerUDP {
             if (disconnectedUser != null) {
                 System.out.println("User " + disconnectedUser + " disconnected");
             }
+
+
             System.out.println("Contact List (connected) after disconnection:");
             sendIP("HANDLE_RESPONSE_END", address, socket);
         }
@@ -280,17 +284,6 @@ public class ServerUDP {
             if (!username.equals(server.getUsername())) {
                 return Users.stream()
                         .filter(u -> !u.getIPAddress().equals(requesterAddress))
-                        .noneMatch(u -> u.getUsername().equals(username));
-            }
-            else return false;
-        }
-
-        // Check among the connected users in the contact list that a username is unique (except himself)
-        public boolean isUsernameUnique(String username) {
-            List<User> Users = DatabaseController.getAllUsers();
-            if (!username.equals(server.getUsername())) {
-                System.out.println("ON PASSE BIEN DANS IS USERNAME UNIQUE");
-                return Users.stream()
                         .noneMatch(u -> u.getUsername().equals(username));
             }
             else return false;

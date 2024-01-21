@@ -25,6 +25,8 @@ public class ContactListApp extends JFrame implements CustomListener2{
     private ChangeUsernameApp changeUsernameApp = null;
     private JLabel nameLabel;
 
+    private LoginApp loginApp;
+
     //Set our name in the Contact List app
     public void setMyUsername(String username) {
         me.setUsername(username);
@@ -32,8 +34,9 @@ public class ContactListApp extends JFrame implements CustomListener2{
     }
 
     //Constructor and initialization of the components of the interface
-    public ContactListApp(User me) throws InterruptedException {
+    public ContactListApp(User me, LoginApp loginApp) throws InterruptedException {
         this.me =me;
+        this.loginApp = loginApp;
         contactList = DatabaseController.getUsers();
         System.out.println("Contact list database : " + contactList.toString());
         JButton changeButton = new JButton("Change Username");
@@ -52,7 +55,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
             changeUsernameApp = new ChangeUsernameApp(me,this);
             changeUsernameApp.setVisible(true);
             System.out.println("Change username button clicked");
-            this.dispose();
+            this.setVisible(false);
         });
 
         backButton.setActionCommand("Disconnect");
@@ -62,10 +65,10 @@ public class ContactListApp extends JFrame implements CustomListener2{
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            LoginApp disconnect = new LoginApp(this);
-            disconnect.setVisible(true);
+
+            loginApp.setVisible(true);
             System.out.println("Disconnect button clicked");
-            this.dispose();
+            this.setVisible(false);
         });
 
         //Closing TCPs and UDP connections when we exit the app
@@ -135,7 +138,6 @@ public class ContactListApp extends JFrame implements CustomListener2{
             contactListView.ensureIndexIsVisible(index);
             ChatApp chat = new ChatApp(selectedContact, me, this);
             chat.setVisible(true);
-            //frame.dispose();
             this.setVisible(false);
             ClientTCP.startConnection(selectedContact.getIPAddress(), 1556);
             contactListView.clearSelection();
