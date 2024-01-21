@@ -56,7 +56,7 @@ Subsequently, click on Log In, and you will be on the Contact List Interface aft
 
  -> You are now on the Contact List interface, on it you can see the other users connected to your network.
 It is possible to change username by clicking on the button, choose a new one, then notify other users.
-You can also log out and return to the original Log In interface.
+You can also log out and return to the original Log In interface or directly closing the app at any moment.
 
  -> Finally, to chat with another user, you must click on them in the contact list to open the chat interface.
 Once on this interface, you can view previous messages with this person, send and receive messages, or return to the previous interface via the back button.
