@@ -39,3 +39,11 @@ We also had to check that our tests passed correctly, on our machines in the fir
 After we verified that our methods were correct for the Controller and Model part of the project, we tested our **GUIs**. We first tried with two users on the same network. To test with more users, we opened the app from other INSA computers using ssh.
 
 Finally, during the whole process, we made sure to write the maximum information possible in the console, in order to be able to debug our code.
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+## Highlights
+
+For the chat system project, we have developed a highly robust UDP server capable of handling various situations, whether responding to the UDP client or managing the return to the initial user. Our server also ensures the uniqueness of pseudonyms through the Custom Listener we implemented (Observer pattern).
+
+Tests for this class were executed meticulously, and the conclusion is that the implementation of the UDP server was one of the most challenging tasks for us. We are pleased with the obtained result.
