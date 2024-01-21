@@ -40,9 +40,9 @@ After we verified that our methods were correct for the Controller and Model par
 
 Finally, during the whole process, we made sure to write the maximum information possible in the console, in order to be able to debug our code.
 
---------------------------------------------------------------------------------------------------------------------------------------------
-
 ## Highlights
+
+--------------------------------------------------------------------------------------------------------------------------------------------
 
 For the chat system project, we have developed a highly robust UDP server capable of handling various situations, whether responding to the UDP client or managing the return to the initial user. Our server also ensures the uniqueness of pseudonyms through the Custom Listener we implemented (Observer pattern).
 
