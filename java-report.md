@@ -47,3 +47,5 @@ Finally, during the whole process, we made sure to write the maximum information
 For the chat system project, we have developed a highly robust UDP server capable of handling various situations, whether responding to the UDP client or managing the return to the initial user. Our server also ensures the uniqueness of pseudonyms through the Custom Listener we implemented (Observer pattern).
 
 Tests for this class were executed meticulously, and the conclusion is that the implementation of the UDP server was one of the most challenging tasks for us. We are pleased with the obtained result.
+
+You can find the UDP server implementation in src/main/java/Controller/ContactDiscovery/ServerUDP.java and the JUnit tests for this class in test/java/Controller/ContactDiscovery/ServerUDPTest .
