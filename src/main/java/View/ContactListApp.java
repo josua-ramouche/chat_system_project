@@ -60,12 +60,7 @@ public class ContactListApp extends JFrame implements CustomListener2{
 
         backButton.setActionCommand("Disconnect");
         backButton.addActionListener(e -> {
-            try {
-                ClientUDP.sendEndConnection();
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-
+                ClientTCP.endTCP();
             loginApp.setVisible(true);
             System.out.println("Disconnect button clicked");
             this.setVisible(false);
