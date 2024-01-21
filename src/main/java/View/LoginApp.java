@@ -27,16 +27,7 @@ public class LoginApp extends JFrame implements CustomListener{
         setLocationRelativeTo(null);
         initComponents();
     }
-
-    //Constructor for login after a disconnection
-    public LoginApp(ContactListApp contactlistapp) {
-        setTitle("Login");
-        setSize(300, 150);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        initComponents();
-        contactListApp=contactlistapp;
-    }
+    
 
     public ContactListApp getContactListApp() {
         return contactListApp;
