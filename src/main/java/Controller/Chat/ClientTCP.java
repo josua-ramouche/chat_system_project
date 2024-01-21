@@ -49,6 +49,11 @@ public class ClientTCP {
         out.println(message);
     }
 
+    //Send end TCP
+    public static void endTCP() {
+        out.println("endTCP");
+    }
+
     //Remove the IP address from the ipList
     public static void removeIP(InetAddress ip) {
         ipList.remove(ip);

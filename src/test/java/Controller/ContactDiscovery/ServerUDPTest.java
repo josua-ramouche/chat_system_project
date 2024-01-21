@@ -337,11 +337,13 @@ class ServerUDPTest {
 
         ServerUDP.EchoServer echoServer = new ServerUDP.EchoServer(testUser,socket);
 
-        DatabaseController.addUser(new User("TestUser1",InetAddress.getByName("192.168.0.1"),true));
+        User testUser1 = new User("TestUser1",InetAddress.getByName("192.168.0.1"),true);
+
+        DatabaseController.addUser(testUser1);
 
         //Call directly isUsernameUnique() method in the assertions to verify username unicity
-        assertFalse(echoServer.isUsernameUnique("TestUser1"));
-        assertTrue(echoServer.isUsernameUnique("TestUser2"));
+        assertFalse(echoServer.isUsernameUnique("TestUser1",InetAddress.getByName("192.168.0.2")));
+        assertTrue(echoServer.isUsernameUnique("TestUser2",InetAddress.getByName("192.168.0.2")));
     }
 
     @Test

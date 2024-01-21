@@ -27,16 +27,7 @@ public class LoginApp extends JFrame implements CustomListener{
         setLocationRelativeTo(null);
         initComponents();
     }
-
-    //Constructor for login after a disconnection
-    public LoginApp(ContactListApp contactlistapp) {
-        setTitle("Login");
-        setSize(300, 150);
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
-        initComponents();
-        contactListApp=contactlistapp;
-    }
+    
 
     public ContactListApp getContactListApp() {
         return contactListApp;
@@ -111,7 +102,7 @@ public class LoginApp extends JFrame implements CustomListener{
             me.setIPAddress(InetAddress.getLocalHost());
             me.setState(true);
             if (contactListApp==null) {
-                contactListApp = new ContactListApp(me);
+                contactListApp = new ContactListApp(me,this);
                 this.addActionListener2(contactListApp);
                 contactListApp.setVisible(true);
             }
@@ -119,7 +110,7 @@ public class LoginApp extends JFrame implements CustomListener{
                 contactListApp.setMyUsername(me.getUsername());
                 contactListApp.setVisible(true);
             }
-            this.dispose();
+            this.setVisible(false);
             launchTest();
         }
     }

@@ -56,6 +56,9 @@ public class ServerTCP {
             try {
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
+                    if (inputLine.equals("endTCP")) {
+                        break;
+                    }
                     int idsender = DatabaseController.getUserID2(clientSocket.getInetAddress());
                     System.out.println("ID SENDER : " + idsender);
                     System.out.println("IP ADDRESS CLIENT: " + clientSocket.getInetAddress().getHostAddress());
